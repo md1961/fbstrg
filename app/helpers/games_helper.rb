@@ -5,12 +5,13 @@ module GamesHelper
     format("%02d:%02d", m, time_left - m * 60)
   end
 
-  def ball_on_display(game)
-    is_on_home = game.is_ball_to_home
-    ball_on = game.ball_on
-    is_on_home = !is_on_home if ball_on > 50
-    team = is_on_home ? 'H' : 'V'
-    team = '' if ball_on == 50
-    "#{team} #{ball_on > 50 ? 100 - ball_on : ball_on}"
+  def ball_on_display(ball_on)
+    if ball_on == 50
+      '--- 50'
+    elsif ball_on < 50
+      "Own #{ball_on}"
+    else
+      "Opp #{100 - ball_on}"
+    end
   end
 end

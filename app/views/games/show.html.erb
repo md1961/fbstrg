@@ -13,7 +13,7 @@
     <td><%= @game.score_visitors %></td>
     <td><%= '.' * @game.timeout_visitors %></td>
     <td><%= time_left_display(@game.time_left) %></td>
-    <td><%= ball_on_display(@game) %></td>
+    <td><%= ball_on_display(@game.ball_on) %></td>
   </tr>
 </table>
 
