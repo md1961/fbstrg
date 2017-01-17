@@ -38,4 +38,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  if ENV['TRUSTED_IP']
+    config.web_console.whitelisted_ips << ENV['TRUSTED_IP']
+    BetterErrors::Middleware.allow_ip!    ENV['TRUSTED_IP']
+  end
 end
