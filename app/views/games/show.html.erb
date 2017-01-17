@@ -16,3 +16,9 @@
     <td><%= ball_on_display(@game) %></td>
   </tr>
 </table>
+
+<br>
+<%= form_tag @game, method: :patch do %>
+  <%= text_field_tag :play %>
+  <%= submit_tag :enter %>
+<% end -%>
