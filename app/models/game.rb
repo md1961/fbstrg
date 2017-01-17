@@ -1,10 +1,15 @@
 class Game < ActiveRecord::Base
+  attr_accessor :error_message
 
   RE_PLAY_VALUE = /\A(?<kind>[a-z]*)(?<yard>-?[0-9]+)/
 
   def play(value)
+    self.error_message = nil
     m = value.match(RE_PLAY_VALUE)
-    return unless m
+    unless m
+      self.error_message = "Illegal play '#{value}'"
+      return
+    end
     kind = m[:kind]
     yard = Integer(m[:yard])
 

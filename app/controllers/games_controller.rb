@@ -15,7 +15,7 @@ class GamesController < ApplicationController
 
   def update
     @game.play(params[:play])
-    @game.save!
+    @game.save! unless @game.error_message
     render :show
   end
 
