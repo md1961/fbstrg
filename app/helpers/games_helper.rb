@@ -9,9 +9,9 @@ module GamesHelper
     if ball_on == 50
       '--- 50'
     elsif ball_on < 50
-      "Own #{ball_on}"
+      "Own#{format('%2d', ball_on)}"
     else
-      "Opp #{100 - ball_on}"
+      "Opp#{format('%2d', 100 - ball_on)}"
     end
   end
 end

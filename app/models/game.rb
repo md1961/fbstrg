@@ -17,8 +17,18 @@ class Game < ActiveRecord::Base
     self.yard_to_go -= yard
     self.down += 1
     if yard_to_go <= 0
+      firstdown
+    elsif down > 4
+      self.is_ball_to_home = !is_ball_to_home
+      self.ball_on = 100 - ball_on
+      firstdown
+    end
+  end
+
+  private
+
+    def firstdown
       self.down = 1
       self.yard_to_go = 10
     end
-  end
 end
