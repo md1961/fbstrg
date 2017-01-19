@@ -2,7 +2,7 @@
   <tr>
     <td><%= @game.is_ball_to_home ? '<>' : '' %>
     <td>H</td>
-    <td><%= @game.score_home %></td>
+    <td class="numeric"><%= @game.score_home %></td>
     <td><%= '.' * @game.timeout_home %></td>
     <td><%= "#{@game.quarter}Q" %></td>
     <td><%= "#{@game.down}&#{@game.yard_to_go}" %></td>
@@ -10,7 +10,7 @@
   <tr>
     <td><%= @game.is_ball_to_home ? '' : '<>' %>
     <td>V</td>
-    <td><%= @game.score_visitors %></td>
+    <td class="numeric"><%= @game.score_visitors %></td>
     <td><%= '.' * @game.timeout_visitors %></td>
     <td><%= time_left_display(@game.time_left) %></td>
     <td><%= ball_on_display(@game.ball_on) %></td>
