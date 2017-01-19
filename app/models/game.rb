@@ -67,6 +67,7 @@ class Game < ActiveRecord::Base
           firstdown
         end
       end
+      self.time_left -= 40
     end
 
     def change_possesion(yard)
@@ -74,5 +75,6 @@ class Game < ActiveRecord::Base
       touchback if ball_on >= 100
       toggle_possesion
       firstdown
+      self.time_left -= 10
     end
 end
