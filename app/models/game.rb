@@ -2,6 +2,7 @@ class Game < ActiveRecord::Base
   attr_accessor :error_message
 
   KICKOFF_YARDLINE = 35
+  TOUCHBACK_YARDLINE = 20
 
   RE_PLAY_VALUE = /\A(?<kind>[a-z]*)(?<yard>-?[0-9]+)/
 
@@ -16,11 +17,22 @@ class Game < ActiveRecord::Base
     kind = 'r' if kind.blank?
     yard = Integer(m[:yard])
 
-    self.ball_on += yard
-    yardage_play(yard)
+    case kind
+    when 'r'
+      yardage_play(yard)
+    when 'x'
+      change_possesion(yard)
+    else
+      self.error_message = "Illegal kind '#{kind}'"
+    end
   end
 
   private
+
+    def toggle_possesion
+      self.is_ball_to_home = !is_ball_to_home
+      self.ball_on = 100 - ball_on
+    end
 
     def firstdown
       self.down = 1
@@ -37,7 +49,12 @@ class Game < ActiveRecord::Base
       self.ball_on = KICKOFF_YARDLINE
     end
 
+    def touchback
+      self.ball_on = 100 - TOUCHBACK_YARDLINE
+    end
+
     def yardage_play(yard)
+      self.ball_on += yard
       if ball_on >= 100
         touchdown
       else
@@ -46,10 +63,16 @@ class Game < ActiveRecord::Base
         if yard_to_go <= 0
           firstdown
         elsif down > 4
-          self.is_ball_to_home = !is_ball_to_home
-          self.ball_on = 100 - ball_on
+          toggle_possesion
           firstdown
         end
       end
+    end
+
+    def change_possesion(yard)
+      self.ball_on += yard
+      touchback if ball_on >= 100
+      toggle_possesion
+      firstdown
     end
 end
