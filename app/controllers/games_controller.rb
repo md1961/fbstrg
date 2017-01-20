@@ -4,7 +4,7 @@ class GamesController < ApplicationController
   def index
     if Game.count <= 1
       Game.create! if Game.count == 0
-      redirect_to game_path(Game.first)
+      redirect_to Game.first
     else
       @games = Game.all
     end
@@ -17,6 +17,10 @@ class GamesController < ApplicationController
     @game.play(params[:play])
     @game.save! unless @game.error_message
     render :show
+  end
+
+  def new
+    redirect_to Game.create!
   end
 
   private
