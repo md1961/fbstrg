@@ -81,3 +81,23 @@ PUNT_RESULTS = [
   # Punt any down
   %w(60_0ob blk 50_0ob 60_10 60_0ob 60_0ob 60_10 &0_0 70_0 40_80),
 ]
+
+KICKOFF_TABLE = [
+  # normal, at receiver's yard line
+  %w(long 25 25 20 20 15),
+  # onside, at kicker's yard line
+  %w(k50 k50_or_r50 r50 r45 r45 r40),
+]
+
+LONG_GAIN_TABLE = [
+  %w(+50_and_again +50 +45 +40 +35 +30),
+]
+
+FIELD_GOAL_TABLE = [
+  %w(xp     good good good good good good_or_ng),
+  %w(1-10   good good good good pen ng),
+  %w(11-18  good good good good ng ng),
+  %w(19-25  good good good ng ng ng),
+  %w(26-32  good good ng ng ng ng),
+  %w(33-38  good ng ng ng ng ng),
+]
