@@ -48,19 +48,6 @@ DEFENSIVE_PLAYS = [
   ['J', '3', '-', '3', '5', 'Terrible', 'Excellent'],
 ]
 
-=begin
-PRO_STYLE_RESULTS = [
-  %w(-2 -1 0 0     -4 -2 +1 +3
-     pen-15 cmp+3 cmp+14ob cmp+9  cmp+18 cmp+19 cmp+16 long  cmp+50ob cmp+45 cmp+long cmp+35),
-  %w(-1 fmb -1 +2  -1 +1ob +2 -1
-     cmp+13ob cmp+6 incmp incmp   cmp+15 cmp+16 cmp+13 long  cmp+45ob cmp+35 cmp+long cmp+30),
-  %w(+10 -2 +15 -3  fmb -4 -2 +9
-     +5 incmp int_opp+7 cmp+6     cmp+9 cmp+11 cmp+8 -15     cmp+35 sck-5 incmp incmp),
-  %w(+1 +3 +2 +3  pen+15 fmb +2 +4
-     incmp cmp+5ob cmp+7ob incmp  cmp+6 cmp+8 incmp +11ob    cmp+25 cmp+35 cmp+35ob incmp),
-]
-=end
-
 PRO_STYLE_RESULTS = [
   %w(-2 -1 +10 +1 +1 +2 +3 +7 +9 +10),
   %w(-1 fmb -2 +3 +5 +7 +9 -1 +11 +14),
@@ -86,10 +73,11 @@ PRO_STYLE_RESULTS = [
   %w(cmp+45 cmp+35 sck-5 cmp+35 cmp+30 int_opp-30 incmp incmp incmp incmp),
   %w(cmp+long cmp+long incmp cmp+35ob sck-15 incmp incmp incmp pen+30af int_opp-30),
   %w(cmp+35 cmp+30 incmp incmp incmp_or_pen-5 incmp cmp+35ob cmp+30ob incmp int_opp-25),
-
-  # Punt 4th down only
-  %w( ),
-  # Punt any down
-  %w(),
 ]
 
+PUNT_RESULTS = [
+  # Punt 4th down only
+  %w(70_long 60_10 50_0ob 50_10 40_10 30_0 40_0 60_20 50_0 50_fmb20),
+  # Punt any down
+  %w(60_0ob blk 50_0ob 60_10 60_0ob 60_0ob 60_10 &0_0 70_0 40_80),
+]
