@@ -19,10 +19,12 @@ OFFENSIVE_PLAYS = [
   [10, 'Flair Pass'],
   [11, 'Sideline Pass'],
   [12, 'Look-In Pass'],
+	# Cannot call below at 1-10 yard line.
   [13, 'Screen Pass'],
   [14, 'Pop Pass'],
   [15, 'Button Hook Pass'],
   [16, 'Razzle Dazzle'],
+	# Cannot call below at 1-20 yard line.
   [17, 'Down & Out Pass'],
   [18, 'Down & In Pass'],
   [19, 'Long Bomb'],
