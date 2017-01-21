@@ -101,3 +101,16 @@ FIELD_GOAL_TABLE = [
   %w(26-32  good good ng ng ng ng),
   %w(33-38  good ng ng ng ng ng),
 ]
+
+TIME_TABLE = [
+	['20y or more', 45],
+	['less than 20y', 30],
+	['loss', 30],
+	['ob', -15],
+	['int', 30],
+	['incmp', 15],
+	['pen', 15],
+	['fmb', 15],
+	['kicking', 15],
+	['timeout', -30],
+]
