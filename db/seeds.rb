@@ -31,6 +31,10 @@ OFFENSIVE_PLAYS = [
   [20, 'Stop & Go Pass'],
 ]
 
+OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
+	Hash[%w(number name).zip(values)]
+})
+
 PUNTS = [
   ['Punt 4th Down Only'],
   ['Punt Any Down'],
