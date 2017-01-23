@@ -30,7 +30,6 @@ OFFENSIVE_PLAYS = [
   [19, 'Long Bomb'],
   [20, 'Stop & Go Pass'],
 ]
-
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 	Hash[%w(number name).zip(values)]
 })
@@ -53,6 +52,9 @@ DEFENSIVE_PLAYS = [
   ['I', '4', '-', '3', '4', 'Very Poor', 'Very Good'],
   ['J', '3', '-', '3', '5', 'Terrible', 'Excellent'],
 ]
+DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
+	Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
+})
 
 PRO_STYLE_RESULTS = [
   %w(-2 -1 +10 +1 +1 +2 +3 +7 +9 +10),
