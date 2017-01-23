@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123053847) do
+ActiveRecord::Schema.define(version: 20170123230649) do
 
   create_table "defensive_plays", force: :cascade do |t|
     t.string   "name",         null: false
@@ -46,5 +46,24 @@ ActiveRecord::Schema.define(version: 20170123053847) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "play_result_charts", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "play_results", force: :cascade do |t|
+    t.integer  "play_result_chart_id"
+    t.integer  "offensive_play_id"
+    t.integer  "defensive_play_id"
+    t.string   "result",               null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "play_results", ["defensive_play_id"], name: "index_play_results_on_defensive_play_id"
+  add_index "play_results", ["offensive_play_id"], name: "index_play_results_on_offensive_play_id"
+  add_index "play_results", ["play_result_chart_id"], name: "index_play_results_on_play_result_chart_id"
 
 end
