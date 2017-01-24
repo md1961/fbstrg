@@ -92,12 +92,12 @@ end
 
 strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
 OffensivePlay.order(:number).each do |offensive_play|
-  strategy.offensive_play_strategy_weights.create!(offensive_play: offensive_play, weight: 100)
+  strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: 100)
 end
 
 strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
 DefensivePlay.order(:name).each do |defensive_play|
-  strategy.defensive_play_strategy_weights.create!(defensive_play: defensive_play, weight: 100)
+  strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: 100)
 end
 
 PUNT_RESULTS = [

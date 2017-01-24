@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20170124020800) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "defensive_play_strategy_weights", force: :cascade do |t|
+  create_table "defensive_play_strategy_choices", force: :cascade do |t|
     t.integer  "defensive_play_strategy_id"
     t.integer  "defensive_play_id"
     t.integer  "weight"
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(version: 20170124020800) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "defensive_play_strategy_weights", ["defensive_play_id"], name: "def_weights_play"
-  add_index "defensive_play_strategy_weights", ["defensive_play_strategy_id"], name: "def_weights_strategy"
+  add_index "defensive_play_strategy_choices", ["defensive_play_id"], name: "def_choices_play"
+  add_index "defensive_play_strategy_choices", ["defensive_play_strategy_id"], name: "def_choices_strategy"
 
   create_table "defensive_plays", force: :cascade do |t|
     t.string   "name",         null: false
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20170124020800) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "offensive_play_strategy_weights", force: :cascade do |t|
+  create_table "offensive_play_strategy_choices", force: :cascade do |t|
     t.integer  "offensive_play_strategy_id"
     t.integer  "offensive_play_id"
     t.integer  "weight"
@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(version: 20170124020800) do
     t.datetime "updated_at",                 null: false
   end
 
-  add_index "offensive_play_strategy_weights", ["offensive_play_id"], name: "off_weights_play"
-  add_index "offensive_play_strategy_weights", ["offensive_play_strategy_id"], name: "off_weights_strategy"
+  add_index "offensive_play_strategy_choices", ["offensive_play_id"], name: "off_choices_play"
+  add_index "offensive_play_strategy_choices", ["offensive_play_strategy_id"], name: "off_choices_strategy"
 
   create_table "offensive_plays", force: :cascade do |t|
     t.integer  "number",     null: false
