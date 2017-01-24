@@ -95,6 +95,11 @@ OffensivePlay.order(:number).each do |offensive_play|
   strategy.offensive_play_strategy_weights.create!(offensive_play: offensive_play, weight: 100)
 end
 
+strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
+DefensivePlay.order(:name).each do |defensive_play|
+  strategy.defensive_play_strategy_weights.create!(defensive_play: defensive_play, weight: 100)
+end
+
 PUNT_RESULTS = [
   # Punt 4th down only
   %w(70_long 60_10 50_0ob 50_10 40_10 30_0 40_0 60_20 50_0 50_fmb20),

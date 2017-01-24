@@ -11,7 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124012723) do
+ActiveRecord::Schema.define(version: 20170124020800) do
+
+  create_table "defensive_play_strategies", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "defensive_play_strategy_weights", force: :cascade do |t|
+    t.integer  "defensive_play_strategy_id"
+    t.integer  "defensive_play_id"
+    t.integer  "weight"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "defensive_play_strategy_weights", ["defensive_play_id"], name: "def_weights_play"
+  add_index "defensive_play_strategy_weights", ["defensive_play_strategy_id"], name: "def_weights_strategy"
 
   create_table "defensive_plays", force: :cascade do |t|
     t.string   "name",         null: false
