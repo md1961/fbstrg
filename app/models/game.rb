@@ -1,4 +1,7 @@
 class Game < ActiveRecord::Base
+  belongs_to :home_team, class_name: 'Team'
+  belongs_to :visitors , class_name: 'Team'
+
   attr_accessor :error_message
 
   KICKOFF_YARDLINE = 35

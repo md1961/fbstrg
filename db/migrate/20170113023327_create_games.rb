@@ -2,8 +2,8 @@ class CreateGames < ActiveRecord::Migration
 
   def change
     create_table :games do |t|
-      t.integer :home_id         , default:  1     , null: false
-      t.integer :visitors_id     , default:  1     , null: false
+      t.integer :home_team_id                      , null: false
+      t.integer :visitors_id                       , null: false
       t.integer :score_home      , default:  0     , null: false
       t.integer :score_visitors  , default:  0     , null: false
       t.integer :timeout_home    , default:  3     , null: false

@@ -139,3 +139,18 @@ TIME_TABLE = [
 	['kicking', 15],
 	['timeout', -30],
 ]
+
+off_strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
+OffensivePlay.order(:number).each do |offensive_play|
+  off_strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: 100)
+end
+
+def_strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
+DefensivePlay.order(:name).each do |defensive_play|
+  def_strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: 100)
+end
+
+home_team = Team.create!(name: 'H', offensive_play_strategy: off_strategy, defensive_play_strategy: def_strategy)
+visitors  = Team.create!(name: 'V', offensive_play_strategy: off_strategy, defensive_play_strategy: def_strategy)
+
+Game.create!(home_team: home_team, visitors: visitors)

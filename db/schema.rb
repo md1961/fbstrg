@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124020800) do
+ActiveRecord::Schema.define(version: 20170124225554) do
 
   create_table "defensive_play_strategies", force: :cascade do |t|
     t.string   "name",       null: false
@@ -43,8 +43,8 @@ ActiveRecord::Schema.define(version: 20170124020800) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.integer  "home_id",          default: 1,    null: false
-    t.integer  "visitors_id",      default: 1,    null: false
+    t.integer  "home_team_id",                    null: false
+    t.integer  "visitors_id",                     null: false
     t.integer  "score_home",       default: 0,    null: false
     t.integer  "score_visitors",   default: 0,    null: false
     t.integer  "timeout_home",     default: 3,    null: false
@@ -101,5 +101,16 @@ ActiveRecord::Schema.define(version: 20170124020800) do
   add_index "play_results", ["defensive_play_id"], name: "index_play_results_on_defensive_play_id"
   add_index "play_results", ["offensive_play_id"], name: "index_play_results_on_offensive_play_id"
   add_index "play_results", ["play_result_chart_id"], name: "index_play_results_on_play_result_chart_id"
+
+  create_table "teams", force: :cascade do |t|
+    t.string   "name",                       null: false
+    t.integer  "offensive_play_strategy_id"
+    t.integer  "defensive_play_strategy_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "teams", ["defensive_play_strategy_id"], name: "index_teams_on_defensive_play_strategy_id"
+  add_index "teams", ["offensive_play_strategy_id"], name: "index_teams_on_offensive_play_strategy_id"
 
 end
