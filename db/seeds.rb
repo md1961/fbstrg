@@ -83,10 +83,16 @@ PRO_STYLE_RESULTS = [
   %w(cmp+35 cmp+30 incmp incmp incmp_or_pen-5 incmp cmp+35ob cmp+30ob incmp int_opp-25),
 ]
 chart = PlayResultChart.create!(name: 'Pro style')
+defensive_plays = DefensivePlay.order(:name)
 PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
-  row.zip(DefensivePlay.order(:name)) do |result, defensive_play|
+  row.zip(defensive_plays) do |result, defensive_play|
     chart.play_results.create!(offensive_play: offensive_play, defensive_play: defensive_play, result: result)
   end
+end
+
+strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
+OffensivePlay.order(:number).each do |offensive_play|
+  strategy.offensive_play_strategy_weights.create!(offensive_play: offensive_play, weight: 100)
 end
 
 PUNT_RESULTS = [
