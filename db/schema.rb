@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170124225554) do
+ActiveRecord::Schema.define(version: 20170125045614) do
 
   create_table "defensive_play_strategies", force: :cascade do |t|
     t.string   "name",       null: false
@@ -101,6 +101,22 @@ ActiveRecord::Schema.define(version: 20170124225554) do
   add_index "play_results", ["defensive_play_id"], name: "index_play_results_on_defensive_play_id"
   add_index "play_results", ["offensive_play_id"], name: "index_play_results_on_offensive_play_id"
   add_index "play_results", ["play_result_chart_id"], name: "index_play_results_on_play_result_chart_id"
+
+  create_table "plays", force: :cascade do |t|
+    t.integer  "game_id"
+    t.integer  "team_id"
+    t.integer  "result",          limit: 1, default: 0,     null: false
+    t.integer  "yardage",                   default: 0,     null: false
+    t.integer  "fumble",          limit: 1, default: 0,     null: false
+    t.boolean  "out_of_bounds",             default: false, null: false
+    t.integer  "penalty",         limit: 1, default: 0,     null: false
+    t.integer  "penalty_yardage",           default: 0,     null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+  end
+
+  add_index "plays", ["game_id"], name: "index_plays_on_game_id"
+  add_index "plays", ["team_id"], name: "index_plays_on_team_id"
 
   create_table "teams", force: :cascade do |t|
     t.string   "name",                       null: false
