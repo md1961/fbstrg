@@ -2,6 +2,7 @@ class Game < ActiveRecord::Base
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
 
+  attr_reader :offensive_play, :defensive_play
   attr_accessor :error_message
 
   KICKOFF_YARDLINE = 35
@@ -19,11 +20,11 @@ class Game < ActiveRecord::Base
 
   # TODO: Add score_offense() and score_defense().
 
-  def play_result
-    offensive_play = offense.offensive_play_strategy.choose
-    defensive_play = defense.defensive_play_strategy.choose
+  def play_result_from_chart
+    @offensive_play = offense.offensive_play_strategy.choose
+    @defensive_play = defense.defensive_play_strategy.choose
     result_chart = offense.play_result_chart
-    result_chart.play_results.find_by(offensive_play: offensive_play, defensive_play: defensive_play).result
+    result_chart.result(@offensive_play, @defensive_play)
   end
 
   def play(value)
