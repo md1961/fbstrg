@@ -9,6 +9,7 @@ class CreatePlays < ActiveRecord::Migration
       t.integer :fumble         , null: false, default: 0, limit: 1
       t.boolean :out_of_bounds  , null: false, default: false
       t.integer :penalty        , null: false, default: 0, limit: 1
+      t.string  :penalty_name
       t.integer :penalty_yardage, null: false, default: 0
 
       t.timestamps null: false

@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 20170125045614) do
     t.integer  "fumble",          limit: 1, default: 0,     null: false
     t.boolean  "out_of_bounds",             default: false, null: false
     t.integer  "penalty",         limit: 1, default: 0,     null: false
+    t.string   "penalty_name"
     t.integer  "penalty_yardage",           default: 0,     null: false
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
