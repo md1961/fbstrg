@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20170124225554) do
 
   create_table "teams", force: :cascade do |t|
     t.string   "name",                       null: false
+    t.integer  "play_result_chart_id"
     t.integer  "offensive_play_strategy_id"
     t.integer  "defensive_play_strategy_id"
     t.datetime "created_at",                 null: false
@@ -112,5 +113,6 @@ ActiveRecord::Schema.define(version: 20170124225554) do
 
   add_index "teams", ["defensive_play_strategy_id"], name: "index_teams_on_defensive_play_strategy_id"
   add_index "teams", ["offensive_play_strategy_id"], name: "index_teams_on_offensive_play_strategy_id"
+  add_index "teams", ["play_result_chart_id"], name: "index_teams_on_play_result_chart_id"
 
 end

@@ -82,22 +82,12 @@ PRO_STYLE_RESULTS = [
   %w(cmp+long cmp+long incmp cmp+35ob sck-15 incmp incmp incmp pen+30af int_opp-30),
   %w(cmp+35 cmp+30 incmp incmp incmp_or_pen-5 incmp cmp+35ob cmp+30ob incmp int_opp-25),
 ]
-chart = PlayResultChart.create!(name: 'Pro style')
+result_chart = PlayResultChart.create!(name: 'Pro style')
 defensive_plays = DefensivePlay.order(:name)
 PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
   row.zip(defensive_plays) do |result, defensive_play|
-    chart.play_results.create!(offensive_play: offensive_play, defensive_play: defensive_play, result: result)
+    result_chart.play_results.create!(offensive_play: offensive_play, defensive_play: defensive_play, result: result)
   end
-end
-
-strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
-OffensivePlay.order(:number).each do |offensive_play|
-  strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: 100)
-end
-
-strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
-DefensivePlay.order(:name).each do |defensive_play|
-  strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: 100)
 end
 
 PUNT_RESULTS = [
@@ -150,7 +140,17 @@ DefensivePlay.order(:name).each do |defensive_play|
   def_strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: 100)
 end
 
-home_team = Team.create!(name: 'H', offensive_play_strategy: off_strategy, defensive_play_strategy: def_strategy)
-visitors  = Team.create!(name: 'V', offensive_play_strategy: off_strategy, defensive_play_strategy: def_strategy)
+home_team = Team.create!(
+  name:                    'H',
+  play_result_chart:       result_chart,
+  offensive_play_strategy: off_strategy,
+  defensive_play_strategy: def_strategy,
+)
+visitors  = Team.create!(
+  name:                    'V',
+  play_result_chart:       result_chart,
+  offensive_play_strategy: off_strategy,
+  defensive_play_strategy: def_strategy,
+)
 
 Game.create!(home_team: home_team, visitors: visitors)
