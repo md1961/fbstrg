@@ -1,5 +1,5 @@
 class Play < ActiveRecord::Base
-  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4}
+  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4, punt: 5, kickoff: 6}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -29,6 +29,8 @@ class Play < ActiveRecord::Base
       yardage = -(yardage.to_i)
     when 'sck'
       play.result = :sacked
+    when 'punt', 'kickoff'
+      play.result = :"#{_result}"
     when 'fmb'
       play.fumble = :fumble_rec_by_opponent
     when 'pen'
@@ -52,6 +54,14 @@ class Play < ActiveRecord::Base
     play
   end
 
+  def self.kickoff
+    play = new
+    play.result = :kickoff
+    return_ends_at = 20 + rand(31) - 10
+    play.yardage = 50 - return_ends_at + (50 - 35)
+    play
+  end
+
   def out_of_bounds?
     out_of_bounds
   end
@@ -61,7 +71,7 @@ class Play < ActiveRecord::Base
   end
 
   def possession_changing?
-    intercepted? || fumble_rec_by_opponent?
+    kickoff? || intercepted? || fumble_rec_by_opponent?
   end
 
   private

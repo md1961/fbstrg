@@ -30,7 +30,7 @@
 
 <br>
 <%= form_tag @game, method: :patch do %>
-  <%= text_field_tag :play %>
+  <%= text_field_tag :play, @game.next_play %>
   <%= submit_tag :enter %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>

@@ -14,6 +14,7 @@ class CreateGames < ActiveRecord::Migration
       t.integer :ball_on         , default: 35     , null: false
       t.integer :down            , default:  1     , null: false
       t.integer :yard_to_go      , default: 10     , null: false
+      t.integer :next_play       , default:  0     , null: false
 
       t.timestamps null: false
     end

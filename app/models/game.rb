@@ -5,6 +5,8 @@ class Game < ActiveRecord::Base
   attr_reader :offensive_play, :defensive_play, :result
   attr_accessor :error_message
 
+  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
+
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
 
@@ -33,8 +35,11 @@ class Game < ActiveRecord::Base
   end
 
   def play(value=nil)
+    value = nil if Game.next_plays.keys.include?(value)
     self.error_message = nil
-    if value.blank?
+    if kickoff?
+      play = Play.kickoff
+    elsif value.blank?
       play = get_plays.first
     else
       begin
@@ -45,6 +50,7 @@ class Game < ActiveRecord::Base
       end
     end
 
+    self.next_play = :scrimmage
     if play.possession_changing?
       change_possesion(play.yardage)
     else
@@ -72,6 +78,7 @@ class Game < ActiveRecord::Base
       end
       firstdown
       self.ball_on = KICKOFF_YARDLINE
+      next_play = :kickoff
     end
 
     def touchback
