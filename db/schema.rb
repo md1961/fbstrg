@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 20170125045614) do
     t.integer  "penalty",         limit: 1, default: 0,     null: false
     t.string   "penalty_name"
     t.integer  "penalty_yardage",           default: 0,     null: false
+    t.boolean  "auto_firstdown",            default: false, null: false
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
   end

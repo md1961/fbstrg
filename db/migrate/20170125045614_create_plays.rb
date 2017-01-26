@@ -11,6 +11,7 @@ class CreatePlays < ActiveRecord::Migration
       t.integer :penalty        , null: false, default: 0, limit: 1
       t.string  :penalty_name
       t.integer :penalty_yardage, null: false, default: 0
+      t.boolean :auto_firstdown , null: false, default: false
 
       t.timestamps null: false
     end
