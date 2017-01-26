@@ -16,6 +16,17 @@
     <td><%= ball_on_display(@game.ball_on) %></td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td class="small"><%= @game.result %></td>
+  </tr>
+  <tr>
+    <td class="small"><%= @game.offensive_play %></td>
+  <tr>
+  </tr>
+    <td class="small"><%= @game.defensive_play %></td>
+  </tr>
+</table>
 
 <br>
 <%= form_tag @game, method: :patch do %>
