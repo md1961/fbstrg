@@ -27,6 +27,11 @@ class Game < ActiveRecord::Base
     result_chart.result(@offensive_play, @defensive_play)
   end
 
+  def get_plays
+    str_results = play_result_from_chart.split('_or_')
+    str_results.map { |str_result| Play.parse(str_result) }
+  end
+
   def play(value)
     self.error_message = nil
     m = value.match(RE_PLAY_VALUE)
