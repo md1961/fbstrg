@@ -3,7 +3,7 @@ class GamesController < ApplicationController
 
   def index
     if Game.count <= 1
-      Game.create! if Game.count == 0
+      Game.create!(home_team: Team.first, visitors: Team.second) if Game.count == 0
       redirect_to Game.first
     else
       @games = Game.all
