@@ -8,7 +8,6 @@ class Play < ActiveRecord::Base
   # TODO: Split into methods.
   def self.parse(str)
     m = str.match(RE_STR_RESULT)
-    # TODO: Define an exception.
     raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
     _result = m[1]
     yardage = m[2]
@@ -51,6 +50,10 @@ class Play < ActiveRecord::Base
 
     play.yardage = yardage.try(:end_with?, 'long') ? long_yardage : Integer(yardage || 0)
     play
+  end
+
+  def possession_changing?
+    intercepted? || fumble_rec_by_opponent?
   end
 
   private
