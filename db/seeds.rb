@@ -41,16 +41,16 @@ PUNTS = [
 
 DEFENSIVE_PLAYS = [
 #        L    LB   CB   SF   Run          Pass
-  ['A', '8', '-', '3', '-', 'Excellent', 'Terrible'],
-  ['B', '7', '-', '4', '-', 'Very Good', 'Very Poor'],
-  ['C', '6', '2 Blitz', '3', '-', 'Very Good Outside, Poor Up Middle', 'Good On Long, Very Poor On Short'],
-  ['D', '5', '3', '3', '-', 'Good', 'Bad'],
-  ['E', '4', '3', '4', '-', 'Faily Good', 'Fair'],
+  ['A', '8', '0', '3', '0', 'Excellent', 'Terrible'],
+  ['B', '7', '0', '4', '0', 'Very Good', 'Very Poor'],
+  ['C', '6', '2Blz', '3', '0', 'Very Good Outside, Poor Up Middle', 'Good On Long, Very Poor On Short'],
+  ['D', '5', '3', '3', '0', 'Good', 'Bad'],
+  ['E', '4', '3', '4', '0', 'Faily Good', 'Fair'],
   ['F', '4', '3', '3', '1', 'Fair', 'Fairly Good'],
   ['G', '4', '3', '2', '2', 'Bad', 'Good'],
-  ['H', '4', '3 Blitz', '2', '2', 'Good Outside, Very Poor Up Middle', 'Very Good On Long, Good On Short'],
-  ['I', '4', '-', '3', '4', 'Very Poor', 'Very Good'],
-  ['J', '3', '-', '3', '5', 'Terrible', 'Excellent'],
+  ['H', '4', '3Blz', '2', '2', 'Good Outside, Very Poor Up Middle', 'Very Good On Long, Good On Short'],
+  ['I', '4', '0', '3', '4', 'Very Poor', 'Very Good'],
+  ['J', '3', '0', '3', '5', 'Terrible', 'Excellent'],
 ]
 DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
 	Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
