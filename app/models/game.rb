@@ -34,19 +34,21 @@ class Game < ActiveRecord::Base
 
   def play(value=nil)
     self.error_message = nil
-    if value.present?
-      m = value.match(RE_PLAY_VALUE)
-      unless m
-        self.error_message = "Illegal play '#{value}'"
+    if value.blank?
+      play = get_plays.first
+    else
+      begin
+        play = Play.parse(value)
+      rescue Exceptions::IllegalResultStringError => e
+        self.error_message = e.message
         return
       end
     end
 
-    play = get_plays.first
     if play.possession_changing?
       change_possesion(play.yardage)
     else
-      yardage_play(play.yardage)
+      yardage_play(play)
     end
   end
 
@@ -76,14 +78,14 @@ class Game < ActiveRecord::Base
       self.ball_on = 100 - TOUCHBACK_YARDLINE
     end
 
-    def yardage_play(yard)
-      self.ball_on += yard
+    def yardage_play(play)
+      self.ball_on += play.yardage
       if ball_on >= 100
         touchdown
       else
-        self.yard_to_go -= yard
-        self.down += 1
-        if yard_to_go <= 0
+        self.yard_to_go -= play.yardage
+        self.down += 1 if play.no_penalty?
+        if yard_to_go <= 0 || play.auto_firstdown?
           firstdown
         elsif down > 4
           toggle_possesion
