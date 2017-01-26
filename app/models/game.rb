@@ -2,7 +2,7 @@ class Game < ActiveRecord::Base
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
 
-  attr_reader :offensive_play, :defensive_play
+  attr_reader :offensive_play, :defensive_play, :result
   attr_accessor :error_message
 
   KICKOFF_YARDLINE = 35
@@ -24,7 +24,7 @@ class Game < ActiveRecord::Base
     @offensive_play = offense.offensive_play_strategy.choose
     @defensive_play = defense.defensive_play_strategy.choose
     result_chart = offense.play_result_chart
-    result_chart.result(@offensive_play, @defensive_play)
+    @result = result_chart.result(@offensive_play, @defensive_play)
   end
 
   def get_plays
@@ -32,24 +32,21 @@ class Game < ActiveRecord::Base
     str_results.map { |str_result| Play.parse(str_result) }
   end
 
-  def play(value)
+  def play(value=nil)
     self.error_message = nil
-    m = value.match(RE_PLAY_VALUE)
-    unless m
-      self.error_message = "Illegal play '#{value}'"
-      return
+    if value.present?
+      m = value.match(RE_PLAY_VALUE)
+      unless m
+        self.error_message = "Illegal play '#{value}'"
+        return
+      end
     end
-    kind = m[:kind]
-    kind = 'r' if kind.blank?
-    yard = Integer(m[:yard])
 
-    case kind
-    when 'r'
-      yardage_play(yard)
-    when 'x'
-      change_possesion(yard)
+    play = get_plays.first
+    if play.possession_changing?
+      change_possesion(play.yardage)
     else
-      self.error_message = "Illegal kind '#{kind}'"
+      yardage_play(play.yardage)
     end
   end
 
