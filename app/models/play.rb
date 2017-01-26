@@ -52,6 +52,14 @@ class Play < ActiveRecord::Base
     play
   end
 
+  def out_of_bounds?
+    out_of_bounds
+  end
+
+  def auto_firstdown?
+    auto_firstdown
+  end
+
   def possession_changing?
     intercepted? || fumble_rec_by_opponent?
   end
