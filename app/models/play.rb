@@ -3,12 +3,13 @@ class Play < ActiveRecord::Base
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
-  # ["#", "#ob", "cmp#", "cmp#ob", "cmp+long", "fmb", "incmp", "int_opp#", "long", "pen#", "pen#af", "sck#", "sck#ob"]
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
+
+  # TODO: Split into methods.
   def self.parse(str)
     m = str.match(RE_STR_RESULT)
     # TODO: Define an exception.
-    raise StandardError, "Illegal string result '#{str}'" unless m
+    raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
     _result = m[1]
     yardage = m[2]
     remark  = m[3]
@@ -16,6 +17,8 @@ class Play < ActiveRecord::Base
     play = new
 
     case _result
+    when nil
+      ;
     when 'long'
       yardage = '+long'
     when 'cmp'
@@ -24,6 +27,7 @@ class Play < ActiveRecord::Base
       play.result = :incomplete
     when 'int_opp'
       play.result = :intercepted
+      yardage = -(yardage.to_i)
     when 'sck'
       play.result = :sacked
     when 'fmb'
@@ -34,6 +38,8 @@ class Play < ActiveRecord::Base
       else
         play.penalty = :def_penalty
       end
+    else
+      raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'"
     end
 
     case remark
