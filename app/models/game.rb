@@ -30,8 +30,12 @@ class Game < ActiveRecord::Base
   end
 
   def get_plays
-    str_results = play_result_from_chart.split('_or_')
-    str_results.map { |str_result| Play.parse(str_result) }
+    if down == 4
+      Array(offense.offensive_play_strategy.choose_on_4th_down(self))
+    else
+      str_results = play_result_from_chart.split('_or_')
+      str_results.map { |str_result| Play.parse(str_result) }
+    end
   end
 
   def play(value=nil)
