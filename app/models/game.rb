@@ -9,6 +9,7 @@ class Game < ActiveRecord::Base
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
+  KICKOFF_YARDLINE_AFTER_SAFETY = 20
 
   RE_PLAY_VALUE = /\A(?<kind>[a-z]*)(?<yard>-?[0-9]+)/
 
@@ -56,7 +57,9 @@ class Game < ActiveRecord::Base
     @result = play
 
     self.next_play = :scrimmage
-    if play.possession_changing?
+    if play.field_goal?
+      try_field_goal(play)
+    elsif play.possession_changing?
       change_possesion(play.yardage)
     else
       yardage_play(play)
@@ -65,24 +68,33 @@ class Game < ActiveRecord::Base
 
   private
 
-    def toggle_possesion
-      self.is_ball_to_home = !is_ball_to_home
-      self.ball_on = 100 - ball_on
-    end
-
     def firstdown
       self.down = 1
       self.yard_to_go = 10
     end
 
     def touchdown
-      if is_ball_to_home
-        self.score_home += 7
-      else
-        self.score_visitors += 7
-      end
+      # FIXME
+      score(7)
       firstdown
-      self.ball_on = KICKOFF_YARDLINE
+    end
+
+    def try_field_goal(play)
+      if play.yardage >= 100 - ball_on
+        score(3)
+      else
+        toggle_possesion
+        self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
+      end
+    end
+
+    def score(value, for_offense = true)
+      if (is_ball_to_home && for_offense) || (!is_ball_to_home && !for_offense)
+        self.score_home += score
+      else
+        self.score_visitors += score
+      end
+      self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
       self.next_play = :kickoff
     end
 
@@ -113,5 +125,10 @@ class Game < ActiveRecord::Base
       toggle_possesion
       firstdown
       self.time_left -= 10
+    end
+
+    def toggle_possesion
+      self.is_ball_to_home = !is_ball_to_home
+      self.ball_on = 100 - ball_on
     end
 end
