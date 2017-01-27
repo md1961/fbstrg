@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170125045614) do
+ActiveRecord::Schema.define(version: 20170127051617) do
 
   create_table "defensive_play_strategies", force: :cascade do |t|
     t.string   "name",       null: false
@@ -41,6 +41,25 @@ ActiveRecord::Schema.define(version: 20170125045614) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
+
+  create_table "game_snapshots", force: :cascade do |t|
+    t.integer  "game_id"
+    t.integer  "score_home",       null: false
+    t.integer  "score_visitors",   null: false
+    t.integer  "timeout_home",     null: false
+    t.integer  "timeout_visitors", null: false
+    t.integer  "quarter",          null: false
+    t.integer  "time_left",        null: false
+    t.boolean  "is_ball_to_home",  null: false
+    t.integer  "ball_on",          null: false
+    t.integer  "down",             null: false
+    t.integer  "yard_to_go",       null: false
+    t.integer  "next_play",        null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "game_snapshots", ["game_id"], name: "index_game_snapshots_on_game_id"
 
   create_table "games", force: :cascade do |t|
     t.integer  "home_team_id",                    null: false

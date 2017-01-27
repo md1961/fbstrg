@@ -1,6 +1,7 @@
 class Game < ActiveRecord::Base
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
+  has_many :game_snapshots
 
   attr_reader :offensive_play, :defensive_play, :result
   attr_accessor :error_message
