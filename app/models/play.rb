@@ -5,6 +5,15 @@ class Play < ActiveRecord::Base
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
+  def to_s
+    a = []
+    a << "#{result} #{yardage}y"
+    a << fumble unless no_fumble?
+    a << 'OB' if out_of_bounds
+    a << "PEN#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
+    a.join(' ')
+  end
+
   # TODO: Split into methods.
   def self.parse(str)
     m = str.match(RE_STR_RESULT)
