@@ -26,7 +26,7 @@ class Game < ActiveRecord::Base
     @offensive_play = offense.offensive_play_strategy.choose
     @defensive_play = defense.defensive_play_strategy.choose
     result_chart = offense.play_result_chart
-    @result = result_chart.result(@offensive_play, @defensive_play)
+    result_chart.result(@offensive_play, @defensive_play)
   end
 
   def get_plays
@@ -53,6 +53,7 @@ class Game < ActiveRecord::Base
         return
       end
     end
+    @result = play
 
     self.next_play = :scrimmage
     if play.possession_changing?
