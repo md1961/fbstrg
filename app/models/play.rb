@@ -1,5 +1,6 @@
 class Play < ActiveRecord::Base
-  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4, kick_and_return: 5, field_goal: 6}
+  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
+                 kick_and_return: 5, field_goal: 6, extra_point: 7}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -82,6 +83,12 @@ class Play < ActiveRecord::Base
     percentile = rand(1 .. 100)
     play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile) \
                                     : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile)
+    play
+  end
+
+  def self.extra_point
+    play = field_goal
+    play.result = :extra_point
     play
   end
 

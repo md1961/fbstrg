@@ -44,6 +44,8 @@ class Game < ActiveRecord::Base
     self.error_message = nil
     if kickoff?
       play = Play.kickoff
+    elsif extra_point?
+      play = Play.extra_point
     elsif value.blank?
       play = get_plays.first
     else
@@ -57,7 +59,7 @@ class Game < ActiveRecord::Base
     @result = play
 
     self.next_play = :scrimmage
-    if play.field_goal?
+    if play.field_goal? || play.extra_point?
       try_field_goal(play)
     elsif play.possession_changing?
       change_possesion(play.yardage)
@@ -74,32 +76,32 @@ class Game < ActiveRecord::Base
     end
 
     def touchdown
-      # FIXME
-      score(7)
+      score(6)
       firstdown
+      self.ball_on = 98
+      self.next_play = :extra_point
     end
 
     def try_field_goal(play)
       if play.yardage >= 100 - ball_on
-        score(3)
-      else
+        score(play.field_goal? ? 3 : 1)
+      elsif play.field_goal?
         toggle_possesion
         self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
+      else
+        self.ball_on = KICKOFF_YARDLINE
+        self.next_play = :kickoff
       end
     end
 
     def score(value, for_offense = true)
       if (is_ball_to_home && for_offense) || (!is_ball_to_home && !for_offense)
-        self.score_home += score
+        self.score_home += value
       else
-        self.score_visitors += score
+        self.score_visitors += value
       end
       self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
       self.next_play = :kickoff
-    end
-
-    def touchback
-      self.ball_on = 100 - TOUCHBACK_YARDLINE
     end
 
     def yardage_play(play)
@@ -125,6 +127,10 @@ class Game < ActiveRecord::Base
       toggle_possesion
       firstdown
       self.time_left -= 10
+    end
+
+    def touchback
+      self.ball_on = 100 - TOUCHBACK_YARDLINE
     end
 
     def toggle_possesion
