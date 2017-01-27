@@ -1,5 +1,5 @@
 class Play < ActiveRecord::Base
-  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4, punt: 5, kickoff: 6}
+  enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4, kick_and_return: 5, field_goal: 6}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -29,8 +29,6 @@ class Play < ActiveRecord::Base
       yardage = -(yardage.to_i)
     when 'sck'
       play.result = :sacked
-    when 'punt', 'kickoff'
-      play.result = :"#{_result}"
     when 'fmb'
       play.fumble = :fumble_rec_by_opponent
     when 'pen'
@@ -56,9 +54,25 @@ class Play < ActiveRecord::Base
 
   def self.kickoff
     play = new
-    play.result = :kickoff
+    play.result = :kick_and_return
     return_ends_at = 20 + rand(31) - 10
     play.yardage = 50 - return_ends_at + (50 - 35)
+    play
+  end
+
+  def self.punt
+    play = new
+    play.result = :kick_and_return
+    play.yardage = 30 + rand(21) - 10
+    play
+  end
+
+  def self.field_goal
+    play = new
+    play.result = :field_goal
+    percentile = rand(1 .. 100)
+    play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile) \
+                                    : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile)
     play
   end
 
@@ -71,7 +85,7 @@ class Play < ActiveRecord::Base
   end
 
   def possession_changing?
-    kickoff? || intercepted? || fumble_rec_by_opponent?
+    kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
   private
