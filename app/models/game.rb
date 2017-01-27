@@ -82,7 +82,7 @@ class Game < ActiveRecord::Base
       end
       firstdown
       self.ball_on = KICKOFF_YARDLINE
-      next_play = :kickoff
+      self.next_play = :kickoff
     end
 
     def touchback
