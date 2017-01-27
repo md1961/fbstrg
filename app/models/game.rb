@@ -94,6 +94,10 @@ class Game < ActiveRecord::Base
       end
     end
 
+    def safety
+      score(2, false)
+    end
+
     def score(value, for_offense = true)
       if (is_ball_to_home && for_offense) || (!is_ball_to_home && !for_offense)
         self.score_home += value
@@ -108,6 +112,8 @@ class Game < ActiveRecord::Base
       self.ball_on += play.yardage
       if ball_on >= 100
         touchdown
+      elsif ball_on <= 0
+        safety
       else
         self.yard_to_go -= play.yardage
         self.down += 1 if play.no_penalty?
