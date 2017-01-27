@@ -1,4 +1,4 @@
-<table>
+<table id="score_board">
   <tr>
     <td><%= @game.is_ball_to_home ? '<>' : '' %>
     <td>H</td>
@@ -16,15 +16,15 @@
     <td><%= ball_on_display(@game.ball_on) %></td>
   </tr>
 </table>
-<table>
+<table id="information_board">
   <tr>
-    <td class="small"><%= @game.result %></td>
+    <td><%= @game.result %></td>
   </tr>
   <tr>
-    <td class="small"><%= @game.offensive_play %></td>
+    <td><%= @game.offensive_play %></td>
   <tr>
   </tr>
-    <td class="small"><%= @game.defensive_play %></td>
+    <td><%= @game.defensive_play %></td>
   </tr>
 </table>
 
