@@ -12,9 +12,6 @@ class Game < ActiveRecord::Base
   TOUCHBACK_YARDLINE = 20
   KICKOFF_YARDLINE_AFTER_SAFETY = 20
 
-  # TODO: Remove.
-  RE_PLAY_VALUE = /\A(?<kind>[a-z]*)(?<yard>-?[0-9]+)/
-
   def offense
     is_ball_to_home ? home_team : visitors
   end
@@ -22,8 +19,6 @@ class Game < ActiveRecord::Base
   def defense
     is_ball_to_home ? visitors : home_team
   end
-
-  # TODO: Add score_offense() and score_defense().
 
   def play_result_from_chart
     @offensive_play = offense.offensive_play_strategy.choose
