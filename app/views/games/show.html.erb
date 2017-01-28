@@ -1,6 +1,6 @@
 <table id="score_board">
   <tr>
-    <td class="tight"><%= @game.is_ball_to_home ? '<>' : '' %>
+    <td class="tight"><%= @game.home_has_ball ? '<>' : '' %>
     <td>H</td>
     <td class="numeric"><%= @game.score_home %></td>
     <td><%= '.' * @game.timeout_home %></td>
@@ -8,7 +8,7 @@
     <td><%= down_and_yard_display(@game) %></td>
   </tr>
   <tr>
-    <td class="tight"><%= @game.is_ball_to_home ? '' : '<>' %>
+    <td class="tight"><%= @game.home_has_ball ? '' : '<>' %>
     <td>V</td>
     <td class="numeric"><%= @game.score_visitors %></td>
     <td><%= '.' * @game.timeout_visitors %></td>

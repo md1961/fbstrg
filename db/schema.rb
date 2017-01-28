@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.integer  "timeout_visitors", null: false
     t.integer  "quarter",          null: false
     t.integer  "time_left",        null: false
-    t.boolean  "is_ball_to_home",  null: false
+    t.boolean  "home_has_ball",    null: false
     t.integer  "ball_on",          null: false
     t.integer  "down",             null: false
     t.integer  "yard_to_go",       null: false
@@ -70,11 +70,12 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.integer  "timeout_visitors", default: 3,    null: false
     t.integer  "quarter",          default: 1,    null: false
     t.integer  "time_left",        default: 900,  null: false
-    t.boolean  "is_ball_to_home",  default: true, null: false
+    t.boolean  "home_has_ball",    default: true, null: false
     t.integer  "ball_on",          default: 35,   null: false
     t.integer  "down",             default: 1,    null: false
     t.integer  "yard_to_go",       default: 10,   null: false
     t.integer  "next_play",        default: 0,    null: false
+    t.boolean  "home_kicks_first", default: true, null: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
   end

@@ -17,11 +17,11 @@ class Game < ActiveRecord::Base
   end
 
   def offense
-    is_ball_to_home ? home_team : visitors
+    home_has_ball ? home_team : visitors
   end
 
   def defense
-    is_ball_to_home ? visitors : home_team
+    home_has_ball ? visitors : home_team
   end
 
   def choose_offensive_play
@@ -117,7 +117,7 @@ class Game < ActiveRecord::Base
     end
 
     def score(value, for_offense = true)
-      if (is_ball_to_home && for_offense) || (!is_ball_to_home && !for_offense)
+      if (home_has_ball && for_offense) || (!home_has_ball && !for_offense)
         self.score_home += value
       else
         self.score_visitors += value
@@ -161,7 +161,7 @@ class Game < ActiveRecord::Base
     end
 
     def toggle_possesion
-      self.is_ball_to_home = !is_ball_to_home
+      self.home_has_ball = !home_has_ball
       self.ball_on = 100 - ball_on
       firstdown
     end
