@@ -4,7 +4,7 @@ class OffensivePlay < ActiveRecord::Base
   # TODO: Define all by one statement.
 
   def self.kickoff
-    @punt ||= find_by(name: 'Kickoff')
+    @kickoff ||= find_by(name: 'Kickoff')
   end
 
   def self.punt
@@ -16,7 +16,7 @@ class OffensivePlay < ActiveRecord::Base
   end
 
   def self.extra_point
-    @field_goal ||= find_by(name: 'Extra Point')
+    @extra_point ||= find_by(name: 'Extra Point')
   end
 
   def kickoff?
