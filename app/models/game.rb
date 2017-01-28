@@ -84,11 +84,14 @@ class Game < ActiveRecord::Base
       firstdown
       self.ball_on = 98
       self.next_play = :extra_point
+      @result.scoring = 'TOUCHDOWN'
     end
 
     def try_field_goal(play)
+      result = 'NO GOOD'
       if play.yardage >= 100 - ball_on
         score(play.field_goal? ? 3 : 1)
+        result = 'GOOD'
       elsif play.field_goal?
         toggle_possesion
         self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
@@ -96,10 +99,12 @@ class Game < ActiveRecord::Base
         self.ball_on = KICKOFF_YARDLINE
         self.next_play = :kickoff
       end
+      @result.scoring = result
     end
 
     def safety
       score(2, false)
+      @result.scoring = 'SAFETY'
     end
 
     def score(value, for_offense = true)

@@ -4,6 +4,8 @@ class Play < ActiveRecord::Base
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
+  attr_accessor :scoring
+
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
   def to_s
@@ -12,6 +14,7 @@ class Play < ActiveRecord::Base
     a << fumble unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "PEN#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
+    a << scoring if scoring.present?
     a.join(' ')
   end
 
