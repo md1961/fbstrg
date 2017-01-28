@@ -8,16 +8,6 @@ class Play < ActiveRecord::Base
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
-  def to_s
-    a = []
-    a << "#{result} #{yardage}y"
-    a << fumble unless no_fumble?
-    a << 'OB' if out_of_bounds
-    a << "PEN#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
-    a << scoring if scoring.present?
-    a.join(' ')
-  end
-
   # TODO: Split into methods.
   def self.parse(str)
     m = str.match(RE_STR_RESULT)
@@ -45,6 +35,7 @@ class Play < ActiveRecord::Base
     when 'fmb'
       play.fumble = :fumble_rec_by_opponent
     when 'pen'
+      penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
         play.penalty = :off_penalty
       else
@@ -95,6 +86,10 @@ class Play < ActiveRecord::Base
     play
   end
 
+  def penalty?
+    !no_penalty?
+  end
+
   def out_of_bounds?
     out_of_bounds
   end
@@ -105,6 +100,16 @@ class Play < ActiveRecord::Base
 
   def possession_changing?
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
+  end
+
+  def to_s
+    a = []
+    a << "#{result} #{yardage}y"
+    a << fumble unless no_fumble?
+    a << 'OB' if out_of_bounds
+    a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
+    a << scoring if scoring.present?
+    a.join(' ')
   end
 
   private

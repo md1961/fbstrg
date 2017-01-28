@@ -126,6 +126,13 @@ class Game < ActiveRecord::Base
     end
 
     def yardage_play(play)
+      if play.penalty?
+        if ball_on + play.yardage >= 100
+          play.yardage = ((100 + ball_on) / 2).to_i - ball_on
+        elsif ball_on + play.yardage <= 0
+          play.yardage = (ball_on / 2).to_i - ball_on
+        end
+      end
       self.ball_on += play.yardage
       if ball_on >= 100
         touchdown
