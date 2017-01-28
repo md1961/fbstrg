@@ -18,3 +18,32 @@ td.numeric {
 table#information_board td {
   font-size: x-small;
 }
+
+body.real {
+
+  table#score_board {
+    color: yellow;
+    background-color: black;
+    font-size: xx-large;
+    font: arial;
+  }
+
+  table#score_board td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 20px;
+  }
+
+  table#score_board td.tight {
+    padding-right: 0px;
+  }
+
+  table#information_board {
+    color: white;
+    background-color: black;
+  }
+
+  table#information_board td {
+    font-size: large;
+  }
+}
