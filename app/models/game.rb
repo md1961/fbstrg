@@ -3,8 +3,8 @@ class Game < ActiveRecord::Base
   belongs_to :visitors , class_name: 'Team'
   has_many :game_snapshots
 
-  attr_reader :offensive_play, :defensive_play, :result
-  attr_accessor :error_message
+  attr_reader   :defensive_play, :result
+  attr_accessor :offensive_play, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
 
@@ -20,20 +20,23 @@ class Game < ActiveRecord::Base
     is_ball_to_home ? visitors : home_team
   end
 
+  def choose_offensive_play
+    @offensive_play = offense.offensive_play_strategy.choose(self)
+  end
+
   def play_result_from_chart
-    @offensive_play = offense.offensive_play_strategy.choose
     @defensive_play = defense.defensive_play_strategy.choose
     result_chart = offense.play_result_chart
     result_chart.result(@offensive_play, @defensive_play)
   end
 
   def get_plays
-    if down == 4
-      Array(offense.offensive_play_strategy.choose_on_4th_down(self))
-    else
-      str_results = play_result_from_chart.split('_or_')
-      str_results.map { |str_result| Play.parse(str_result) }
-    end
+    str_results = play_result_from_chart.split('_or_')
+    str_results.map { |str_result| Play.parse(str_result) }
+  end
+
+  def needs_choice?
+    !kickoff? && !extra_point?
   end
 
   def play(value=nil)
@@ -43,6 +46,10 @@ class Game < ActiveRecord::Base
       play = Play.kickoff
     elsif extra_point?
       play = Play.extra_point
+    elsif offensive_play.punt?
+      play = Play.punt
+    elsif offensive_play.field_goal?
+      play = Play.field_goal
     elsif value.blank?
       play = get_plays.first
     else
