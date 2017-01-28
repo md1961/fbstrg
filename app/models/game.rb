@@ -130,7 +130,6 @@ class Game < ActiveRecord::Base
           firstdown
         elsif down > 4
           toggle_possesion
-          firstdown
         end
       end
       advance_clock(40)
@@ -140,7 +139,6 @@ class Game < ActiveRecord::Base
       self.ball_on += yard
       touchback if ball_on >= 100
       toggle_possesion
-      firstdown
       advance_clock(10)
     end
 
@@ -151,6 +149,7 @@ class Game < ActiveRecord::Base
     def toggle_possesion
       self.is_ball_to_home = !is_ball_to_home
       self.ball_on = 100 - ball_on
+      firstdown
     end
 
     def advance_clock(sec)
