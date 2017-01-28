@@ -36,7 +36,8 @@ OFFENSIVE_PLAYS = [
   [104, 'Punt'],
   [105, 'Punt, Coffin-Corner'],
   [106, 'Field Goal'],
-  [107, 'Two-Point Conversion'],
+  [107, 'Extra Point'],
+  [108, 'Two-Point Conversion'],
 ]
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 	Hash[%w(number name).zip(values)]
