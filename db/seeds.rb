@@ -29,6 +29,14 @@ OFFENSIVE_PLAYS = [
   [18, 'Down & In Pass'],
   [19, 'Long Bomb'],
   [20, 'Stop & Go Pass'],
+
+  [101, 'Kickoff'],
+  [102, 'Squib Kickoff'],
+  [103, 'Onside Kickoff'],
+  [104, 'Punt'],
+  [105, 'Punt, Coffin-Corner'],
+  [106, 'Field Goal'],
+  [107, 'Two-Point Conversion'],
 ]
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 	Hash[%w(number name).zip(values)]
@@ -131,7 +139,7 @@ TIME_TABLE = [
 ]
 
 off_strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
-OffensivePlay.order(:number).each do |offensive_play|
+OffensivePlay.where('number < 100').order(:number).each do |offensive_play|
   off_strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: 100)
 end
 
