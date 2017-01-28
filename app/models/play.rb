@@ -35,7 +35,7 @@ class Play < ActiveRecord::Base
     when 'fmb'
       play.fumble = :fumble_rec_by_opponent
     when 'pen'
-      penalty_yardage = yardage.to_i
+      play.penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
         play.penalty = :off_penalty
       else
@@ -86,6 +86,10 @@ class Play < ActiveRecord::Base
     play
   end
 
+  def fumble?
+    !no_fumble?
+  end
+
   def penalty?
     !no_penalty?
   end
@@ -102,12 +106,29 @@ class Play < ActiveRecord::Base
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
+  def time_to_take
+    t = if extra_point?
+      0
+    elsif incomplete? || penalty? || fumble? || field_goal? || kick_and_return?
+      15
+    elsif intercepted?
+      30
+    elsif yardage >= 20
+      45
+    else
+      30
+    end
+    t -= 15 if out_of_bounds?
+    [t, 0].max
+  end
+
   def to_s
     a = []
     a << "#{result} #{yardage}y"
     a << fumble unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
+    a << "(#{time_to_take}sec}"
     a << scoring if scoring.present?
     a.join(' ')
   end

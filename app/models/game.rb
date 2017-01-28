@@ -78,6 +78,7 @@ class Game < ActiveRecord::Base
     else
       yardage_play(play)
     end
+    advance_clock(play.time_to_take)
   end
 
   private
@@ -147,14 +148,12 @@ class Game < ActiveRecord::Base
           toggle_possesion
         end
       end
-      advance_clock(40)
     end
 
     def change_possesion(yard)
       self.ball_on += yard
       touchback if ball_on >= 100
       toggle_possesion
-      advance_clock(10)
     end
 
     def touchback
