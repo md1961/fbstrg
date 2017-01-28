@@ -12,6 +12,10 @@ class Game < ActiveRecord::Base
   TOUCHBACK_YARDLINE = 20
   KICKOFF_YARDLINE_AFTER_SAFETY = 20
 
+  def goal_to_go?
+    100 - ball_on <= yard_to_go
+  end
+
   def offense
     is_ball_to_home ? home_team : visitors
   end

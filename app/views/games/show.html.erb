@@ -5,7 +5,7 @@
     <td class="numeric"><%= @game.score_home %></td>
     <td><%= '.' * @game.timeout_home %></td>
     <td><%= "#{@game.quarter}Q" %></td>
-    <td><%= "#{@game.down}&#{@game.yard_to_go}" %></td>
+    <td><%= down_and_yard_display(@game) %></td>
   </tr>
   <tr>
     <td><%= @game.is_ball_to_home ? '' : '<>' %>
