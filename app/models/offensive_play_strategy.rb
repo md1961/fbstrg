@@ -7,7 +7,16 @@ class OffensivePlayStrategy < ActiveRecord::Base
     if game.down == 4
       choose_on_4th_down(game)
     else
-      pick_from(offensive_play_strategy_choices).offensive_play
+      condition = \
+        if game.ball_on >= 100 - 10
+          'number <= 12'
+        elsif game.ball_on >= 100 - 20
+          'number <= 16'
+        else
+          ''
+        end
+      choices = offensive_play_strategy_choices.joins(:offensive_play).where(condition)
+      pick_from(choices).offensive_play
     end
   end
 
