@@ -14,12 +14,10 @@ class GamesController < ApplicationController
   end
 
   def update
-    if @game.needs_choice? && session[:offensive_play_id].blank?
+    if session[:offensive_play_id].blank?
       session[:offensive_play_id] = @game.choose_offensive_play.id
     else
-      if @game.needs_choice?
-        @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
-      end
+      @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
       session[:offensive_play_id] = nil
       @game.play(params[:play])
       @game.save! unless @game.error_message

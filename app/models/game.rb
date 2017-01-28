@@ -21,7 +21,14 @@ class Game < ActiveRecord::Base
   end
 
   def choose_offensive_play
-    @offensive_play = offense.offensive_play_strategy.choose(self)
+    @offensive_play = \
+      if kickoff?
+        OffensivePlay.kickoff
+      elsif extra_point?
+        OffensivePlay.extra_point
+      else
+        offense.offensive_play_strategy.choose(self)
+      end
   end
 
   def play_result_from_chart
@@ -35,16 +42,13 @@ class Game < ActiveRecord::Base
     str_results.map { |str_result| Play.parse(str_result) }
   end
 
-  def needs_choice?
-    !kickoff? && !extra_point?
-  end
-
   def play(value=nil)
     value = nil if Game.next_plays.keys.include?(value)
     self.error_message = nil
-    if kickoff?
+    # TODO: Shorten withou if ... elsif ...
+    if offensive_play.kickoff?
       play = Play.kickoff
-    elsif extra_point?
+    elsif offensive_play.extra_point?
       play = Play.extra_point
     elsif offensive_play.punt?
       play = Play.punt
