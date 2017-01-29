@@ -35,7 +35,11 @@ class OffensivePlay < ActiveRecord::Base
     name == 'Extra Point'
   end
 
+  def normal?
+    number < 100
+  end
+
   def to_s
-    name
+    normal? ? "#{number}. #{name}" : name
   end
 end
