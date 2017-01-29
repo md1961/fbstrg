@@ -32,6 +32,10 @@ class GamesController < ApplicationController
   private
 
     def set_game
-      @game = Game.find(params[:id])
+      begin
+        @game = Game.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        redirect_to games_path
+      end
     end
 end
