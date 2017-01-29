@@ -128,7 +128,7 @@ class Play < ActiveRecord::Base
     a << fumble unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
-    a << "(#{time_to_take}sec}"
+    a << "(#{time_to_take}sec)"
     a << scoring if scoring.present?
     a.join(' ')
   end
