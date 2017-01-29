@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20170127051617) do
 
   create_table "game_snapshots", force: :cascade do |t|
     t.integer  "game_id"
+    t.integer  "play_id"
     t.integer  "score_home",       null: false
     t.integer  "score_visitors",   null: false
     t.integer  "timeout_home",     null: false
@@ -55,11 +56,13 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.integer  "down",             null: false
     t.integer  "yard_to_go",       null: false
     t.integer  "next_play",        null: false
+    t.boolean  "home_kicks_first", null: false
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
 
   add_index "game_snapshots", ["game_id"], name: "index_game_snapshots_on_game_id"
+  add_index "game_snapshots", ["play_id"], name: "index_game_snapshots_on_play_id"
 
   create_table "games", force: :cascade do |t|
     t.integer  "home_team_id",                    null: false
@@ -126,6 +129,7 @@ ActiveRecord::Schema.define(version: 20170127051617) do
   create_table "plays", force: :cascade do |t|
     t.integer  "game_id"
     t.integer  "team_id"
+    t.integer  "number",                    default: 1,     null: false
     t.integer  "result",          limit: 1, default: 0,     null: false
     t.integer  "yardage",                   default: 0,     null: false
     t.integer  "fumble",          limit: 1, default: 0,     null: false

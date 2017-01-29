@@ -1,7 +1,8 @@
 class Game < ActiveRecord::Base
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
-  has_many :game_snapshots
+  has_many :plays         , dependent: :destroy
+  has_many :game_snapshots, dependent: :destroy
 
   attr_reader   :defensive_play, :result
   attr_accessor :offensive_play, :error_message
@@ -47,6 +48,8 @@ class Game < ActiveRecord::Base
   end
 
   def play(value=nil)
+    game_snapshot = GameSnapshot.take_snapshot_of(self)
+
     value = nil if Game.next_plays.keys.include?(value)
     self.error_message = nil
     # TODO: Shorten withou if ... elsif ...
@@ -79,6 +82,8 @@ class Game < ActiveRecord::Base
       yardage_play(play)
     end
     advance_clock(play.time_to_take)
+
+    play.record(self, game_snapshot)
   end
 
   private

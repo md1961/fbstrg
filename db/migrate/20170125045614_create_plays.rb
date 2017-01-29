@@ -4,6 +4,7 @@ class CreatePlays < ActiveRecord::Migration
     create_table :plays do |t|
       t.references :game, index: true, foreign_key: true
       t.references :team, index: true, foreign_key: true
+      t.integer :number         , null: false, default: 1
       t.integer :result         , null: false, default: 0, limit: 1
       t.integer :yardage        , null: false, default: 0
       t.integer :fumble         , null: false, default: 0, limit: 1

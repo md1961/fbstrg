@@ -1,4 +1,8 @@
 class Play < ActiveRecord::Base
+  belongs_to :game
+  belongs_to :team
+  has_one :game_snapshot
+
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kick_and_return: 5, field_goal: 6, extra_point: 7}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
@@ -120,6 +124,14 @@ class Play < ActiveRecord::Base
     end
     t -= 15 if out_of_bounds?
     [t, 0].max
+  end
+
+  def record(game, game_snapshot)
+    self.game = game
+    self.team = game_snapshot.offense
+    self.number = game.plays.maximum(:number).to_i + 1
+    self.game_snapshot = game_snapshot
+    save!
   end
 
   def to_s

@@ -14,4 +14,8 @@ class GameSnapshot < ActiveRecord::Base
     attrs['visitors_id' ] = game.visitors_id
     Game.new(attrs)
   end
+
+  def offense
+    home_has_ball ? game.home_team : game.visitors
+  end
 end
