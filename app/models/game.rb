@@ -136,6 +136,7 @@ class Game < ActiveRecord::Base
       end
       self.ball_on += play.yardage
       if ball_on >= 100
+        play.yardage -= ball_on - 100
         touchdown
       elsif ball_on <= 0
         safety
