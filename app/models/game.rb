@@ -74,6 +74,7 @@ class Game < ActiveRecord::Base
     @result = play
 
     self.next_play = :scrimmage
+    play.change_due_to(self)
     if play.field_goal? || play.extra_point?
       try_field_goal(play)
     elsif play.possession_changing?

@@ -126,6 +126,13 @@ class Play < ActiveRecord::Base
     [t, 0].max
   end
 
+  def change_due_to(game)
+    if intercepted? && game.ball_on + yardage >= 110
+      self.incomplete!
+      self.yardage = 0
+    end
+  end
+
   def record(game, game_snapshot)
     self.game = game
     self.team = game_snapshot.offense
