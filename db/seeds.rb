@@ -43,6 +43,23 @@ OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 	Hash[%w(number name).zip(values)]
 })
 
+OFFENSIVE_PLAY_STRATEGIES = [
+  ['Dumb Even', [100] * 20],
+  #                1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
+  ['Standard' , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+]
+
+offensive_plays = OffensivePlay.where('number < 100').order(:number)
+OFFENSIVE_PLAY_STRATEGIES.each do |name, weights|
+  off_strategy = OffensivePlayStrategy.create!(name: name)
+  unless weights.size == offensive_plays.size
+    raise StandardError, "Number of weights (#{weights.size} vs #{offensive_plays.size}) for offensive strategy '#{name}'"
+  end
+  offensive_plays.zip(weights) do |offensive_play, weight|
+    off_strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: weight)
+  end
+end
+
 PUNTS = [
   ['Punt 4th Down Only'],
   ['Punt Any Down'],
@@ -64,6 +81,23 @@ DEFENSIVE_PLAYS = [
 DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
 	Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
 })
+
+DEFENSIVE_PLAY_STRATEGIES = [
+  ['Dumb Even', [100] * 10],
+  #               A    B    C    D    E    F    G    H    I    J
+  ['Standard' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+]
+
+defensive_plays = DefensivePlay.order(:name)
+DEFENSIVE_PLAY_STRATEGIES.each do |name, weights|
+  def_strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
+  unless weights.size == defensive_plays.size
+    raise StandardError, "Number of weights (#{weights.size} vs #{defensive_plays.size}) for defensive strategy '#{name}'"
+  end
+  defensive_plays.zip(weights).each do |defensive_play, weight|
+    def_strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: weight)
+  end
+end
 
 PRO_STYLE_RESULTS = [
   %w(-2 -1 +10 +1 +1 +2 +3 +7 +9 +10),
@@ -139,27 +173,17 @@ TIME_TABLE = [
 	['timeout', -30],
 ]
 
-off_strategy = OffensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
-OffensivePlay.where('number < 100').order(:number).each do |offensive_play|
-  off_strategy.offensive_play_strategy_choices.create!(offensive_play: offensive_play, weight: 100)
-end
-
-def_strategy = DefensivePlayStrategy.create!(name: 'Dumb Evenly Distributed')
-DefensivePlay.order(:name).each do |defensive_play|
-  def_strategy.defensive_play_strategy_choices.create!(defensive_play: defensive_play, weight: 100)
-end
-
 home_team = Team.create!(
   name:                    'H',
   play_result_chart:       result_chart,
-  offensive_play_strategy: off_strategy,
-  defensive_play_strategy: def_strategy,
+  offensive_play_strategy: OffensivePlayStrategy.last,
+  defensive_play_strategy: DefensivePlayStrategy.last,
 )
 visitors  = Team.create!(
   name:                    'V',
   play_result_chart:       result_chart,
-  offensive_play_strategy: off_strategy,
-  defensive_play_strategy: def_strategy,
+  offensive_play_strategy: OffensivePlayStrategy.last,
+  defensive_play_strategy: DefensivePlayStrategy.last,
 )
 
 Game.create!(home_team: home_team, visitors: visitors)
