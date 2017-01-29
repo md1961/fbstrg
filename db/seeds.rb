@@ -33,20 +33,28 @@ OFFENSIVE_PLAYS = [
   [101, 'Kickoff'],
   [102, 'Squib Kickoff'],
   [103, 'Onside Kickoff'],
-  [104, 'Punt'],
-  [105, 'Punt, Coffin-Corner'],
-  [106, 'Field Goal'],
-  [107, 'Extra Point'],
-  [108, 'Two-Point Conversion'],
+  [201, 'Punt'],
+  [202, 'Punt, Coffin-Corner'],
+  [301, 'Field Goal'],
+  [401, 'Extra Point'],
+  [402, 'Two-Point Conversion'],
+  [501, 'Kneel Down'],
 ]
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 	Hash[%w(number name).zip(values)]
 })
 
 OFFENSIVE_PLAY_STRATEGIES = [
-  ['Dumb Even', [100] * 20],
-  #                1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-  ['Standard' , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+  ['Dumb Even'   , [100] * 20],
+  #                   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
+  ['Standard'    , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+  ['Aggresive'   , [ 20,  20,   0,  70, 100, 100, 100,  70, 100,  70,  70,  70, 100, 100, 100,  50, 100, 100, 100, 100]],
+  ['Ball Control', [100, 100, 100, 100,  70,  50,  70,  80,  10,  70,  70,  70,  70,  40,  40,   0,   5,   5,   5,   5]],
+  ['Protect'     , [100, 100, 100, 100, 100,  50,  50, 100,   0,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
+
+  ['Aim Short'   , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+  ['Aim Long'    , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+  ['Goal Line'   , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
 ]
 
 offensive_plays = OffensivePlay.where('number < 100').order(:number)
@@ -83,9 +91,14 @@ DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
 })
 
 DEFENSIVE_PLAY_STRATEGIES = [
-  ['Dumb Even', [100] * 10],
-  #               A    B    C    D    E    F    G    H    I    J
-  ['Standard' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Dumb Even' , [100] * 10],
+  #                A    B    C    D    E    F    G    H    I    J
+  ['Standard'  , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Prevent'   , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Aggresive' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Stop Short', [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Stop Long' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Goal Line' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
 ]
 
 defensive_plays = DefensivePlay.order(:name)
