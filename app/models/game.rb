@@ -170,7 +170,13 @@ class Game < ActiveRecord::Base
       self.time_left -= sec
       if time_left <= 0
         self.quarter += 1
-        end_of_game if quarter > 4 && score_home != score_visitors
+        if quarter > 4 && score_home != score_visitors
+          end_of_game
+        elsif quarter == 3
+          self.home_has_ball = !home_kicks_first
+          self.ball_on = KICKOFF_YARDLINE
+          self.next_play = :kickoff
+        end
         self.time_left = 15 * 60
       end
     end

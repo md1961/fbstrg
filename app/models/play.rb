@@ -124,7 +124,7 @@ class Play < ActiveRecord::Base
 
   def to_s
     a = []
-    a << "#{result} #{yardage}y"
+    a << "#{result} #{yardage} yard"
     a << fumble unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
