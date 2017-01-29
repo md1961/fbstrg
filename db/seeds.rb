@@ -51,10 +51,9 @@ OFFENSIVE_PLAY_STRATEGIES = [
   ['Aggresive'   , [ 20,  20,   0,  70, 100, 100, 100,  70, 100,  70,  70,  70, 100, 100, 100,  50, 100, 100, 100, 100]],
   ['Ball Control', [100, 100, 100, 100,  70,  50,  70,  80,  10,  70,  70,  70,  70,  40,  40,   0,   5,   5,   5,   5]],
   ['Protect'     , [100, 100, 100, 100, 100,  50,  50, 100,   0,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
-
-  ['Aim Short'   , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
-  ['Aim Long'    , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
-  ['Goal Line'   , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
+  ['Aim Short'   , [100, 100, 100, 100, 100, 100, 100, 100,  50,  50,  50,  50,  50,  50,  50,  10,  20,  20,  20,  20]],
+  ['Aim Long'    , [  0,   0,   0,  20,  50,  50,  60,  50,  50,  70,  70,  70, 100, 100, 100,  50,  80,  80,  80,  80]],
+  ['Goal Line'   , [100, 100, 100, 100, 100,  80,  80, 100,  50,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
 ]
 
 offensive_plays = OffensivePlay.where('number < 100').order(:number)
@@ -74,17 +73,17 @@ PUNTS = [
 ]
 
 DEFENSIVE_PLAYS = [
-#        L    LB   CB   SF   Run          Pass
-  ['A', '8', '0', '3', '0', 'Excellent', 'Terrible'],
-  ['B', '7', '0', '4', '0', 'Very Good', 'Very Poor'],
+#         L   LB      CB   SF   Run          Pass
+  ['A', '8', '0'   , '3', '0', 'Excellent' , 'Terrible'],
+  ['B', '7', '0'   , '4', '0', 'Very Good' , 'Very Poor'],
   ['C', '6', '2Blz', '3', '0', 'Very Good Outside, Poor Up Middle', 'Good On Long, Very Poor On Short'],
-  ['D', '5', '3', '3', '0', 'Good', 'Bad'],
-  ['E', '4', '3', '4', '0', 'Faily Good', 'Fair'],
-  ['F', '4', '3', '3', '1', 'Fair', 'Fairly Good'],
-  ['G', '4', '3', '2', '2', 'Bad', 'Good'],
+  ['D', '5', '3'   , '3', '0', 'Good'      , 'Bad'],
+  ['E', '4', '3'   , '4', '0', 'Faily Good', 'Fair'],
+  ['F', '4', '3'   , '3', '1', 'Fair'      , 'Fairly Good'],
+  ['G', '4', '3'   , '2', '2', 'Bad'       , 'Good'],
   ['H', '4', '3Blz', '2', '2', 'Good Outside, Very Poor Up Middle', 'Very Good On Long, Good On Short'],
-  ['I', '4', '0', '3', '4', 'Very Poor', 'Very Good'],
-  ['J', '3', '0', '3', '5', 'Terrible', 'Excellent'],
+  ['I', '4', '0'   , '3', '4', 'Very Poor' , 'Very Good'],
+  ['J', '3', '0'   , '3', '5', 'Terrible'  , 'Excellent'],
 ]
 DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
 	Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
@@ -92,13 +91,13 @@ DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
 
 DEFENSIVE_PLAY_STRATEGIES = [
   ['Dumb Even' , [100] * 10],
-  #                A    B    C    D    E    F    G    H    I    J
+  #                 A    B    C    D    E    F    G    H    I    J
   ['Standard'  , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
-  ['Prevent'   , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
-  ['Aggresive' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
-  ['Stop Short', [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
-  ['Stop Long' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
-  ['Goal Line' , [ 20,  40,  70, 100, 100, 100,  70, 100,  40,  20]],
+  ['Prevent'   , [  0,   0,  50,  70,  80, 100, 100, 100, 100,  80]],
+  ['Expect Run', [ 80, 100, 100, 100,  80,  70,  50,  50,  20,   0]],
+  ['Stop Short', [100, 100,  50,  80,  60,  50,  40,  10,   0,   0]],
+  ['Stop Long' , [  0,   0,  60,  30,  40,  50,  70,  80, 100,  80]],
+  ['Goal Line' , [100, 100,  50,  80,  60,  50,  40,  10,   0,   0]],
 ]
 
 defensive_plays = DefensivePlay.order(:name)
