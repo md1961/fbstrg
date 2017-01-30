@@ -4,6 +4,7 @@ class OffensivePlaySet < ActiveRecord::Base
   has_many :offensive_play_set_choices
 
   def choose(game)
+    # TODO: Move to somewhere else.
     condition = \
       if game.ball_on >= 100 - 10
         'number <= 12'
