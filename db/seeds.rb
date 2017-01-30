@@ -19,12 +19,12 @@ OFFENSIVE_PLAYS = [
   [10, 'Flair Pass'],
   [11, 'Sideline Pass'],
   [12, 'Look-In Pass'],
-	# Cannot call below at 1-10 yard line.
+  # Cannot call below at 1-10 yard line.
   [13, 'Screen Pass'],
   [14, 'Pop Pass'],
   [15, 'Button Hook Pass'],
   [16, 'Razzle Dazzle'],
-	# Cannot call below at 1-20 yard line.
+  # Cannot call below at 1-20 yard line.
   [17, 'Down & Out Pass'],
   [18, 'Down & In Pass'],
   [19, 'Long Bomb'],
@@ -41,7 +41,7 @@ OFFENSIVE_PLAYS = [
   [501, 'Kneel Down'],
 ]
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
-	Hash[%w(number name).zip(values)]
+  Hash[%w(number name).zip(values)]
 })
 
 OFFENSIVE_PLAY_SETS = [
@@ -86,7 +86,7 @@ DEFENSIVE_PLAYS = [
   ['J', '3', '0'   , '3', '5', 'Terrible'  , 'Excellent'],
 ]
 DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
-	Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
+  Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
 })
 
 DEFENSIVE_PLAY_SETS = [
@@ -173,16 +173,16 @@ FIELD_GOAL_TABLE = [
 ]
 
 TIME_TABLE = [
-	['20y or more', 45],
-	['less than 20y', 30],
-	['loss', 30],
-	['ob', -15],
-	['int', 30],
-	['incmp', 15],
-	['pen', 15],
-	['fmb', 15],
-	['kicking', 15],
-	['timeout', -30],
+  ['20y or more', 45],
+  ['less than 20y', 30],
+  ['loss', 30],
+  ['ob', -15],
+  ['int', 30],
+  ['incmp', 15],
+  ['pen', 15],
+  ['fmb', 15],
+  ['kicking', 15],
+  ['timeout', -30],
 ]
 
 home_team = Team.create!(
