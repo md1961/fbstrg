@@ -26,7 +26,7 @@ class Game < ActiveRecord::Base
   end
 
   def choose_offensive_play
-    @offensive_play = offense.choose_offensive_play(self)
+    @offensive_play = offense.offensive_play_set.choose(self)
   end
 
   def play_result_from_chart

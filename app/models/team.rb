@@ -10,14 +10,4 @@ class Team < ActiveRecord::Base
   def defensive_play_set
     @defensive_play_set ||= DefensivePlaySet.find_by(name: 'Standard')
   end
-
-  def choose_offensive_play(game)
-    if game.kickoff?
-      OffensivePlay.kickoff
-    elsif game.extra_point?
-      OffensivePlay.extra_point
-    else
-      offensive_play_set.choose(game)
-    end
-  end
 end

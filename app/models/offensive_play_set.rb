@@ -4,7 +4,11 @@ class OffensivePlaySet < ActiveRecord::Base
   has_many :offensive_play_set_choices
 
   def choose(game)
-    if game.down == 4
+    if game.kickoff?
+      OffensivePlay.kickoff
+    elsif game.extra_point?
+      OffensivePlay.extra_point
+    elsif game.down == 4
       choose_on_4th_down(game)
     else
       condition = \
