@@ -21,6 +21,10 @@ table#information_board td {
 
 table#play_by_play {
   font-size: xx-small;
+
+  td {
+    padding-left: 5px;
+  }
 }
 
 span.button {

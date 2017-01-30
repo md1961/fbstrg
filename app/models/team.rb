@@ -10,4 +10,8 @@ class Team < ActiveRecord::Base
   def defensive_play_set
     @defensive_play_set ||= DefensivePlaySet.find_by(name: 'Standard')
   end
+
+  def to_s
+    name
+  end
 end
