@@ -11,6 +11,7 @@ class GamesController < ApplicationController
   end
 
   def show
+    session[:body_class] = params[:real] ? 'real' : nil
   end
 
   def update
