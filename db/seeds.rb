@@ -185,17 +185,22 @@ TIME_TABLE = [
   ['timeout', -30],
 ]
 
+offensive_strategy = OffensiveStrategy.create!(name: 'Standard')
+defensive_strategy = DefensiveStrategy.create!(name: 'Standard')
+
 home_team = Team.create!(
-  name:                    'H',
-  play_result_chart:       result_chart,
-  #offensive_play_strategy: OffensivePlayStrategy.last,
-  #defensive_play_strategy: DefensivePlayStrategy.last,
+  name:               'Home Team',
+  abbr:               'H',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
 )
 visitors  = Team.create!(
-  name:                    'V',
-  play_result_chart:       result_chart,
-  #offensive_play_strategy: OffensivePlayStrategy.last,
-  #defensive_play_strategy: DefensivePlayStrategy.last,
+  name:               'Visitors',
+  abbr:               'V',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
 )
 
 Game.create!(home_team: home_team, visitors: visitors)

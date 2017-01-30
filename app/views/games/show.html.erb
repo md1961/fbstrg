@@ -1,7 +1,7 @@
 <table id="score_board">
   <tr>
     <td class="tight"><%= @game.home_has_ball ? '<>' : '' %>
-    <td>H</td>
+    <td><%= @game.home_team.abbr %></td>
     <td class="numeric"><%= @game.score_home %></td>
     <td><%= '.' * @game.timeout_home %></td>
     <td><%= "#{@game.quarter}Q" %></td>
@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <td class="tight"><%= @game.home_has_ball ? '' : '<>' %>
-    <td>V</td>
+    <td><%= @game.visitors.abbr %></td>
     <td class="numeric"><%= @game.score_visitors %></td>
     <td><%= '.' * @game.timeout_visitors %></td>
     <td><%= time_left_display(@game.time_left) %></td>

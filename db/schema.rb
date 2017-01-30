@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170127051617) do
+ActiveRecord::Schema.define(version: 20170130044721) do
 
   create_table "defensive_play_set_choices", force: :cascade do |t|
     t.integer  "defensive_play_set_id"
@@ -40,6 +40,12 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.string   "against_pass", null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+  end
+
+  create_table "defensive_strategies", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "game_snapshots", force: :cascade do |t|
@@ -107,6 +113,12 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "offensive_strategies", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "play_result_charts", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
@@ -146,12 +158,17 @@ ActiveRecord::Schema.define(version: 20170127051617) do
   add_index "plays", ["team_id"], name: "index_plays_on_team_id"
 
   create_table "teams", force: :cascade do |t|
-    t.string   "name",                 null: false
+    t.string   "name",                  null: false
+    t.string   "abbr",                  null: false
     t.integer  "play_result_chart_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.integer  "offensive_strategy_id"
+    t.integer  "defensive_strategy_id"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
   end
 
+  add_index "teams", ["defensive_strategy_id"], name: "index_teams_on_defensive_strategy_id"
+  add_index "teams", ["offensive_strategy_id"], name: "index_teams_on_offensive_strategy_id"
   add_index "teams", ["play_result_chart_id"], name: "index_teams_on_play_result_chart_id"
 
 end
