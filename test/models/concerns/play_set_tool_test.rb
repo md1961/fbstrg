@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class PlayStrategyToolTest < ActiveSupport::TestCase
-  include PlayStrategyTool
+class PlaySetToolTest < ActiveSupport::TestCase
+  include PlaySetTool
 
   test "#pick_from()" do
     weightables = 10.times.map { |id| Weightable.new(id, 100) }

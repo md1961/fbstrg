@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class OffensivePlayStrategyTest < ActiveSupport::TestCase
+class DefensivePlaySetTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
