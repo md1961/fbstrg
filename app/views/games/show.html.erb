@@ -36,3 +36,8 @@
   <%= submit_tag :enter %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>
+
+<br>
+<table id="play_by_play" hidden>
+  <%= render @game.plays %>
+</table>

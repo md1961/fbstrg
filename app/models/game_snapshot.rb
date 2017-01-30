@@ -1,10 +1,16 @@
 class GameSnapshot < ActiveRecord::Base
   belongs_to :game
 
+  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
+
   def self.take_snapshot_of(game)
     attrs = game.attributes
     %w(id home_team_id visitors_id).each { |attr_name| attrs.delete(attr_name) }
     game.game_snapshots.build(attrs)
+  end
+
+  def goal_to_go?
+    100 - ball_on <= yard_to_go
   end
 
   def build_game
