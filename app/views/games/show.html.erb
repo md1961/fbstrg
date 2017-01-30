@@ -38,6 +38,8 @@
 <% end -%>
 
 <br>
+<span id="toggle_plays_display" class="button">[+]</span>
+
 <table id="play_by_play" hidden>
-  <%= render @game.plays %>
+  <%= render @game.plays.order(number: :desc) %>
 </table>
