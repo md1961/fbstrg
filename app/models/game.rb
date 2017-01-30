@@ -26,14 +26,7 @@ class Game < ActiveRecord::Base
   end
 
   def choose_offensive_play
-    @offensive_play = \
-      if kickoff?
-        OffensivePlay.kickoff
-      elsif extra_point?
-        OffensivePlay.extra_point
-      else
-        offense.offensive_play_strategy.choose(self)
-      end
+    @offensive_play = offense.choose_offensive_play(self)
   end
 
   def play_result_from_chart
