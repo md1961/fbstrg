@@ -1,4 +1,4 @@
-module PlayStrategyTool
+module PlaySetTool
 
   def pick_from(weight_responders)
     total_weights = weight_responders.map(&:weight).sum

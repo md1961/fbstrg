@@ -1,7 +1,7 @@
-class OffensivePlayStrategy < ActiveRecord::Base
-  include PlayStrategyTool
+class OffensivePlaySet < ActiveRecord::Base
+  include PlaySetTool
 
-  has_many :offensive_play_strategy_choices
+  has_many :offensive_play_set_choices
 
   def choose(game)
     if game.down == 4
@@ -15,7 +15,7 @@ class OffensivePlayStrategy < ActiveRecord::Base
         else
           ''
         end
-      choices = offensive_play_strategy_choices.joins(:offensive_play).where(condition)
+      choices = offensive_play_set_choices.joins(:offensive_play).where(condition)
       pick_from(choices).offensive_play
     end
   end

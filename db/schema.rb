@@ -13,22 +13,22 @@
 
 ActiveRecord::Schema.define(version: 20170127051617) do
 
-  create_table "defensive_play_strategies", force: :cascade do |t|
+  create_table "defensive_play_set_choices", force: :cascade do |t|
+    t.integer  "defensive_play_set_id"
+    t.integer  "defensive_play_id"
+    t.integer  "weight"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "defensive_play_set_choices", ["defensive_play_id"], name: "def_choices_play"
+  add_index "defensive_play_set_choices", ["defensive_play_set_id"], name: "def_choices_set"
+
+  create_table "defensive_play_sets", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-  create_table "defensive_play_strategy_choices", force: :cascade do |t|
-    t.integer  "defensive_play_strategy_id"
-    t.integer  "defensive_play_id"
-    t.integer  "weight"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
-  add_index "defensive_play_strategy_choices", ["defensive_play_id"], name: "def_choices_play"
-  add_index "defensive_play_strategy_choices", ["defensive_play_strategy_id"], name: "def_choices_strategy"
 
   create_table "defensive_plays", force: :cascade do |t|
     t.string   "name",         null: false
@@ -83,22 +83,22 @@ ActiveRecord::Schema.define(version: 20170127051617) do
     t.datetime "updated_at",                      null: false
   end
 
-  create_table "offensive_play_strategies", force: :cascade do |t|
+  create_table "offensive_play_set_choices", force: :cascade do |t|
+    t.integer  "offensive_play_set_id"
+    t.integer  "offensive_play_id"
+    t.integer  "weight"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "offensive_play_set_choices", ["offensive_play_id"], name: "off_choices_play"
+  add_index "offensive_play_set_choices", ["offensive_play_set_id"], name: "off_choices_set"
+
+  create_table "offensive_play_sets", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-  create_table "offensive_play_strategy_choices", force: :cascade do |t|
-    t.integer  "offensive_play_strategy_id"
-    t.integer  "offensive_play_id"
-    t.integer  "weight"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
-  add_index "offensive_play_strategy_choices", ["offensive_play_id"], name: "off_choices_play"
-  add_index "offensive_play_strategy_choices", ["offensive_play_strategy_id"], name: "off_choices_strategy"
 
   create_table "offensive_plays", force: :cascade do |t|
     t.integer  "number",     null: false
@@ -146,16 +146,12 @@ ActiveRecord::Schema.define(version: 20170127051617) do
   add_index "plays", ["team_id"], name: "index_plays_on_team_id"
 
   create_table "teams", force: :cascade do |t|
-    t.string   "name",                       null: false
+    t.string   "name",                 null: false
     t.integer  "play_result_chart_id"
-    t.integer  "offensive_play_strategy_id"
-    t.integer  "defensive_play_strategy_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
-  add_index "teams", ["defensive_play_strategy_id"], name: "index_teams_on_defensive_play_strategy_id"
-  add_index "teams", ["offensive_play_strategy_id"], name: "index_teams_on_offensive_play_strategy_id"
   add_index "teams", ["play_result_chart_id"], name: "index_teams_on_play_result_chart_id"
 
 end

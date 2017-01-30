@@ -30,7 +30,7 @@ class Game < ActiveRecord::Base
   end
 
   def play_result_from_chart
-    @defensive_play = defense.defensive_play_strategy.choose
+    @defensive_play = defense.defensive_play_set.choose
     result_chart = offense.play_result_chart
     result_chart.result(@offensive_play, @defensive_play)
   end
