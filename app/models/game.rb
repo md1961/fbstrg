@@ -25,6 +25,14 @@ class Game < ActiveRecord::Base
     home_has_ball ? visitors : home_team
   end
 
+  def score_diff
+    (score_home - score_visitors) * (home_has_ball ? 1 : -1)
+  end
+
+  def final_FG_stands?
+    -3 <= score_diff && score_diff <= 0
+  end
+
   def choose_offensive_play
     @offensive_play = offense.offensive_strategy.choose_play(self)
   end
