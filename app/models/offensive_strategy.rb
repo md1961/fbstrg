@@ -1,14 +1,11 @@
 class OffensiveStrategy < ActiveRecord::Base
-
-  # TODO: Move to somewhere else to be used from DefensiveStrategy as well.
-  def running_out_of_time?(game)
-    score_diff = game.score_diff
-    score_diff < 0 && game.time_left / (score_diff.abs.to_f / 7) < 5 * 60
-  end
+  include StrategyTool
 
   def offensive_play_set(game)
-    if running_out_of_time?(game)
+    if offense_running_out_of_time?(game)
       OffensivePlaySet.aggresive
+    elsif defense_running_out_of_time?(game)
+      OffensivePlaySet.ball_control
     else
       OffensivePlaySet.standard
     end
