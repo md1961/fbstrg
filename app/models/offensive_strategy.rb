@@ -1,7 +1,17 @@
 class OffensiveStrategy < ActiveRecord::Base
 
-  def offensive_play_set
-    @offensive_play_set ||= OffensivePlaySet.find_by(name: 'Standard')
+  # TODO: Move to somewhere else to be used from DefensiveStrategy as well.
+  def running_out_of_time?(game)
+    score_diff = game.score_diff
+    score_diff < 0 && game.time_left / (score_diff.abs.to_f / 7) < 5 * 60
+  end
+
+  def offensive_play_set(game)
+    if running_out_of_time?(game)
+      OffensivePlaySet.aggresive
+    else
+      OffensivePlaySet.standard
+    end
   end
 
   def choose_play(game)
@@ -14,7 +24,8 @@ class OffensiveStrategy < ActiveRecord::Base
     elsif game.down == 4
       choose_on_4th_down(game)
     else
-      offensive_play_set.choose(game)
+      play_set = offensive_play_set(game)
+      play_set.choose(game)
     end
   end
 
