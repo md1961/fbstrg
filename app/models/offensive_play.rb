@@ -1,38 +1,23 @@
 class OffensivePlay < ActiveRecord::Base
   has_many :play_results
 
-  # TODO: Define all by one statement.
+  NAMES_FOR_AUTO_DEF = OffensivePlay.where('number > 100').pluck(:name)
 
-  def self.kickoff
-    @kickoff ||= find_by(name: 'Kickoff')
+  class << self
+    NAMES_FOR_AUTO_DEF.each do |name|
+      method_name = name.titleize.gsub(/\s+/, '').underscore
+      define_method method_name do
+        instance_variable_get(:"@#{method_name}") \
+          || instance_variable_set(:"@#{method_name}", find_by(name: name))
+      end
+    end
   end
 
-  def self.punt
-    @punt ||= find_by(name: 'Punt')
-  end
-
-  def self.field_goal
-    @field_goal ||= find_by(name: 'Field Goal')
-  end
-
-  def self.extra_point
-    @extra_point ||= find_by(name: 'Extra Point')
-  end
-
-  def kickoff?
-    name == 'Kickoff'
-  end
-
-  def punt?
-    name == 'Punt'
-  end
-
-  def field_goal?
-    name == 'Field Goal'
-  end
-
-  def extra_point?
-    name == 'Extra Point'
+  NAMES_FOR_AUTO_DEF.each do |name|
+    method_name = name.titleize.gsub(/\s+/, '').underscore
+    define_method "#{method_name}?" do
+      self.name == name
+    end
   end
 
   def normal?

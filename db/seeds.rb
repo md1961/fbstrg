@@ -30,14 +30,15 @@ OFFENSIVE_PLAYS = [
   [19, 'Long Bomb'],
   [20, 'Stop & Go Pass'],
 
+  # For the followings, use alphabets and spaces ONLY for a name to .gsub(/\s+/, '').underscore makes a variable name.
   [101, 'Kickoff'],
   [102, 'Squib Kickoff'],
   [103, 'Onside Kickoff'],
   [201, 'Punt'],
-  [202, 'Punt, Coffin-Corner'],
+  [202, 'Coffin Corner Punt'],
   [301, 'Field Goal'],
   [401, 'Extra Point'],
-  [402, 'Two-Point Conversion'],
+  [402, 'Two Point Conversion'],
   [501, 'Kneel Down'],
 ]
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
