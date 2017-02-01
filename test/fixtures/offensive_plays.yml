@@ -1,9 +1,62 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  number: 1
-  name: MyString
-
+  number:  1
+  name: 'Power Up Middle'
 two:
-  number: 1
-  name: MyString
+  number:  2
+  name: 'Power Off Tackle'
+three:
+  number:  3
+  name: 'Quarterback Keep'
+four:
+  number:  4
+  name: 'Slant'
+five:
+  number:  5
+  name: 'End Run'
+six:
+  number:  6
+  name: 'Reverse'
+seven:
+  number:  7
+  name: 'Draw'
+eight:
+  number:  8
+  name: 'Trap'
+nine:
+  number:  9
+  name: 'Run Pass Option'
+ten:
+  number: 10
+  name: 'Flair Pass'
+eleven:
+  number: 11
+  name: 'Sideline Pass'
+twelve:
+  number: 12
+  name: 'Look-In Pass'
+thirteen:
+  number: 13
+  name: 'Screen Pass'
+fourteen:
+  number: 14
+  name: 'Pop Pass'
+fifteen:
+  number: 15
+  name: 'Button Hook Pass'
+sixteen:
+  number: 16
+  name: 'Razzle Dazzle'
+seventeen:
+  number: 17
+  name: 'Down & Out Pass'
+eighteen:
+  number: 18
+  name: 'Down & In Pass'
+nineteen:
+  number: 19
+  name: 'Long Bomb'
+twenty:
+  number: 20
+  name: 'Stop & Go Pass'

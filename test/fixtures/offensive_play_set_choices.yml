@@ -1,7 +1,82 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  offensive_play_set_id: 
-
+  offensive_play_set: standard
+  offensive_play: one
+  weight: 100
 two:
-  offensive_play_set_id: 
+  offensive_play_set: standard
+  offensive_play: two
+  weight: 100
+three:
+  offensive_play_set: standard
+  offensive_play: three
+  weight: 100
+four:
+  offensive_play_set: standard
+  offensive_play: four
+  weight: 100
+five:
+  offensive_play_set: standard
+  offensive_play: five
+  weight: 100
+six:
+  offensive_play_set: standard
+  offensive_play: six
+  weight: 100
+seven:
+  offensive_play_set: standard
+  offensive_play: seven
+  weight: 100
+eight:
+  offensive_play_set: standard
+  offensive_play: eight
+  weight: 100
+nine:
+  offensive_play_set: standard
+  offensive_play: nine
+  weight: 100
+ten:
+  offensive_play_set: standard
+  offensive_play: ten
+  weight: 100
+eleven:
+  offensive_play_set: standard
+  offensive_play: eleven
+  weight: 100
+twelve:
+  offensive_play_set: standard
+  offensive_play: twelve
+  weight: 100
+thirteen:
+  offensive_play_set: standard
+  offensive_play: thirteen
+  weight: 100
+fourteen:
+  offensive_play_set: standard
+  offensive_play: fourteen
+  weight: 100
+fifteen:
+  offensive_play_set: standard
+  offensive_play: fifteen
+  weight: 100
+sixteen:
+  offensive_play_set: standard
+  offensive_play: sixteen
+  weight: 100
+seventeen:
+  offensive_play_set: standard
+  offensive_play: seventeen
+  weight: 100
+eighteen:
+  offensive_play_set: standard
+  offensive_play: eighteen
+  weight: 100
+nineteen:
+  offensive_play_set: standard
+  offensive_play: nineteen
+  weight: 100
+twenty:
+  offensive_play_set: standard
+  offensive_play: twenty
+  weight: 100
