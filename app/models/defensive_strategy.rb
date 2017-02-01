@@ -8,6 +8,10 @@ class DefensiveStrategy < ActiveRecord::Base
       DefensivePlaySet.expect_run
     elsif offense_running_out_of_time?(game)
       DefensivePlaySet.prevent
+    elsif need_long_yardage?(game)
+      DefensivePlaySet.stop_long
+    elsif need_very_short_yardage?(game)
+      DefensivePlaySet.stop_short
     else
       DefensivePlaySet.standard
     end
