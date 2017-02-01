@@ -4,7 +4,7 @@ class Game < ActiveRecord::Base
   has_many :plays         , dependent: :destroy
   has_many :game_snapshots, dependent: :destroy
 
-  attr_reader   :defensive_play, :result
+  attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set
   attr_accessor :offensive_play, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
@@ -34,7 +34,10 @@ class Game < ActiveRecord::Base
   end
 
   def choose_offensive_play
-    @offensive_play = offense.offensive_strategy.choose_play(self)
+    offensive_strategy = offense.offensive_strategy
+    @offensive_play = offensive_strategy.choose_play(self)
+    @offensive_play_set = offensive_strategy.play_set
+    @offensive_play
   end
 
   def play_result_from_chart

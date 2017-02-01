@@ -1,6 +1,8 @@
 class OffensiveStrategy < ActiveRecord::Base
   include StrategyTool
 
+  attr_reader :play_set
+
   def offensive_play_set(game)
     if offense_running_out_of_time?(game)
       OffensivePlaySet.aggresive
@@ -12,6 +14,7 @@ class OffensiveStrategy < ActiveRecord::Base
   end
 
   def choose_play(game)
+    @play_set = nil
     if game.kickoff?
       OffensivePlay.kickoff
     elsif game.extra_point?
@@ -21,8 +24,8 @@ class OffensiveStrategy < ActiveRecord::Base
     elsif game.down == 4
       choose_on_4th_down(game)
     else
-      play_set = offensive_play_set(game)
-      play_set.choose(game)
+      @play_set = offensive_play_set(game)
+      @play_set.choose(game)
     end
   end
 

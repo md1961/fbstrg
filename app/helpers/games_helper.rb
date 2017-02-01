@@ -25,4 +25,9 @@ module GamesHelper
       "Opp #{format('%2d', 100 - ball_on)}"
     end
   end
+
+  def offensive_play_display(game)
+    play_set = game.offensive_play_set
+    "#{game.offensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
+  end
 end
