@@ -1,6 +1,8 @@
 class DefensiveStrategy < ActiveRecord::Base
   include StrategyTool
 
+  attr_reader :play_set
+
   def defensive_play_set(game)
     if defense_running_out_of_time?(game)
       DefensivePlaySet.expect_run
@@ -12,7 +14,7 @@ class DefensiveStrategy < ActiveRecord::Base
   end
 
   def choose_play(game)
-    play_set = defensive_play_set(game)
-    play_set.choose
+    @play_set = defensive_play_set(game)
+    @play_set.choose
   end
 end

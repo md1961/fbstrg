@@ -30,4 +30,9 @@ module GamesHelper
     play_set = game.offensive_play_set
     "#{game.offensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end
+
+  def defensive_play_display(game)
+    play_set = game.defensive_play_set
+    "#{game.defensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
+  end
 end
