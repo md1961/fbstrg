@@ -15,11 +15,17 @@ class OffensivePlaySetTest < ActiveSupport::TestCase
     end
   end
 
-  test '#choose for play choice limitation' do
-    @game.ball_on = 79
+  test '#choose for full play choice' do
+    @game.ball_on = 1
     h_freq = count_freq(1000)
     assert_equal((1 .. 20).to_a, h_freq.keys.map(&:to_i).sort)
 
+    @game.ball_on = 79
+    h_freq = count_freq(1000)
+    assert_equal((1 .. 20).to_a, h_freq.keys.map(&:to_i).sort)
+  end
+
+  test '#choose for play choice limitation inside 20 yard' do
     @game.ball_on = 80
     h_freq = count_freq(1000)
     assert_equal((1 .. 16).to_a, h_freq.keys.map(&:to_i).sort)
@@ -27,7 +33,9 @@ class OffensivePlaySetTest < ActiveSupport::TestCase
     @game.ball_on = 89
     h_freq = count_freq(1000)
     assert_equal((1 .. 16).to_a, h_freq.keys.map(&:to_i).sort)
+  end
 
+  test '#choose for play choice limitation inside 10 yard' do
     @game.ball_on = 90
     h_freq = count_freq(1000)
     assert_equal((1 .. 12).to_a, h_freq.keys.map(&:to_i).sort)

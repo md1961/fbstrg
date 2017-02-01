@@ -13,17 +13,26 @@ class OffensivePlaySet < ActiveRecord::Base
     end
   end
 
-  def choose(game)
-    # TODO: Move to somewhere else.
-    condition = \
+  class BasicWeightCorrector
+    def correct(offensive_play_set_choices, game)
       if game.ball_on >= 100 - 10
-        'number <= 12'
+        offensive_play_set_choices.each do |choice|
+          next if choice.offensive_play.number <= 12
+          choice.weight = 0
+        end
       elsif game.ball_on >= 100 - 20
-        'number <= 16'
-      else
-        ''
+        offensive_play_set_choices.each do |choice|
+          next if choice.offensive_play.number <= 16
+          choice.weight = 0
+        end
       end
-    choices = offensive_play_set_choices.joins(:offensive_play).where(condition)
+      offensive_play_set_choices
+    end
+  end
+
+  def choose(game)
+    choices = BasicWeightCorrector.new.correct(offensive_play_set_choices, game)
+    reload
     pick_from(choices).offensive_play
   end
 
