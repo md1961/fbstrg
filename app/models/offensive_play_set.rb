@@ -26,4 +26,8 @@ class OffensivePlaySet < ActiveRecord::Base
     choices = offensive_play_set_choices.joins(:offensive_play).where(condition)
     pick_from(choices).offensive_play
   end
+
+  def to_s
+    name
+  end
 end

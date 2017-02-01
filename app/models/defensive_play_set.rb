@@ -16,4 +16,8 @@ class DefensivePlaySet < ActiveRecord::Base
   def choose
     pick_from(defensive_play_set_choices).defensive_play
   end
+
+  def to_s
+    name
+  end
 end
