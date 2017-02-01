@@ -9,6 +9,6 @@ module StrategyTool
   end
 
   def time_running_out?(game)
-    game.time_left / (game.score_diff.abs.to_f / 7) < 5 * 60
+    game.quarter >= 4 && game.time_left / (game.score_diff.abs.to_f / 7) < 5 * 60
   end
 end
