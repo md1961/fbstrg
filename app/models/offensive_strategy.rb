@@ -8,6 +8,8 @@ class OffensiveStrategy < ActiveRecord::Base
       OffensivePlaySet.aggresive
     elsif defense_running_out_of_time?(game)
       OffensivePlaySet.ball_control
+    elsif need_long_yardage?(game)
+      OffensivePlaySet.aim_long
     else
       OffensivePlaySet.standard
     end
