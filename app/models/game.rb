@@ -61,44 +61,47 @@ class Game < ActiveRecord::Base
     str_results.map { |str_result| Play.parse(str_result) }
   end
 
+  def get_play(value)
+    # TODO: Shorten withou if ... elsif ...
+    if offensive_play.kickoff?
+      Play.kickoff
+    elsif offensive_play.extra_point?
+      Play.extra_point
+    elsif offensive_play.punt?
+      Play.punt
+    elsif offensive_play.field_goal?
+      Play.field_goal
+    elsif value.blank?
+      get_plays.first
+    else
+      Play.parse(value)
+    end
+  end
+
   def play(value=nil)
     game_snapshot = GameSnapshot.take_snapshot_of(self)
 
     value = nil if Game.next_plays.keys.include?(value)
     self.error_message = nil
-    # TODO: Shorten withou if ... elsif ...
-    if offensive_play.kickoff?
-      play = Play.kickoff
-    elsif offensive_play.extra_point?
-      play = Play.extra_point
-    elsif offensive_play.punt?
-      play = Play.punt
-    elsif offensive_play.field_goal?
-      play = Play.field_goal
-    elsif value.blank?
-      play = get_plays.first
-    else
-      begin
-        play = Play.parse(value)
-      rescue Exceptions::IllegalResultStringError => e
-        self.error_message = e.message
-        return
-      end
+    begin
+      @result = get_play(value)
+    rescue Exceptions::IllegalResultStringError => e
+      self.error_message = e.message
+      return
     end
-    @result = play
 
     self.next_play = :scrimmage
-    play.change_due_to(self)
-    if play.field_goal? || play.extra_point?
-      try_field_goal(play)
-    elsif play.possession_changing?
-      change_possesion(play.yardage)
+    @result.change_due_to(self)
+    if @result.field_goal? || @result.extra_point?
+      try_field_goal(@result)
+    elsif @result.possession_changing?
+      change_possesion(@result.yardage)
     else
-      yardage_play(play)
+      yardage_play(@result)
     end
-    advance_clock(play.time_to_take)
+    advance_clock(@result.time_to_take)
 
-    play.record(self, game_snapshot)
+    @result.record(self, game_snapshot)
   end
 
   private
