@@ -12,6 +12,8 @@ class DefensiveStrategy < ActiveRecord::Base
       DefensivePlaySet.stop_long
     elsif need_very_short_yardage?(game)
       DefensivePlaySet.stop_short
+    elsif half_ending?(game)
+      DefensivePlaySet.prevent
     else
       DefensivePlaySet.standard
     end

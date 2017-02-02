@@ -12,6 +12,8 @@ class OffensiveStrategy < ActiveRecord::Base
       OffensivePlaySet.aim_long
     elsif need_very_short_yardage?(game)
       OffensivePlaySet.aim_short
+    elsif half_ending?(game)
+      OffensivePlaySet.hurry_up
     else
       OffensivePlaySet.standard
     end

@@ -3,6 +3,7 @@ module StrategyTool
   MINUTES_NEEDED_FOR_TOUCHDOWN = 5
   LONG_YARDAGE_PER_DOWN = 6
   VERY_SHORT_YARDAGE = 2
+  MINUTES_ENDING_HALF = 4
 
   def offense_running_out_of_time?(game)
     game.score_diff < 0 && time_running_out?(game)
@@ -15,6 +16,10 @@ module StrategyTool
   def time_running_out?(game)
     game.quarter >= 4 && \
       game.time_left / (game.score_diff.abs.to_f / 7) < MINUTES_NEEDED_FOR_TOUCHDOWN * 60
+  end
+
+  def half_ending?(game)
+    game.quarter == 2 && game.time_left <= MINUTES_ENDING_HALF * 60
   end
 
   def need_long_yardage?(game)
