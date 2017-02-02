@@ -4,7 +4,9 @@ class OffensiveStrategy < ActiveRecord::Base
   attr_reader :play_set
 
   def offensive_play_set(game)
-    if offense_running_out_of_time?(game)
+    if close_to_goal_line?(game)
+      OffensivePlaySet.goal_line
+    elsif offense_running_out_of_time?(game)
       OffensivePlaySet.aggresive
     elsif defense_running_out_of_time?(game)
       OffensivePlaySet.ball_control

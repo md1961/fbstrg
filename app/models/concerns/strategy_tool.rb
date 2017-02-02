@@ -26,6 +26,10 @@ module StrategyTool
     game.ball_on >= 80
   end
 
+  def close_to_goal_line?(game)
+    game.ball_on >= 97
+  end
+
   def need_long_yardage?(game)
     game.yard_to_go.to_f / (4 - game.down) >= LONG_YARDAGE_PER_DOWN
   end
