@@ -22,6 +22,10 @@ module StrategyTool
     game.quarter == 2 && game.time_left <= MINUTES_ENDING_HALF * 60
   end
 
+  def threatening_into_end_zone?(game)
+    game.ball_on >= 80
+  end
+
   def need_long_yardage?(game)
     game.yard_to_go.to_f / (4 - game.down) >= LONG_YARDAGE_PER_DOWN
   end
