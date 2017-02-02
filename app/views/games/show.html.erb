@@ -13,7 +13,7 @@
     <td class="numeric"><%= @game.score_visitors %></td>
     <td><%= '.' * @game.timeout_visitors %></td>
     <td><%= time_left_display(@game.time_left) %></td>
-    <td><%= ball_on_display(@game.ball_on) %></td>
+    <td><%= ball_on_display(@game) %></td>
   </tr>
 </table>
 
@@ -33,7 +33,7 @@
 <br>
 <%= form_tag @game, method: :patch do %>
   <%= text_field_tag :play, @game.next_play %>
-  <%= submit_tag :enter %>
+  <%= submit_tag :proceed %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>
 

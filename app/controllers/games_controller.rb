@@ -15,9 +15,16 @@ class GamesController < ApplicationController
   end
 
   def update
-    if session[:offensive_play_id].blank?
+    if @game.end_of_half? || @game.end_of_game?
+      if session[:next_quarter]
+        @game.to_3rd_quarter
+        @game.save!
+      else
+        session[:next_quarter] = true
+      end
+    elsif session[:offensive_play_id].blank?
       session[:offensive_play_id] = @game.choose_offensive_play.id
-    else
+    elsif
       @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
       session[:offensive_play_id] = nil
       @game.play(params[:play])

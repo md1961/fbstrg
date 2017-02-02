@@ -1,7 +1,7 @@
 class GameSnapshot < ActiveRecord::Base
   belongs_to :game
 
-  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
+  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2, end_of_half: 3, end_of_game: 4}
 
   def self.take_snapshot_of(game)
     attrs = game.attributes

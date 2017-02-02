@@ -1,7 +1,11 @@
 module GamesHelper
 
   def down_and_yard_display(game)
-    if game.kickoff?
+    if game.end_of_half?
+      'END OF HALF'
+    elsif game.end_of_game?
+      'END OF GAME'
+    elsif game.kickoff?
       'KICKOFF'
     elsif game.extra_point?
       'XP'
@@ -16,8 +20,11 @@ module GamesHelper
     format("%02d:%02d", m, time_left - m * 60)
   end
 
-  def ball_on_display(ball_on)
-    if ball_on == 50
+  def ball_on_display(game)
+    ball_on = game.ball_on
+    if game.end_of_half? || game.end_of_game?
+      nil
+    elsif ball_on == 50
       '--- 50'
     elsif ball_on < 50
       "Own #{format('%2d', ball_on)}"
