@@ -19,6 +19,7 @@ class GamesController < ApplicationController
       if session[:next_quarter]
         @game.to_3rd_quarter
         @game.save!
+        session[:next_quarter] = nil
       else
         session[:next_quarter] = true
       end
