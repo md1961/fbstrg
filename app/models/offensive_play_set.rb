@@ -3,6 +3,8 @@ class OffensivePlaySet < ActiveRecord::Base
 
   has_many :offensive_play_set_choices
 
+  attr_accessor :weight_correctors
+
   class << self
     OffensivePlaySet.pluck(:name).each do |name|
       method_name = name.titleize.gsub(/\s+/, '').underscore
@@ -11,6 +13,10 @@ class OffensivePlaySet < ActiveRecord::Base
           || instance_variable_set(:"@#{method_name}", find_by(name: name))
       end
     end
+  end
+
+  after_find do
+    @weight_correctors = [BasicWeightCorrector.new]
   end
 
   class BasicWeightCorrector
@@ -31,7 +37,9 @@ class OffensivePlaySet < ActiveRecord::Base
   end
 
   def choose(game)
-    choices = BasicWeightCorrector.new.correct(offensive_play_set_choices, game)
+    choices = @weight_correctors.inject(offensive_play_set_choices) do |choices, weight_corrector|
+      weight_corrector.correct(choices, game)
+    end
     reload
     pick_from(choices).offensive_play
   end
