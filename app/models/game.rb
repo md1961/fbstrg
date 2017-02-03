@@ -7,7 +7,7 @@ class Game < ActiveRecord::Base
   attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set
   attr_accessor :offensive_play, :error_message
 
-  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
+  enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
   enum status: {playing: 0, end_of_quarter: 1, end_of_half: 2, end_of_game: 3}
 
   KICKOFF_YARDLINE = 35
@@ -215,7 +215,9 @@ class Game < ActiveRecord::Base
       self.time_left -= sec
       if time_left <= 0
         self.time_left = 0
-        if quarter >= 4 && score_home != score_visitors
+        if (extra_point? || two_point_conversion?) && quarter <= 4
+          # Another play.
+        elsif quarter >= 4 && score_home != score_visitors
           self.status = :end_of_game
         elsif quarter == 2
           self.status = :end_of_half
