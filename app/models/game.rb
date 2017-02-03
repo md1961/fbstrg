@@ -158,7 +158,7 @@ class Game < ActiveRecord::Base
         self.score_visitors += value
       end
       self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
-      self.next_play = :kickoff
+      self.next_play = quarter > 4 ? :end_of_game : :kickoff
     end
 
     def yardage_play(play)

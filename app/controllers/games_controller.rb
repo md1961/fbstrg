@@ -17,7 +17,9 @@ class GamesController < ApplicationController
   def update
     if tampering_game?(params[:play])
       @game.tamper(params[:play])
-    elsif @game.end_of_half? || @game.end_of_game?
+    elsif @game.end_of_game?
+      # No action.
+    elsif @game.end_of_half?
       if session[:next_quarter]
         @game.to_3rd_quarter
         @game.save!
