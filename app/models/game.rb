@@ -8,7 +8,7 @@ class Game < ActiveRecord::Base
   attr_accessor :offensive_play, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
-  enum status: {playing: 0, end_of_quarter: 1, end_of_half: 2, end_of_game: 3}
+  enum status: {playing: 0, huddle: 1, end_of_quarter: 2, end_of_half: 3, end_of_game: 4}
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
@@ -38,6 +38,7 @@ class Game < ActiveRecord::Base
     offensive_strategy = offense.offensive_strategy
     @offensive_play = offensive_strategy.choose_play(self)
     @offensive_play_set = offensive_strategy.play_set
+    playing!
     @offensive_play
   end
 
@@ -88,6 +89,7 @@ class Game < ActiveRecord::Base
     end
 
     self.next_play = :scrimmage
+    self.status = :huddle
     @result.change_due_to(self)
     if @result.field_goal? || @result.extra_point?
       try_field_goal(@result)
