@@ -7,19 +7,12 @@ class Game < ActiveRecord::Base
   attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set
   attr_accessor :offensive_play, :error_message
 
-  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2, end_of_half: 3, end_of_game: 4}
+  enum next_play: {kickoff: 0, extra_point: 1, scrimmage: 2}
+  enum status: {playing: 0, end_of_quarter: 1, end_of_half: 2, end_of_game: 3}
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
   KICKOFF_YARDLINE_AFTER_SAFETY = 20
-
-  def to_3rd_quarter
-    self.quarter = 3
-    self.time_left = 15 * 60
-    self.home_has_ball = !home_kicks_first
-    self.ball_on = KICKOFF_YARDLINE
-    self.next_play = :kickoff
-  end
 
   def goal_to_go?
     100 - ball_on <= yard_to_go
@@ -48,35 +41,39 @@ class Game < ActiveRecord::Base
     @offensive_play
   end
 
-  def play_result_from_chart
-    defensive_strategy = defense.defensive_strategy
-    @defensive_play = defensive_strategy.choose_play(self)
-    @defensive_play_set = defensive_strategy.play_set
-    result_chart = offense.play_result_chart
-    result_chart.result(@offensive_play, @defensive_play)
-  end
+  private
 
-  def get_plays
-    str_results = play_result_from_chart.split('_or_')
-    str_results.map { |str_result| Play.parse(str_result) }
-  end
-
-  def get_play(value)
-    # TODO: Shorten withou if ... elsif ...
-    if offensive_play.kickoff?
-      Play.kickoff
-    elsif offensive_play.extra_point?
-      Play.extra_point
-    elsif offensive_play.punt?
-      Play.punt
-    elsif offensive_play.field_goal?
-      Play.field_goal
-    elsif value.blank?
-      get_plays.first
-    else
-      Play.parse(value)
+    def play_result_from_chart
+      defensive_strategy = defense.defensive_strategy
+      @defensive_play = defensive_strategy.choose_play(self)
+      @defensive_play_set = defensive_strategy.play_set
+      result_chart = offense.play_result_chart
+      result_chart.result(@offensive_play, @defensive_play)
     end
-  end
+
+    def get_plays
+      str_results = play_result_from_chart.split('_or_')
+      str_results.map { |str_result| Play.parse(str_result) }
+    end
+
+    def get_play(value)
+      # TODO: Shorten withou if ... elsif ...
+      if offensive_play.kickoff?
+        Play.kickoff
+      elsif offensive_play.extra_point?
+        Play.extra_point
+      elsif offensive_play.punt?
+        Play.punt
+      elsif offensive_play.field_goal?
+        Play.field_goal
+      elsif value.blank?
+        get_plays.first
+      else
+        Play.parse(value)
+      end
+    end
+
+  public
 
   def play(value=nil)
     game_snapshot = GameSnapshot.take_snapshot_of(self)
@@ -102,6 +99,17 @@ class Game < ActiveRecord::Base
     advance_clock(@result.time_to_take)
 
     @result.record(self, game_snapshot)
+  end
+
+  def advance_to_next_quarter
+    self.quarter += 1
+    self.time_left = 15 * 60
+    self.status = :playing
+    if quarter == 3
+      self.home_has_ball = !home_kicks_first
+      self.ball_on = KICKOFF_YARDLINE
+      self.next_play = :kickoff
+    end
   end
 
   def tamper(value)
@@ -158,7 +166,8 @@ class Game < ActiveRecord::Base
         self.score_visitors += value
       end
       self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
-      self.next_play = quarter > 4 ? :end_of_game : :kickoff
+      self.next_play = :kickoff
+      self.status = :end_of_game if quarter > 4
     end
 
     def yardage_play(play)
@@ -205,14 +214,13 @@ class Game < ActiveRecord::Base
     def advance_clock(sec)
       self.time_left -= sec
       if time_left <= 0
-        self.quarter += 1
-        self.time_left = 15 * 60
-        if quarter > 4 && score_home != score_visitors
-          self.next_play = :end_of_game
-        elsif quarter == 3
-          self.quarter = 2
-          self.time_left = 0
-          self.next_play = :end_of_half
+        self.time_left = 0
+        if quarter >= 4 && score_home != score_visitors
+          self.status = :end_of_game
+        elsif quarter == 2
+          self.status = :end_of_half
+        else
+          self.status = :end_of_quarter
         end
       end
     end

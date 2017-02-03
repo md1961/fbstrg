@@ -19,9 +19,9 @@ class GamesController < ApplicationController
       @game.tamper(params[:play])
     elsif @game.end_of_game?
       # No action.
-    elsif @game.end_of_half?
+    elsif @game.end_of_quarter? || @game.end_of_half?
       if session[:next_quarter]
-        @game.to_3rd_quarter
+        @game.advance_to_next_quarter
         @game.save!
         session[:next_quarter] = nil
       else

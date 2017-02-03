@@ -14,8 +14,9 @@ class CreateGameSnapshots < ActiveRecord::Migration
       t.integer :ball_on         , null: false
       t.integer :down            , null: false
       t.integer :yard_to_go      , null: false
-      t.integer :next_play       , null: false
       t.boolean :home_kicks_first, null: false
+      t.integer :next_play       , null: false
+      t.integer :status          , null: false
 
       t.timestamps null: false
     end
