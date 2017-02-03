@@ -29,7 +29,7 @@ class GamesController < ApplicationController
       end
     elsif session[:offensive_play_id].blank?
       session[:offensive_play_id] = @game.choose_offensive_play.id
-    elsif
+    else
       @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
       session[:offensive_play_id] = nil
       @game.play(params[:play])
