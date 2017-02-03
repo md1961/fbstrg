@@ -15,7 +15,9 @@ class GamesController < ApplicationController
   end
 
   def update
-    if @game.end_of_half? || @game.end_of_game?
+    if tampering_game?(params[:play])
+      @game.tamper(params[:play])
+    elsif @game.end_of_half? || @game.end_of_game?
       if session[:next_quarter]
         @game.to_3rd_quarter
         @game.save!
@@ -46,5 +48,11 @@ class GamesController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         redirect_to games_path
       end
+    end
+
+    RE_TAMPER_GAME = /\A\s*{\s*(:?\w+:\s+[+-]?\d+\s*,?\s*)+\s*}\s*\z/
+
+    def tampering_game?(value)
+      value =~ RE_TAMPER_GAME
     end
 end
