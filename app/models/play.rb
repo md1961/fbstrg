@@ -44,6 +44,7 @@ class Play < ActiveRecord::Base
         play.penalty = :off_penalty
       else
         play.penalty = :def_penalty
+        play.auto_firstdown = true if play.penalty_yardage >= 15
       end
     else
       raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'"
