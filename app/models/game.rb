@@ -38,7 +38,8 @@ class Game < ActiveRecord::Base
     offensive_strategy = offense.offensive_strategy
     @offensive_play = offensive_strategy.choose_play(self)
     @offensive_play_set = offensive_strategy.play_set
-    playing!
+    self.status = :playing
+    save!
     @offensive_play
   end
 
@@ -106,7 +107,7 @@ class Game < ActiveRecord::Base
   def advance_to_next_quarter
     self.quarter += 1
     self.time_left = 15 * 60
-    self.status = :playing
+    self.status = :huddle
     if quarter == 3
       self.home_has_ball = !home_kicks_first
       self.ball_on = KICKOFF_YARDLINE
