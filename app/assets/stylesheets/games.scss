@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
-  font-family: sans-serif;
+  font-family: "arial",sans-serif;
   font-size: small;
 }
 
@@ -37,8 +37,8 @@ body.real {
   table#score_board {
     color: yellow;
     background-color: black;
-    font-size: xx-large;
     font: arial;
+    font-size: xx-large;
   }
 
   table#score_board td {
