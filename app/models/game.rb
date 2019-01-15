@@ -42,8 +42,11 @@ class Game < ActiveRecord::Base
     -3 <= score_diff && score_diff <= 0
   end
 
-  def choose_offensive_play(play = nil)
-    if play
+  def determine_offensive_play(play_input)
+    if offense_human?
+      play = OffensivePlay.find_by(number: play_input.to_i)
+      play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
+      @game.error_message = "Illegal offensive play '#{play_input}'" unless play
       @offensive_play = play
       @offensive_play_set = nil
     else
@@ -51,7 +54,7 @@ class Game < ActiveRecord::Base
       @offensive_play = offensive_strategy.choose_play(self)
       @offensive_play_set = offensive_strategy.play_set
     end
-    self.status = :playing
+    self.status = :playing if @offensive_play
     save!
     @offensive_play
   end
