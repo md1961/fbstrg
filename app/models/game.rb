@@ -26,6 +26,14 @@ class Game < ActiveRecord::Base
     home_has_ball ? visitors : home_team
   end
 
+  # TODO: Implement properly offense_human?() and defense_human?()
+  def offense_human?
+    true
+  end
+  def defense_human?
+    !offense_human?
+  end
+
   def score_diff
     (score_home - score_visitors) * (home_has_ball ? 1 : -1)
   end
@@ -34,10 +42,15 @@ class Game < ActiveRecord::Base
     -3 <= score_diff && score_diff <= 0
   end
 
-  def choose_offensive_play
-    offensive_strategy = offense.offensive_strategy
-    @offensive_play = offensive_strategy.choose_play(self)
-    @offensive_play_set = offensive_strategy.play_set
+  def choose_offensive_play(play = nil)
+    if play
+      @offensive_play = play
+      @offensive_play_set = nil
+    else
+      offensive_strategy = offense.offensive_strategy
+      @offensive_play = offensive_strategy.choose_play(self)
+      @offensive_play_set = offensive_strategy.play_set
+    end
     self.status = :playing
     save!
     @offensive_play

@@ -30,7 +30,16 @@ class GamesController < ApplicationController
         session[:next_quarter] = true
       end
     elsif @game.huddle?
-      session[:offensive_play_id] = @game.choose_offensive_play.id
+      if @game.offense_human?
+        play = OffensivePlay.find_by(number: params[:play].to_i)
+        if play
+          session[:offensive_play_id] = @game.choose_offensive_play(play).id
+        else
+          @game.error_message = "Illegal offensive play '#{params[:play]}'"
+        end
+      else
+        session[:offensive_play_id] = @game.choose_offensive_play.id
+      end
     else
       @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
       session[:offensive_play_id] = nil
