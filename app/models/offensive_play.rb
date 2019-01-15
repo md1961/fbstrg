@@ -24,6 +24,14 @@ class OffensivePlay < ActiveRecord::Base
     number < 100
   end
 
+  def kickoff?
+    name.ends_with?('Kickoff')
+  end
+
+  def punt?
+    name.ends_with?('Punt')
+  end
+
   def to_s
     normal? ? "#{number}. #{name}" : name
   end

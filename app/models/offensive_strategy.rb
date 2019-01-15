@@ -24,7 +24,7 @@ class OffensiveStrategy < ActiveRecord::Base
   def choose_play(game)
     @play_set = nil
     if game.kickoff?
-      OffensivePlay.kickoff
+      OffensivePlay.normal_kickoff
     elsif game.extra_point?
       OffensivePlay.extra_point
     elsif kick_FG_now?(game)
@@ -42,12 +42,12 @@ class OffensiveStrategy < ActiveRecord::Base
     def choose_on_4th_down(game)
       ball_on = game.ball_on
       if ball_on <= 100 - 40
-        OffensivePlay.punt
+        OffensivePlay.normal_punt
       elsif ball_on > 100 - 33
         OffensivePlay.field_goal
       else
         pct_for_FG = MathUtil.linear_interporation([40, 0], [33, 100], 100 - ball_on)
-        rand(1 .. 100) > pct_for_FG ? OffensivePlay.punt : OffensivePlay.field_goal
+        rand(1 .. 100) > pct_for_FG ? OffensivePlay.normal_punt : OffensivePlay.field_goal
       end
     end
 

@@ -31,10 +31,10 @@ OFFENSIVE_PLAYS = [
   [20, 'Stop & Go Pass'],
 
   # For the followings, use alphabets and spaces ONLY for a name to .gsub(/\s+/, '').underscore makes a variable name.
-  [101, 'Kickoff'],
+  [101, 'Normal Kickoff'],
   [102, 'Squib Kickoff'],
   [103, 'Onside Kickoff'],
-  [201, 'Punt'],
+  [201, 'Normal Punt'],
   [202, 'Coffin Corner Punt'],
   [301, 'Field Goal'],
   [401, 'Extra Point'],
