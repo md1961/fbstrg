@@ -18,9 +18,9 @@
 </table>
 
 <br>
-<table id="information_board">
+<table id="information_board" data-announcements='[["D", 500], ["E", 2000], ["F<br>G", 4000]]'>
   <tr>
-    <td><%= @game.result %></td>
+    <td id="debug"><%= @game.result %></td>
   </tr>
   <tr>
     <td><%= offensive_play_display(@game) %></td>
