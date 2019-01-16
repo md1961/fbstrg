@@ -28,7 +28,7 @@ class Game < ActiveRecord::Base
 
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
-    true
+    !home_has_ball
   end
   def defense_human?
     !offense_human?
@@ -40,6 +40,12 @@ class Game < ActiveRecord::Base
 
   def final_FG_stands?
     -3 <= score_diff && score_diff <= 0
+  end
+
+  def prompt
+    return 'choose offense' if huddle? && offense_human?
+    return 'choose defense' if playing? && defense_human?
+    next_play
   end
 
   def determine_offensive_play(play_input)
@@ -61,16 +67,21 @@ class Game < ActiveRecord::Base
 
   private
 
-    def play_result_from_chart
-      defensive_strategy = defense.defensive_strategy
-      @defensive_play = defensive_strategy.choose_play(self)
-      @defensive_play_set = defensive_strategy.play_set
+    def play_result_from_chart(defensive_play = nil)
+      if defensive_play
+        @defensive_play = defensive_play
+        @defensive_play_set = nil
+      else
+        defensive_strategy = defense.defensive_strategy
+        @defensive_play = defensive_strategy.choose_play(self)
+        @defensive_play_set = defensive_strategy.play_set
+      end
       result_chart = offense.play_result_chart
       result_chart.result(@offensive_play, @defensive_play)
     end
 
-    def get_plays
-      str_results = play_result_from_chart.split('_or_')
+    def get_plays(defensive_play = nil)
+      str_results = play_result_from_chart(defensive_play).split('_or_')
       str_results.map { |str_result| Play.parse(str_result) }
     end
 
@@ -87,7 +98,14 @@ class Game < ActiveRecord::Base
       elsif value.blank?
         get_plays.first
       else
-        Play.parse(value)
+        defensive_play = DefensivePlay.find_by(name: value.upcase)
+        if defensive_play
+          get_plays(defensive_play).first
+        else
+          raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
+        end
+
+        #Play.parse(value)
       end
     end
 

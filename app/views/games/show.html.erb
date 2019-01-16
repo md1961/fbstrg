@@ -32,7 +32,7 @@
 
 <br>
 <%= form_tag @game, method: :patch do %>
-  <%= text_field_tag :play, @game.next_play, autofocus: true, onfocus: "this.select();" %>
+  <%= text_field_tag :play, @game.prompt, autofocus: true, onfocus: "this.select();" %>
   <%= submit_tag :proceed %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>

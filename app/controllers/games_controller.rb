@@ -33,9 +33,11 @@ class GamesController < ApplicationController
       session[:offensive_play_id] = @game.determine_offensive_play(params[:play])&.id
     else
       @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
-      session[:offensive_play_id] = nil
       @game.play(params[:play])
-      @game.save! unless @game.error_message
+      if @game.error_message.blank?
+        session[:offensive_play_id] = nil
+        @game.save!
+      end
     end
     render :show
   end
