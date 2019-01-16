@@ -144,6 +144,7 @@ class Game < ActiveRecord::Base
     end
     advance_clock(@result.time_to_take)
 
+    game_snapshot.update_scores
     @result.record(self, game_snapshot)
   end
 

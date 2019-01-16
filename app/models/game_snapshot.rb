@@ -25,4 +25,10 @@ class GameSnapshot < ActiveRecord::Base
   def offense
     home_has_ball ? game.home_team : game.visitors
   end
+
+  def update_scores
+    self.score_home     = game.score_home
+    self.score_visitors = game.score_visitors
+    save!
+  end
 end
