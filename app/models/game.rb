@@ -58,6 +58,7 @@ class Game < ActiveRecord::Base
 
   def determine_offensive_play(play_input)
     if offense_human?
+      play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
       play = OffensivePlay.find_by(number: play_input.to_i)
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       @game.error_message = "Illegal offensive play '#{play_input}'" unless play
