@@ -15,6 +15,10 @@ td.numeric {
   text-align: right;
 }
 
+tr.border_bottom td {
+  border-bottom: solid 1px black;
+}
+
 table#information_board td {
   font-size: x-small;
 }

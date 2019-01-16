@@ -38,6 +38,18 @@
 <% end -%>
 
 <br>
+<% if @game.choose_offense? -%>
+  <table>
+    <% OffensivePlay.all.each do |offensive_play| -%>
+      <tr class="<%= offensive_play.number % 4 == 0 ? 'border_bottom' : '' %>">
+        <td class="numeric"><%= offensive_play.number %></td>
+        <td style="padding-left: 10px"><%= offensive_play.name %></td>
+      </tr>
+    <% end -%>
+  </table>
+<% end -%>
+
+<br>
 <span id="toggle_plays_display" class="button">[+]</span>
 
 <table id="play_by_play" hidden>

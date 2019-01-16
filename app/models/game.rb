@@ -34,18 +34,26 @@ class Game < ActiveRecord::Base
     !offense_human?
   end
 
+  def choose_offense?
+    huddle? && offense_human?
+  end
+
+  def choose_defense?
+    playing? && defense_human?
+  end
+
+  def prompt
+    return 'choose offense' if choose_offense?
+    return 'choose defense' if choose_defense?
+    next_play
+  end
+
   def score_diff
     (score_home - score_visitors) * (home_has_ball ? 1 : -1)
   end
 
   def final_FG_stands?
     -3 <= score_diff && score_diff <= 0
-  end
-
-  def prompt
-    return 'choose offense' if huddle? && offense_human?
-    return 'choose defense' if playing? && defense_human?
-    next_play
   end
 
   def determine_offensive_play(play_input)
