@@ -15,8 +15,17 @@ td.numeric {
   text-align: right;
 }
 
+td.centered {
+  text-align: center;
+}
+
 tr.border_bottom td {
   border-bottom: solid 1px black;
+}
+
+table.plays_to_choose td {
+  text-align: center;
+  padding: 1px 8px;
 }
 
 table#information_board td {
