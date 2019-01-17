@@ -13,7 +13,6 @@ class GamesController < ApplicationController
   def show
     offensive_play_id = session[:offensive_play_id]
     @game.offensive_play = OffensivePlay.find(offensive_play_id) if offensive_play_id
-    session[:body_class] = params[:real] ? 'real' : nil
   end
 
   def update

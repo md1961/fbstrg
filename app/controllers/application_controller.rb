@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
   protected
 
     def configure
+      if params[:real].present?
+        session[:body_class] = params[:real] == 'true' ? 'real' : nil
+      end
       @body_class = session[:body_class]
     end
 end
