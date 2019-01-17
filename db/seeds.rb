@@ -11,24 +11,24 @@ OFFENSIVE_PLAYS = [
   [ 2, 'Power Off Tackle'],
   [ 3, 'Quarterback Keep'],
   [ 4, 'Slant'],
-  [ 5, 'End Run'],
+  [ 5, 'Sweep'],
   [ 6, 'Reverse'],
   [ 7, 'Draw'],
   [ 8, 'Trap'],
-  [ 9, 'Run Pass Option'],
-  [10, 'Flair Pass'],
-  [11, 'Sideline Pass'],
-  [12, 'Look-In Pass'],
+  [ 9, 'Run Pass Option' , 10, 20],
+  [10, 'Flair Pass'      ,  0, 10],
+  [11, 'Sideline Pass'   ,  5, 15],
+  [12, 'Look-In Pass'    ,  5, 10],
   # Cannot call below at 1-10 yard line.
-  [13, 'Screen Pass'],
-  [14, 'Pop Pass'],
-  [15, 'Button Hook Pass'],
-  [16, 'Razzle Dazzle'],
+  [13, 'Screen Pass'     , -5,  0],
+  [14, 'Pop Pass'        ,  5, 15],
+  [15, 'Button Hook Pass',  5, 15],
+  [16, 'Razzle Dazzle'   , 20, 40],
   # Cannot call below at 1-20 yard line.
-  [17, 'Down & Out Pass'],
-  [18, 'Down & In Pass'],
-  [19, 'Long Bomb'],
-  [20, 'Stop & Go Pass'],
+  [17, 'Down & Out Pass' , 15, 25],
+  [18, 'Down & In Pass'  , 15, 25],
+  [19, 'Long Bomb'       , 25, 40],
+  [20, 'Stop & Go Pass'  , 15, 25],
 
   # For the followings, use alphabets and spaces ONLY for a name to .gsub(/\s+/, '').underscore makes a variable name.
   [101, 'Normal Kickoff'],
@@ -41,8 +41,9 @@ OFFENSIVE_PLAYS = [
   [402, 'Two Point Conversion'],
   [501, 'Kneel Down'],
 ]
+STDOUT.puts "Creating OffensivePlay..."
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
-  Hash[%w(number name).zip(values)]
+  Hash[%w(number name min_throw_yard max_throw_yard).zip(values)]
 })
 
 OFFENSIVE_PLAY_SETS = [
@@ -58,8 +59,10 @@ OFFENSIVE_PLAY_SETS = [
   ['Goal Line'   , [100, 100, 100, 100, 100,  80,  80, 100,  50,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
 ]
 
+STDOUT.puts "Creating OffensivePlaySet..."
 offensive_plays = OffensivePlay.where('number < 100').order(:number)
 OFFENSIVE_PLAY_SETS.each do |name, weights|
+  STDOUT.puts "  for '#{name}'..."
   off_set = OffensivePlaySet.create!(name: name)
   unless weights.size == offensive_plays.size
     raise StandardError, "Number of weights (#{weights.size} vs #{offensive_plays.size}) for offensive set '#{name}'"
@@ -87,6 +90,7 @@ DEFENSIVE_PLAYS = [
   ['I', '4', '0'   , '3', '4', 'Very Poor' , 'Very Good'],
   ['J', '3', '0'   , '3', '5', 'Terrible'  , 'Excellent'],
 ]
+STDOUT.puts "Creating DefensivePlay..."
 DefensivePlay.create!(DEFENSIVE_PLAYS.map { |values|
   Hash[%w(name lineman linebacker cornerback safety against_run against_pass).zip(values)]
 })
@@ -104,8 +108,10 @@ DEFENSIVE_PLAY_SETS = [
   ['Goal Line' , [100, 100,  50,  80,  60,  50,  40,  10,   0,   0]],
 ]
 
+STDOUT.puts "Creating DefensivePlaySet..."
 defensive_plays = DefensivePlay.order(:name)
 DEFENSIVE_PLAY_SETS.each do |name, weights|
+  STDOUT.puts "  for '#{name}'..."
   def_set = DefensivePlaySet.create!(name: name)
   unless weights.size == defensive_plays.size
     raise StandardError, "Number of weights (#{weights.size} vs #{defensive_plays.size}) for defensive set '#{name}'"
@@ -141,9 +147,11 @@ PRO_STYLE_RESULTS = [
   %w(cmp+long cmp+long incmp cmp+35ob sck-15 incmp incmp incmp pen+30af int_opp-30),
   %w(cmp+35 cmp+30 incmp incmp incmp_or_pen-5 incmp cmp+35ob cmp+30ob incmp int_opp-25),
 ]
+STDOUT.puts "Creating PlayResultChart (Pro style)..."
 result_chart = PlayResultChart.create!(name: 'Pro style')
 defensive_plays = DefensivePlay.order(:name)
 PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
+  STDOUT.puts "  for OffensivePlay '#{offensive_play.number}'..."
   row.zip(defensive_plays) do |result, defensive_play|
     result_chart.play_results.create!(offensive_play: offensive_play, defensive_play: defensive_play, result: result)
   end
@@ -177,16 +185,16 @@ FIELD_GOAL_TABLE = [
 ]
 
 TIME_TABLE = [
-  ['20y or more', 45],
-  ['less than 20y', 30],
-  ['loss', 30],
-  ['ob', -15],
-  ['int', 30],
-  ['incmp', 15],
-  ['pen', 15],
-  ['fmb', 15],
-  ['kicking', 15],
-  ['timeout', -30],
+  ['20y or more'  ,  45],
+  ['less than 20y',  30],
+  ['loss'         ,  30],
+  ['ob'           , -15],
+  ['int'          ,  30],
+  ['incmp'        ,  15],
+  ['pen'          ,  15],
+  ['fmb'          ,  15],
+  ['kicking'      ,  15],
+  ['timeout'      , -30],
 ]
 
 offensive_strategy = OffensiveStrategy.create!(name: 'Standard')

@@ -109,10 +109,12 @@ ActiveRecord::Schema.define(version: 20170130044721) do
   end
 
   create_table "offensive_plays", force: :cascade do |t|
-    t.integer  "number",     null: false
-    t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "number",         null: false
+    t.string   "name",           null: false
+    t.integer  "min_throw_yard"
+    t.integer  "max_throw_yard"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "offensive_strategies", force: :cascade do |t|
