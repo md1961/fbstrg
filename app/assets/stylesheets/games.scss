@@ -64,9 +64,16 @@ body.real {
     padding-right: 0px;
   }
 
-  table#information_board {
+  table#information_board, div#announce_board {
     color: white;
     background-color: black;
+    font-size: large;
+  }
+
+  div#announce_board {
+    display: inline-block;
+    padding: 2px 5px;
+    margin-bottom: 10px;
   }
 
   table#information_board td {
