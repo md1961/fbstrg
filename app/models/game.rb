@@ -4,7 +4,8 @@ class Game < ActiveRecord::Base
   has_many :plays         , dependent: :destroy
   has_many :game_snapshots, dependent: :destroy
 
-  attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set
+  attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set,
+                :previous_spot
   attr_accessor :offensive_play, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
@@ -225,6 +226,7 @@ class Game < ActiveRecord::Base
           play.yardage = (ball_on / 2).to_i - ball_on
         end
       end
+      @previous_spot = ball_on
       self.ball_on += play.yardage
       if ball_on >= 100
         play.yardage -= ball_on - 100
