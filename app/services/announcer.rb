@@ -79,9 +79,11 @@ module Announcer
     def long_gain_statements(start_on, end_on)
       start_on = (start_on.to_i + 4) / 5 * 5
       end_on   = (end_on  .to_i - 1) / 5 * 5
+      timeout = 1000
       start_on.step([end_on, 95].min, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
-        [prefix + yard_line(ball_on), 1000]
+        timeout -= 50
+        [prefix + yard_line(ball_on), [timeout, 750].max]
       }
     end
 end
