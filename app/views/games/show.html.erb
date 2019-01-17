@@ -20,9 +20,11 @@
 <br>
 
   <%
+      @game.instance_variable_set('@ball_on', 98)
+
       @game.offensive_play = OffensivePlay.find(1)
       @game.instance_variable_set('@defensive_play', DefensivePlay.find(3))
-      play = Play.parse('7')
+      play = Play.parse('2')
       @game.instance_variable_set('@result', play)
   -%>
 

@@ -27,15 +27,24 @@ module Announcer
     announcement.add("Snap", 1000)
     announcement.add(first_statement(offensive_play, play), 1000)
     if play.on_ground?
-      timeout = offensive_play.number == 5 ? 2000 : 1000
-      announcement.add("Find hole!", timeout) if play.yardage >= 5
+      time_add = offensive_play.number == 5 ? 1000 : 0
+      if play.yardage >= 5
+        announcement.add("Find hole!", timeout + time_add)
+        time_add = 0
+      end
       if play.scoring.blank?
-        announcement.add("Down for #{play.yardage} yard gain", 2000)
+        if play.yardage < 0
+          announcement.add("Stopped behind the scrimmage", 500 + time_add)
+        elsif play.yardage.zero?
+          announcement.add("Stopped at the scrimmage", 1000 + time_add)
+        else
+          announcement.add("Down for #{play.yardage} yard gain", 2000 + time_add)
+        end
       else
         announcement.add(play.scoring, 1000)
       end
     end
-    announcement.add('__END__', 1000)
+    announcement.add('__END__', 2000)
     announcement
   end
 
