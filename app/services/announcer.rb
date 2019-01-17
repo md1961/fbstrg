@@ -28,9 +28,17 @@ module Announcer
     announcement.add(first_statement(offensive_play, play), 1000)
     if play.on_ground?
       time_add = offensive_play.number == 5 ? 1000 : 0
+      is_long_gain = false
       if play.yardage >= 5
-        announcement.add("Find hole!", timeout + time_add)
+        announcement.add("Find hole!", 1000 + time_add)
         time_add = 0
+        if play.yardage >= 10
+          start_on = (game.previous_spot + 10) / 10 * 10
+          long_gain_statements(start_on, game.ball_on).each do |text, timeout|
+            announcement.add(text, timeout)
+          end
+          is_long_gain = true
+        end
       end
       if play.scoring.blank?
         if play.yardage < 0
@@ -38,7 +46,8 @@ module Announcer
         elsif play.yardage.zero?
           announcement.add("Stopped at the scrimmage", 1000 + time_add)
         else
-          announcement.add("Down for #{play.yardage} yard gain", 2000 + time_add)
+          at = is_long_gain ? " at #{yard_line(game.ball_on)} yard line" : ""
+          announcement.add("Down#{at} for #{play.yardage} yard gain", 2000 + time_add)
         end
       else
         announcement.add(play.scoring, 1000)
@@ -61,5 +70,18 @@ module Announcer
       when 9
         play.on_ground? ? "Hand off" : "Drop back"
       end
+    end
+
+    def yard_line(ball_on)
+      (ball_on <= 50 ? ball_on : 100 - ball_on).to_s
+    end
+
+    def long_gain_statements(start_on, end_on)
+      start_on = (start_on.to_i + 4) / 5 * 5
+      end_on   = (end_on  .to_i - 1) / 5 * 5
+      start_on.step([end_on, 95].min, 5).map { |ball_on|
+        prefix = start_on == ball_on ? "To the " : ""
+        [prefix + yard_line(ball_on), 1000]
+      }
     end
 end

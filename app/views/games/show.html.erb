@@ -20,11 +20,14 @@
 <br>
 
   <%
-      @game.instance_variable_set('@ball_on', 98)
+      previous_spot = 72
+      @game.instance_variable_set('@previous_spot', previous_spot)
 
       @game.offensive_play = OffensivePlay.find(1)
       @game.instance_variable_set('@defensive_play', DefensivePlay.find(3))
-      play = Play.parse('2')
+      play = Play.parse('99')
+      play.scoring = 'TOUCHDOWN'
+      @game.ball_on = previous_spot + play.yardage
       @game.instance_variable_set('@result', play)
   -%>
 
