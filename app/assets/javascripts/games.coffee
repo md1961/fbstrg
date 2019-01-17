@@ -9,16 +9,16 @@ $ ->
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
-        $('#debug').html(text)
+        $('#announce_board').html(text)
         resolve()
       , timeout
       )
     )
 
-  announcements = $('#information_board').data('announcements')
-
+  announcements = $('#announce_board').data('announcements')
   arrayAnnounces = $.map(announcements, (elem, _) ->
-    announce(elem[0], elem[1])
+    () ->
+      announce(elem[0], elem[1])
   )
 
   arrayAnnounces.reduce((prev, curr) ->

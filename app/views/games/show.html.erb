@@ -18,9 +18,16 @@
 </table>
 
 <br>
-<table id="information_board" data-announcements='[["D", 500], ["E", 2000], ["F<br>G", 4000]]'>
+
+  <%
+      @game.offensive_play = OffensivePlay.find(1)
+      play = Play.parse('7')
+    -%>
+
+<div id="announce_board" data-announcements="<%= Announcer.announce(play, @game) %>"></div>
+<table id="information_board">
   <tr>
-    <td id="debug"><%= @game.result %></td>
+    <td><%= @game.result %></td>
   </tr>
   <tr>
     <td><%= offensive_play_display(@game) %></td>
