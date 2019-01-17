@@ -21,11 +21,13 @@
 
   <%
       @game.offensive_play = OffensivePlay.find(1)
+      @game.instance_variable_set('@defensive_play', DefensivePlay.find(3))
       play = Play.parse('7')
-    -%>
+      @game.instance_variable_set('@result', play)
+  -%>
 
 <div id="announce_board" data-announcements="<%= Announcer.announce(play, @game) %>"></div>
-<table id="information_board">
+<table id="information_board" hidden>
   <tr>
     <td><%= @game.result %></td>
   </tr>
@@ -40,7 +42,7 @@
 <br>
 <%= form_tag @game, method: :patch do %>
   <%= text_field_tag :play, @game.prompt, autofocus: true, onfocus: "this.select();" %>
-  <%= submit_tag :proceed %>
+  <%= submit_tag :proceed, disabled: true %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>
 

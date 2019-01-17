@@ -35,6 +35,7 @@ module Announcer
         announcement.add(play.scoring, 1000)
       end
     end
+    announcement.add('__END__', 1000)
     announcement
   end
 

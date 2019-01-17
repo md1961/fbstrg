@@ -9,7 +9,11 @@ $ ->
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
-        $('#announce_board').html(text)
+        if text == '__END__'
+          $('#announce_board').hide()
+          $('#information_board').show()
+        else
+          $('#announce_board').html(text)
         resolve()
       , timeout
       )
