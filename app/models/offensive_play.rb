@@ -24,6 +24,26 @@ class OffensivePlay < ActiveRecord::Base
     number < 100
   end
 
+  def inside_10?
+    number <= 12
+  end
+
+  def inside_20?
+    number <= 16
+  end
+
+  def quarterback_keep?
+    number == 3
+  end
+
+  def sweep?
+    number == 5
+  end
+
+  def draw?
+    number == 7
+  end
+
   def kickoff?
     name.ends_with?('Kickoff')
   end
