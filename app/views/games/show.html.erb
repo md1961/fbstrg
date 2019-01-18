@@ -19,7 +19,7 @@
 
 <br>
 
-  <%
+  <%#
       previous_spot = 72
       @game.instance_variable_set('@previous_spot', previous_spot)
 
@@ -29,10 +29,13 @@
       play.scoring = ''#'TOUCHDOWN'
       @game.ball_on = previous_spot + play.yardage
       @game.instance_variable_set('@result', play)
+
+      @game.instance_variable_set('@announcement', Announcer.announce(play, @game))
   -%>
 
-<div id="announce_board" data-announcements="<%= Announcer.announce(play, @game) %>"></div>
-<table id="information_board" hidden>
+<% announcement = @game.announcement -%>
+<div id="announce_board" data-announcements="<%= announcement %>"></div>
+<table id="information_board" <%= 'hidden' if announcement && !announcement.empty? %>>
   <tr>
     <td><%= @game.result %></td>
   </tr>
@@ -47,7 +50,7 @@
 <br>
 <%= form_tag @game, method: :patch do %>
   <%= text_field_tag :play, @game.prompt, autofocus: true, onfocus: "this.select();" %>
-  <%= submit_tag :proceed, disabled: true %>
+  <%= submit_tag :proceed %>
   <%= content_tag :div, @game.error_message, class: :error %>
 <% end -%>
 
