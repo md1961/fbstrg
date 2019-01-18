@@ -24,8 +24,10 @@ module Announcer
   def announce(play, game)
     offensive_play = game.offensive_play
     announcement = Views::Announcement.new
-    announcement.add("Snap", 1000)
-    announcement.add(first_statement(offensive_play, play), 1000)
+    if offensive_play.normal?
+      announcement.add("Snap", 1000)
+      announcement.add(first_statement(offensive_play, play), 1000)
+    end
 
     run_from = game.previous_spot
     throw_yardage = 0
@@ -66,7 +68,7 @@ module Announcer
         announcement.add(play.scoring, 1000)
       end
     end
-    announcement.add('__END__', 2000)
+    announcement.add('__END__', 2000) unless announcement.empty?
     announcement
   end
 
