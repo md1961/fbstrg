@@ -23,9 +23,9 @@
       previous_spot = 72
       @game.instance_variable_set('@previous_spot', previous_spot)
 
-      @game.offensive_play = OffensivePlay.find(1)
+      @game.offensive_play = OffensivePlay.find(10)
       @game.instance_variable_set('@defensive_play', DefensivePlay.find(3))
-      play = Play.parse('0')
+      play = Play.parse('cmp+27')
       play.scoring = ''#'TOUCHDOWN'
       @game.ball_on = previous_spot + play.yardage
       @game.instance_variable_set('@result', play)

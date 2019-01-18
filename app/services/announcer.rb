@@ -26,14 +26,27 @@ module Announcer
     announcement = Views::Announcement.new
     announcement.add("Snap", 1000)
     announcement.add(first_statement(offensive_play, play), 1000)
-    if play.on_ground?
+
+    run_from = game.previous_spot
+    throw_yardage = 0
+    run_yardage_after = 0
+    if play.throw?
+      throw_yardage = determine_throw_yardage(offensive_play, play)
+      run_from += throw_yardage
+      run_yardage_after = play.yardage - throw_yardage if play.complete?
+      timeout = [throw_yardage / 10.0 * 1000, 1000].max
+      announcement.add("Throws", timeout)
+      text = "#{play.result.to_s.upcase} #{yard_line(run_from)}"
+      announcement.add(text, timeout)
+    end
+    if play.on_ground? || play.complete?
       time_add = offensive_play.number == 5 ? 1000 : 0
       is_long_gain = false
       if play.yardage >= 5
-        announcement.add("Find hole!", 1000 + time_add)
+        announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
         time_add = 0
-        if play.yardage >= 10
-          start_on = (game.previous_spot + 10) / 10 * 10
+        if play.yardage >= 10 || (play.complete? && run_yardage_after > 5)
+          start_on = play.complete? ? run_from : (run_from + 10) / 10 * 10
           long_gain_statements(start_on, game.ball_on).each do |text, timeout|
             announcement.add(text, timeout)
           end
@@ -46,8 +59,8 @@ module Announcer
         elsif play.yardage.zero?
           announcement.add("Stopped at the scrimmage", 1000 + time_add)
         else
-          at = is_long_gain ? " at #{yard_line(game.ball_on)} yard line" : ""
-          announcement.add("Down#{at} for #{play.yardage} yard gain", 2000 + time_add)
+          at = is_long_gain ? " #{yard_line(game.ball_on)}" : ""
+          announcement.add("Down#{at} for #{play.yardage} yard gain", 1500 + time_add)
         end
       else
         announcement.add(play.scoring, 1000)
@@ -72,8 +85,11 @@ module Announcer
       end
     end
 
-    def yard_line(ball_on)
-      (ball_on <= 50 ? ball_on : 100 - ball_on).to_s
+    def yard_line(ball_on, only_yardage = false)
+      return "in zone" if ball_on <= 0 || ball_on >= 100
+      yardage = ball_on <= 50 ? ball_on : 100 - ball_on
+      return yardage.to_s if only_yardage
+      "at #{yardage} yard line"
     end
 
     def long_gain_statements(start_on, end_on)
@@ -83,7 +99,14 @@ module Announcer
       start_on.step([end_on, 95].min, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
         timeout -= 50
-        [prefix + yard_line(ball_on), [timeout, 750].max]
+        [prefix + yard_line(ball_on, true), [timeout, 750].max]
       }
+    end
+
+    def determine_throw_yardage(offensive_play, play)
+      min = offensive_play.min_throw_yard
+      max = offensive_play.max_throw_yard
+      max = [max, play.yardage].min if play.complete?
+      rand(min .. max)
     end
 end
