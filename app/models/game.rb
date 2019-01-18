@@ -107,15 +107,12 @@ class Game < ActiveRecord::Base
         Play.field_goal
       elsif value.blank?
         get_plays.first
-      else
+      elsif defense_human?
         defensive_play = DefensivePlay.find_by(name: value.upcase)
-        if defensive_play
-          get_plays(defensive_play).first
-        else
-          raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
-        end
-
-        #Play.parse(value)
+        raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
+        get_plays(defensive_play).first
+      else
+        Play.parse(value)
       end
     end
 
