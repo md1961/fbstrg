@@ -16,6 +16,7 @@ class GamesController < ApplicationController
   end
 
   def update
+    @game_snapshot_prev = nil
     if tampering_game?(params[:play])
       @game.tamper(params[:play])
     elsif @game.end_of_game?
@@ -37,6 +38,7 @@ class GamesController < ApplicationController
         session[:offensive_play_id] = nil
         @game.save!
       end
+      @game_snapshot_prev = @game.game_snapshots.order(:play_id).last
     end
     render :show
   end

@@ -12,6 +12,8 @@ $ ->
         if text == '__END__'
           $('#announce_board').hide()
           $('#information_board').show()
+          $('#score_board_prev').hide()
+          $('#score_board').show()
         else
           $('#announce_board').html(text)
         resolve()
