@@ -42,7 +42,8 @@ module Announcer
       announcement.add(text, timeout)
     end
     if play.on_ground? || play.complete?
-      time_add = offensive_play.number == 5 ? 1000 : 0
+      announcement.add("Hand off", 1000) if offensive_play.draw?
+      time_add = offensive_play.sweep? ? 1000 : 0
       is_long_gain = false
       if play.yardage >= 5
         announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
@@ -62,9 +63,10 @@ module Announcer
           announcement.add("Stopped at the scrimmage", 1000 + time_add)
         else
           at = is_long_gain ? " #{yard_line(game.ball_on)}" : ""
-          announcement.add("Down#{at} for #{play.yardage} yard gain", 1500 + time_add)
+          announcement.add("Stopped#{at} for #{play.yardage} yard gain", 1500 + time_add)
         end
       else
+        announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown'
         announcement.add(play.scoring, 1000)
       end
     end
