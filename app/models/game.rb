@@ -5,7 +5,7 @@ class Game < ActiveRecord::Base
   has_many :game_snapshots, dependent: :destroy
 
   attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set,
-                :previous_spot
+                :previous_spot, :announcement
   attr_accessor :offensive_play, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
@@ -29,10 +29,10 @@ class Game < ActiveRecord::Base
 
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
-    !home_has_ball
+    false#!home_has_ball
   end
   def defense_human?
-    !offense_human?
+    false#!offense_human?
   end
 
   def choose_offense?
@@ -144,6 +144,8 @@ class Game < ActiveRecord::Base
       yardage_play(@result)
     end
     advance_clock(@result.time_to_take)
+
+    @announcement = Announcer.announce(@result, self)
 
     game_snapshot.update_scores
     @result.record(self, game_snapshot)
