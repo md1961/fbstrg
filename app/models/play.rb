@@ -91,6 +91,10 @@ class Play < ActiveRecord::Base
     play
   end
 
+  def throw?
+    complete? || incomplete? || intercepted?
+  end
+
   def fumble?
     !no_fumble?
   end
