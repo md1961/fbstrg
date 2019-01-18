@@ -23,14 +23,19 @@ class OffensivePlaySet < ActiveRecord::Base
     def correct(offensive_play_set_choices, game)
       if game.ball_on >= 100 - 10
         offensive_play_set_choices.each do |choice|
-          next if choice.offensive_play.number <= 12
+          next if choice.offensive_play.inside_10?
           choice.weight = 0
         end
       elsif game.ball_on >= 100 - 20
         offensive_play_set_choices.each do |choice|
-          next if choice.offensive_play.number <= 16
+          next if choice.offensive_play.inside_20?
           choice.weight = 0
         end
+      end
+      if game.yard_to_go > 1
+        offensive_play_set_choices.find { |choice|
+          choice.offensive_play.quarterback_keep?
+        }.weight = 0
       end
       offensive_play_set_choices
     end
