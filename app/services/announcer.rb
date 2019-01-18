@@ -5,7 +5,7 @@ module Announcer
   # | 2  | 2      | Power Off Tackle     | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
   # | 3  | 3      | Quarterback Keep     | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
   # | 4  | 4      | Slant                | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 5  | 5      | End Run              | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
+  # | 5  | 5      | Sweep                | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
   # | 6  | 6      | Reverse              | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
   # | 7  | 7      | Draw                 | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
   # | 8  | 8      | Trap                 | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
@@ -29,26 +29,32 @@ module Announcer
       announcement.add(first_statement(offensive_play, play), 1000)
     end
 
-    run_from = game.previous_spot
+    run_from = game.previous_spot || game.game_snapshots.order(:play_id).last.ball_on
     throw_yardage = 0
     run_yardage_after = 0
     if play.throw?
       throw_yardage = determine_throw_yardage(offensive_play, play)
       run_from += throw_yardage
-      run_yardage_after = play.yardage - throw_yardage if play.complete?
+      run_yardage_after = \
+        if play.complete?
+          play.yardage - throw_yardage
+        elsif play.intercepted?
+          run_from = 100 - run_from
+          throw_yardage - play.yardage
+        end
       timeout = [throw_yardage / 10.0 * 1000, 1000].max
       announcement.add("Throws", timeout)
       text = "#{play.result.to_s.upcase} #{yard_line(run_from)}"
       announcement.add(text, timeout)
     end
-    if play.on_ground? || play.complete?
+    if play.on_ground? || play.complete? || play.intercepted?
       announcement.add("Hand off", 1000) if offensive_play.draw?
       time_add = offensive_play.sweep? ? 1000 : 0
       is_long_gain = false
       if play.yardage >= 5
         announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
         time_add = 0
-        if play.yardage >= 10 || (play.complete? && run_yardage_after > 5)
+        if play.yardage >= 10 || (play.throw? && run_yardage_after > 5)
           start_on = play.complete? ? run_from : (run_from + 10) / 10 * 10
           long_gain_statements(start_on, game.ball_on).each do |text, timeout|
             announcement.add(text, timeout)
