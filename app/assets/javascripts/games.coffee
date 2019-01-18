@@ -14,6 +14,7 @@ $ ->
           $('#information_board').show()
           $('#score_board_prev').hide()
           $('#score_board').show()
+          $('#form_command').show()
         else
           $('#announce_board').html(text)
         resolve()
@@ -29,6 +30,7 @@ $ ->
       announce(elem[0], elem[1])
   )
 
+  $('#form_command').hide()
   arrayAnnounces.reduce((prev, curr) ->
     prev.then(curr)
   , Promise.resolve()
