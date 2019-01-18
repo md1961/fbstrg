@@ -11,6 +11,10 @@ class Announcement
     self
   end
 
+  def empty?
+    @statements.empty?
+  end
+
   def last_text
     @statements.last&.text
   end
