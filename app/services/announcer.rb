@@ -118,6 +118,7 @@ module Announcer
     def determine_throw_yardage(offensive_play, play)
       min = offensive_play.min_throw_yard
       max = offensive_play.max_throw_yard
+      min = [min, play.yardage].max if play.intercepted?
       max = [max, play.yardage].min if play.complete?
       rand(min .. max)
     end
