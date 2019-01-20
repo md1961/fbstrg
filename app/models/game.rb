@@ -142,10 +142,10 @@ class Game < ActiveRecord::Base
     end
     advance_clock(@result.time_to_take)
 
-    @announcement = Announcer.announce(@result, self)
-
     game_snapshot.update_scores
     @result.record(self, game_snapshot)
+
+    @announcement = Announcer.announce(@result, self)
   end
 
   def advance_to_next_quarter
