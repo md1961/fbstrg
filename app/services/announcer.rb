@@ -29,7 +29,7 @@ module Announcer
       announcement.add(first_statement(offensive_play, play), 1000)
     end
 
-    run_from = game.previous_spot || game.game_snapshots.order(:play_id).last.ball_on
+    run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     throw_yardage = 0
     run_yardage_after = 0
     if play.throw?
@@ -39,23 +39,23 @@ module Announcer
         if play.complete?
           play.yardage - throw_yardage
         elsif play.intercepted?
-          run_from = 100 - run_from
           throw_yardage - play.yardage
         end
       timeout = [throw_yardage / 10.0 * 1000, 1000].max
       announcement.add("Throws", timeout)
       text = "#{play.result.to_s.upcase} #{yard_line(run_from)}"
       announcement.add(text, timeout)
+      run_from = 100 - run_from if play.possession_changing?
     end
     if play.on_ground? || play.complete? || play.intercepted?
       announcement.add("Hand off", 1000) if offensive_play.draw?
       time_add = offensive_play.sweep? ? 1000 : 0
       is_long_gain = false
-      if play.yardage >= 5
+      if play.yardage >= 5 || play.possession_changing?
         announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
         time_add = 0
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5)
-          start_on = play.complete? ? run_from : (run_from + 10) / 10 * 10
+          start_on = play.throw? ? run_from : (run_from + 10) / 10 * 10
           long_gain_statements(start_on, game.ball_on).each do |text, timeout|
             announcement.add(text, timeout)
           end
@@ -63,7 +63,9 @@ module Announcer
         end
       end
       if play.scoring.blank?
-        if play.yardage < 0
+        if play.possession_changing?
+          announcement.add("Down #{yard_line(game.ball_on)}", 1500)
+        elsif play.yardage < 0
           announcement.add("Stopped behind the scrimmage", 500 + time_add)
         elsif play.yardage.zero?
           announcement.add("Stopped at the scrimmage", 1000 + time_add)
