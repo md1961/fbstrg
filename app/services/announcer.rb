@@ -105,10 +105,10 @@ module Announcer
     end
 
     def long_gain_statements(start_on, end_on)
-      start_on = (start_on.to_i + 4) / 5 * 5
-      end_on   = (end_on  .to_i - 1) / 5 * 5
+      start_on = [(start_on.to_i + 4) / 5 * 5,  5].max
+      end_on   = [(end_on  .to_i - 1) / 5 * 5, 95].min
       timeout = 1000
-      start_on.step([end_on, 95].min, 5).map { |ball_on|
+      start_on.step(end_on, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
         timeout -= 50
         [prefix + yard_line(ball_on, true), [timeout, 750].max]
