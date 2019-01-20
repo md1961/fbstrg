@@ -32,7 +32,17 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     throw_yardage = 0
     run_yardage_after = 0
-    if play.throw?
+    if play.sacked?
+      throw_yardage = determine_throw_yardage(offensive_play, play)
+      timeout = [throw_yardage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
+      text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
+      announcement.add(text, timeout)
+      if play.scoring == 'SAFETY'
+        announcement.add("SAFETY", 1000)
+      else
+        announcement.add("Down #{at_yard_line(game.ball_on)}", 1000)
+      end
+    elsif play.throw?
       throw_yardage = determine_throw_yardage(offensive_play, play)
       run_from += throw_yardage
       run_yardage_after = \
@@ -41,9 +51,9 @@ module Announcer
         elsif play.intercepted?
           throw_yardage - play.yardage
         end
-      timeout = [throw_yardage / 10.0 * 1000, 1000].max
+      timeout = [throw_yardage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
       announcement.add("Throws", timeout)
-      text = "#{play.result.to_s.upcase} #{yard_line(run_from)}"
+      text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
       announcement.add(text, timeout)
       run_from = 100 - run_from if play.possession_changing?
     end
@@ -64,13 +74,13 @@ module Announcer
       end
       if play.scoring.blank?
         if play.possession_changing?
-          announcement.add("Down #{yard_line(game.ball_on)}", 1500)
+          announcement.add("Down #{at_yard_line(game.ball_on)}", 1500)
         elsif play.yardage < 0
           announcement.add("Stopped behind the scrimmage", 500 + time_add)
         elsif play.yardage.zero?
           announcement.add("Stopped at the scrimmage", 1000 + time_add)
         else
-          at = is_long_gain ? " #{yard_line(game.ball_on)}" : ""
+          at = is_long_gain ? " #{at_yard_line(game.ball_on)}" : ""
           announcement.add("Stopped#{at} for #{play.yardage} yard gain", 1500 + time_add)
         end
       else
@@ -97,7 +107,7 @@ module Announcer
       end
     end
 
-    def yard_line(ball_on, only_yardage = false)
+    def at_yard_line(ball_on, only_yardage = false)
       return "in zone" if ball_on <= 0 || ball_on >= 100
       yardage = ball_on <= 50 ? ball_on : 100 - ball_on
       return yardage.to_s if only_yardage
@@ -111,7 +121,7 @@ module Announcer
       start_on.step(end_on, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
         timeout -= 50
-        [prefix + yard_line(ball_on, true), [timeout, 750].max]
+        [prefix + at_yard_line(ball_on, true), [timeout, 750].max]
       }
     end
 
