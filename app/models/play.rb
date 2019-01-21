@@ -4,7 +4,8 @@ class Play < ActiveRecord::Base
   has_one :game_snapshot
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
-                 kick_and_return: 5, field_goal: 6, extra_point: 7}
+                 kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
+                 field_goal: 8, field_goal_blocked: 9, extra_point: 10}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -63,7 +64,7 @@ class Play < ActiveRecord::Base
 
   def self.kickoff
     play = new
-    play.result = :kick_and_return
+    play.result = :kickoff_and_return
     return_ends_at = 20 + rand(31) - 10
     play.yardage = 50 - return_ends_at + (50 - 35)
     play
@@ -71,7 +72,7 @@ class Play < ActiveRecord::Base
 
   def self.punt
     play = new
-    play.result = :kick_and_return
+    play.result = :punt_and_return
     play.yardage = 30 + rand(21) - 10
     play
   end
@@ -112,13 +113,13 @@ class Play < ActiveRecord::Base
   end
 
   def possession_changing?
-    kick_and_return? || intercepted? || fumble_rec_by_opponent?
+    kickoff_and_return? || punt_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
   def time_to_take
     t = if extra_point?
       0
-    elsif incomplete? || penalty? || fumble? || field_goal? || kick_and_return?
+    elsif incomplete? || penalty? || fumble? || field_goal? || kickoff_and_return? || punt_and_return?
       15
     elsif intercepted?
       30
