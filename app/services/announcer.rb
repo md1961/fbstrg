@@ -65,6 +65,7 @@ module Announcer
     end
     if play.on_ground? || play.complete? || play.intercepted? || play.kickoff_and_return?
       announcement.add("Hand off", 1000) if offensive_play.draw?
+      announcement.add("Reverse", 2000) if offensive_play.reverse?
       time_add = offensive_play.sweep? ? 1000 : 0
       is_long_gain = false
       if play.yardage >= 5 || play.possession_changing?
@@ -104,7 +105,7 @@ module Announcer
         "Hand off"
       when 3
         "Quarterback keep"
-      when 5
+      when 5, 6
         "Pitch"
       when 7, 10 .. 20
         "Drop back"
