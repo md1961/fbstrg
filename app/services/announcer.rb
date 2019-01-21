@@ -33,11 +33,11 @@ module Announcer
     end
 
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
-    air_yargage = 0
+    air_yardage = 0
     run_yardage_after = 0
     if play.sacked?
-      air_yargage = determine_air_yargage(offensive_play, play)
-      time = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
+      air_yardage = determine_air_yardage(offensive_play, play)
+      time = [air_yardage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
       text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
       announcement.add(text, time)
       if play.scoring == 'SAFETY'
@@ -46,17 +46,17 @@ module Announcer
         announcement.add("Down #{at_yard_line(game.ball_on)}", 1000)
       end
     elsif play.throw? || play.kick_and_return?
-      air_yargage = determine_air_yargage(offensive_play, play)
-      run_from += air_yargage
+      air_yardage = determine_air_yardage(offensive_play, play)
+      run_from += air_yardage
       run_from = 100 - run_from if play.possession_changing?
       run_yardage_after = \
         if play.complete?
-          play.yardage - air_yargage
+          play.yardage - air_yardage
         elsif play.possession_changing?
-          air_yargage - play.yardage
+          air_yardage - play.yardage
         end
       if play.throw?
-        time = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
+        time = [air_yardage / 10.0 * 1500, 1000].max + rand(0 .. 1000)
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, time)
@@ -72,8 +72,8 @@ module Announcer
         announcement.add("Reverse", 2000)
       end
       is_long_gain = false
-        announcement.add("Find hole!", 1000) if play.on_ground?
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
+        announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           long_gain_statements(start_on, game.ball_on).each do |text, time|
@@ -148,7 +148,7 @@ module Announcer
       }
     end
 
-    def determine_air_yargage(offensive_play, play)
+    def determine_air_yardage(offensive_play, play)
       return rand(55 .. 65) if offensive_play.kickoff?
       return rand(40 .. 50) if offensive_play.punt?
       min = offensive_play.min_throw_yard
