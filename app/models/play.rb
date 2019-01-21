@@ -112,14 +112,18 @@ class Play < ActiveRecord::Base
     auto_firstdown
   end
 
+  def kick_and_return?
+    kickoff_and_return? || punt_and_return?
+  end
+
   def possession_changing?
-    kickoff_and_return? || punt_and_return? || intercepted? || fumble_rec_by_opponent?
+    kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
   def time_to_take
     t = if extra_point?
       0
-    elsif incomplete? || penalty? || fumble? || field_goal? || kickoff_and_return? || punt_and_return?
+    elsif incomplete? || penalty? || fumble? || field_goal? || kick_and_return?
       15
     elsif intercepted?
       30
