@@ -72,8 +72,8 @@ module Announcer
         announcement.add("Reverse", 2000)
       end
       is_long_gain = false
-      if play.yardage >= 5 || play.possession_changing?
         announcement.add("Find hole!", 1000) if play.on_ground?
+      if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           long_gain_statements(start_on, game.ball_on).each do |text, time|
@@ -83,7 +83,10 @@ module Announcer
         end
       end
       text = \
-        if play.scoring.blank?
+        if !play.no_fumble?
+          announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
+          play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPP"
+        elsif play.scoring.blank?
           if play.possession_changing?
             "Down #{at_yard_line(game.ball_on)}"
           elsif play.yardage < 0
