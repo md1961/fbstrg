@@ -34,11 +34,12 @@ class Play < ActiveRecord::Base
       play.result = :incomplete
     when 'int_opp'
       play.result = :intercepted
+      # yardage is gain for defense.  converts it to gain for offense.
       yardage = -(yardage.to_i)
     when 'sck'
       play.result = :sacked
     when 'fmb'
-      play.fumble = :fumble_rec_by_opponent
+      play.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
     when 'pen'
       play.penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
