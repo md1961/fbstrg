@@ -26,8 +26,8 @@ module Announcer
     announcement = Views::Announcement.new
     if offensive_play.normal? || offensive_play.punt?
       announcement.add("Snap", 1000)
-      timeout = offensive_play.normal? ? 1000 : 2500
-      announcement.add(first_statement(offensive_play, play), timeout)
+      time = offensive_play.normal? ? 1000 : 2500
+      announcement.add(*first_announce(offensive_play, play))
     elsif offensive_play.kickoff?
       announcement.add("Kickoff", 1500)
     end
@@ -37,9 +37,9 @@ module Announcer
     run_yardage_after = 0
     if play.sacked?
       air_yargage = determine_air_yargage(offensive_play, play)
-      timeout = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
+      time = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
       text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
-      announcement.add(text, timeout)
+      announcement.add(text, time)
       if play.scoring == 'SAFETY'
         announcement.add("SAFETY", 1000)
       else
@@ -56,67 +56,75 @@ module Announcer
           air_yargage - play.yardage
         end
       if play.throw?
-        timeout = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
-        announcement.add("Throws", timeout)
+        time = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
+        announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
-        announcement.add(text, timeout)
+        announcement.add(text, time)
       else # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
       end
     end
     if play.on_ground? || play.complete? || play.intercepted? || play.kick_and_return?
-      announcement.add("Hand off", 1000) if offensive_play.draw?
-      announcement.add("Reverse", 2000) if offensive_play.reverse?
-      time_add = offensive_play.sweep? ? 1000 : 0
+      if offensive_play.draw?
+        time = play.yardage < 0 ? 500 : 1000
+        announcement.add("Hand off", time)
+      elsif offensive_play.reverse?
+        announcement.add("Reverse", 2000)
+      end
       is_long_gain = false
       if play.yardage >= 5 || play.possession_changing?
-        announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
-        time_add = 0
+        announcement.add("Find hole!", 1000) if play.on_ground?
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
-          long_gain_statements(start_on, game.ball_on).each do |text, timeout|
-            announcement.add(text, timeout)
+          long_gain_statements(start_on, game.ball_on).each do |text, time|
+            announcement.add(text, time)
           end
           is_long_gain = true
         end
       end
-      if play.scoring.blank?
-        if play.possession_changing?
-          announcement.add("Down #{at_yard_line(game.ball_on)}", 1500)
-        elsif play.yardage < 0
-          announcement.add("Stopped behind the scrimmage", 500 + time_add)
-        elsif play.yardage.zero?
-          announcement.add("Stopped at the scrimmage", 1000 + time_add)
+      text = \
+        if play.scoring.blank?
+          if play.possession_changing?
+            "Down #{at_yard_line(game.ball_on)}"
+          elsif play.yardage < 0
+            "Stopped behind the scrimmage"
+          elsif play.yardage.zero?
+            "Stopped at the scrimmage"
+          else
+            at = is_long_gain ? " #{at_yard_line(game.ball_on)}" : ""
+            "Stopped#{at} for #{play.yardage} yard gain"
+          end
         else
-          at = is_long_gain ? " #{at_yard_line(game.ball_on)}" : ""
-          announcement.add("Stopped#{at} for #{play.yardage} yard gain", 1500 + time_add)
+          announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown'
+          play.scoring
         end
-      else
-        announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown'
-        announcement.add(play.scoring, 1000)
-      end
+      announcement.add(text, 2000)
     end
-    announcement.add('__END__', 2000) unless announcement.empty?
     announcement
   end
 
-    def first_statement(offensive_play, play)
-      return "Punt" if offensive_play.punt?
+    def first_announce(offensive_play, play)
+      return ["Punt", 2500] if offensive_play.punt?
 
-      case offensive_play.number
-      when 1, 2, 4, 6, 8
-        "Hand off"
-      when 3
-        "Quarterback keep"
-      when 5, 6
-        "Pitch"
-      when 7, 10 .. 20
-        "Drop back"
-      when 9
-        play.on_ground? ? "Hand off" : "Drop back"
-      else
-        "???"
-      end
+      time = 1000
+      text = \
+        case offensive_play.number
+        when 1, 2, 4, 6, 8
+          time -= 500 if play.yardage < 0
+          "Hand off"
+        when 3
+          "Quarterback keep"
+        when 5, 6
+          time = 2000 if offensive_play.sweep?
+          "Pitch"
+        when 7, 10 .. 20
+          "Drop back"
+        when 9
+          play.on_ground? ? "Hand off" : "Drop back"
+        else
+          "???"
+        end
+      [text, time]
     end
 
     def at_yard_line(ball_on, only_yardage = false)
@@ -129,11 +137,11 @@ module Announcer
     def long_gain_statements(start_on, end_on)
       start_on = [(start_on.to_i + 4) / 5 * 5,  5].max
       end_on   = [(end_on  .to_i - 1) / 5 * 5, 95].min
-      timeout = 1000
+      time = 1000
       start_on.step(end_on, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
-        timeout -= 50
-        [prefix + at_yard_line(ball_on, true), [timeout, 750].max]
+        time -= 50
+        [prefix + at_yard_line(ball_on, true), [time, 750].max]
       }
     end
 

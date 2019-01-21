@@ -6,8 +6,8 @@ class Announcement
     @statements = []
   end
 
-  def add(text, timeout)
-    @statements << Statement.new(text, timeout)
+  def add(text, time)
+    @statements << Statement.new(text, time)
     self
   end
 
@@ -20,19 +20,23 @@ class Announcement
   end
 
   def to_s
-    "[#{@statements.join(',')}]"
+    texts = @statements.map(&:text) + ['__END__']
+    times = [0] + @statements.map(&:time)
+    "[#{texts.zip(times).map { |text, time|
+      %Q!["#{text}",#{time}]!
+    }.join(',')}]"
   end
 
   class Statement
-    attr_reader :text, :timeout
+    attr_reader :text, :time
 
-    def initialize(text, timeout)
+    def initialize(text, time)
       @text = text
-      @timeout = timeout
+      @time = time
     end
 
     def to_s
-      %Q!["#{text}",#{timeout}]!
+      %Q!["#{text}",#{time}]!
     end
   end
 end
