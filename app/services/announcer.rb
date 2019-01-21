@@ -27,14 +27,16 @@ module Announcer
     if offensive_play.normal?
       announcement.add("Snap", 1000)
       announcement.add(first_statement(offensive_play, play), 1000)
+    elsif offensive_play.kickoff?
+      announcement.add("Kickoff", 1000)
     end
 
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
-    throw_yardage = 0
+    air_yargage = 0
     run_yardage_after = 0
     if play.sacked?
-      throw_yardage = determine_throw_yardage(offensive_play, play)
-      timeout = [throw_yardage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
+      air_yargage = determine_air_yargage(offensive_play, play)
+      timeout = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
       text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
       announcement.add(text, timeout)
       if play.scoring == 'SAFETY'
@@ -42,30 +44,34 @@ module Announcer
       else
         announcement.add("Down #{at_yard_line(game.ball_on)}", 1000)
       end
-    elsif play.throw?
-      throw_yardage = determine_throw_yardage(offensive_play, play)
-      run_from += throw_yardage
+    elsif play.throw? || play.kickoff_and_return?
+      air_yargage = determine_air_yargage(offensive_play, play)
+      run_from += air_yargage
+      run_from = 100 - run_from if play.possession_changing?
       run_yardage_after = \
         if play.complete?
-          play.yardage - throw_yardage
-        elsif play.intercepted?
-          throw_yardage - play.yardage
+          play.yardage - air_yargage
+        elsif play.possession_changing?
+          air_yargage - play.yardage
         end
-      timeout = [throw_yardage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
-      announcement.add("Throws", timeout)
-      text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
-      announcement.add(text, timeout)
-      run_from = 100 - run_from if play.possession_changing?
+      if play.throw?
+        timeout = [air_yargage / 10.0 * 1000, 1000].max + rand(0 .. 1000)
+        announcement.add("Throws", timeout)
+        text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
+        announcement.add(text, timeout)
+      else # kickoff_and_return?
+        announcement.add("From the #{at_yard_line(run_from, true)}", rand(2000 .. 2500))
+      end
     end
-    if play.on_ground? || play.complete? || play.intercepted?
+    if play.on_ground? || play.complete? || play.intercepted? || play.kickoff_and_return?
       announcement.add("Hand off", 1000) if offensive_play.draw?
       time_add = offensive_play.sweep? ? 1000 : 0
       is_long_gain = false
       if play.yardage >= 5 || play.possession_changing?
         announcement.add("Find hole!", 1000 + time_add) if play.on_ground?
         time_add = 0
-        if play.yardage >= 10 || (play.throw? && run_yardage_after > 5)
-          start_on = play.throw? ? run_from : (run_from + 10) / 10 * 10
+        if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kickoff_and_return?
+          start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           long_gain_statements(start_on, game.ball_on).each do |text, timeout|
             announcement.add(text, timeout)
           end
@@ -125,7 +131,8 @@ module Announcer
       }
     end
 
-    def determine_throw_yardage(offensive_play, play)
+    def determine_air_yargage(offensive_play, play)
+      return rand(55 .. 65) if offensive_play.kickoff?
       min = offensive_play.min_throw_yard
       max = offensive_play.max_throw_yard
       min = [min, play.yardage].max if play.intercepted?
