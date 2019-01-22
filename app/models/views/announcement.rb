@@ -11,6 +11,11 @@ class Announcement
     self
   end
 
+  def set_time_to_last(time)
+    @statements.last.time = time unless empty?
+    self
+  end
+
   def empty?
     @statements.empty?
   end
@@ -28,7 +33,8 @@ class Announcement
   end
 
   class Statement
-    attr_reader :text, :time
+    attr_reader :text
+    attr_accessor :time
 
     def initialize(text, time)
       @text = text
