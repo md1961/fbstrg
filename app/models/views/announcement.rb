@@ -24,6 +24,10 @@ class Announcement
     @statements.last&.text
   end
 
+  def total_time
+    @statements.map(&:time).sum
+  end
+
   def to_s
     texts = @statements.map(&:text) + ['__END__']
     times = [0] + @statements.map(&:time)
