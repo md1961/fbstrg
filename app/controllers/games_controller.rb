@@ -30,9 +30,13 @@ class GamesController < ApplicationController
         session[:next_quarter] = true
       end
     elsif @game.huddle?
-      session[:offensive_play_id] = @game.determine_offensive_play(params[:play])&.id
+      @game.determine_offensive_play(params[:play]).tap do |play|
+        session[:offensive_play_id] = play.id
+        session[:offensive_play_set_id] = @game.offensive_play_set.id
+      end
     else
-      @game.offensive_play = OffensivePlay.find(session[:offensive_play_id])
+      @game.offensive_play     = OffensivePlay   .find(session[:offensive_play_id])
+      @game.offensive_play_set = OffensivePlaySet.find(session[:offensive_play_set_id])
       @game.play(params[:play])
       if @game.error_message.blank?
         session[:offensive_play_id] = nil

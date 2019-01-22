@@ -4,9 +4,9 @@ class Game < ActiveRecord::Base
   has_many :plays         , dependent: :destroy
   has_many :game_snapshots, dependent: :destroy
 
-  attr_reader   :defensive_play, :result, :offensive_play_set, :defensive_play_set,
+  attr_reader   :defensive_play, :result, :defensive_play_set,
                 :previous_spot, :announcement
-  attr_accessor :offensive_play, :error_message
+  attr_accessor :offensive_play, :offensive_play_set, :error_message
 
   enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
   enum status: {huddle: 0, playing: 1, end_of_quarter: 2, end_of_half: 3, end_of_game: 4}
