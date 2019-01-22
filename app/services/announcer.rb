@@ -112,7 +112,7 @@ module Announcer
       time = 1000
       text = \
         case offensive_play.number
-        when 1, 2, 4, 6, 8
+        when 1, 2, 4, 8
           time -= 500 if play.yardage < 0
           "Hand off"
         when 3
