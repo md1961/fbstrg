@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20170130044721) do
     t.integer  "timeout_visitors", null: false
     t.integer  "quarter",          null: false
     t.integer  "time_left",        null: false
+    t.boolean  "clock_stopped",    null: false
     t.boolean  "home_has_ball",    null: false
     t.integer  "ball_on",          null: false
     t.integer  "down",             null: false
@@ -80,6 +81,7 @@ ActiveRecord::Schema.define(version: 20170130044721) do
     t.integer  "timeout_visitors", default: 3,    null: false
     t.integer  "quarter",          default: 1,    null: false
     t.integer  "time_left",        default: 900,  null: false
+    t.boolean  "clock_stopped",    default: true, null: false
     t.boolean  "home_has_ball",    default: true, null: false
     t.integer  "ball_on",          default: 35,   null: false
     t.integer  "down",             default: 1,    null: false

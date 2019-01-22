@@ -10,6 +10,7 @@ class CreateGameSnapshots < ActiveRecord::Migration
       t.integer :timeout_visitors, null: false
       t.integer :quarter         , null: false
       t.integer :time_left       , null: false
+      t.boolean :clock_stopped   , null: false
       t.boolean :home_has_ball   , null: false
       t.integer :ball_on         , null: false
       t.integer :down            , null: false

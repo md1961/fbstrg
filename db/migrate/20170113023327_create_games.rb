@@ -10,6 +10,7 @@ class CreateGames < ActiveRecord::Migration
       t.integer :timeout_visitors, default:  3     , null: false
       t.integer :quarter         , default:  1     , null: false
       t.integer :time_left       , default: 15 * 60, null: false
+      t.boolean :clock_stopped   , default: true   , null: false
       t.boolean :home_has_ball   , default: true   , null: false
       t.integer :ball_on         , default: 35     , null: false
       t.integer :down            , default:  1     , null: false
