@@ -42,6 +42,10 @@ class Game < ActiveRecord::Base
     playing? && defense_human?
   end
 
+  def clock_runs_out?
+    end_of_quarter? || end_of_half? || end_of_game?
+  end
+
   def prompt
     return 'choose offense' if choose_offense?
     return 'choose defense' if choose_defense?
@@ -118,6 +122,11 @@ class Game < ActiveRecord::Base
   public
 
   def play(value=nil)
+    unless clock_stopped
+      time_to_huddle = 40 - rand(0 .. 5)
+      advance_clock(time_to_huddle)
+      return if clock_runs_out?
+    end
     game_snapshot = GameSnapshot.take_snapshot_of(self)
 
     value = nil if Game.next_plays.keys.include?(value)
@@ -140,12 +149,12 @@ class Game < ActiveRecord::Base
     else
       yardage_play(@result)
     end
+    @announcement = Announcer.announce(@result, self)
+    @result.time_to_take = (@announcement.total_time / 1000.0).ceil - 1
     advance_clock(Clocker.time_to_take(@result, self))
 
     game_snapshot.update_scores
     @result.record(self, game_snapshot)
-
-    @announcement = Announcer.announce(@result, self)
   end
 
   def advance_to_next_quarter
