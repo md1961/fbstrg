@@ -129,6 +129,7 @@ class Game < ActiveRecord::Base
       return
     end
 
+    @previous_spot = ball_on
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
@@ -224,7 +225,6 @@ class Game < ActiveRecord::Base
           play.yardage = (ball_on / 2).to_i - ball_on
         end
       end
-      @previous_spot = ball_on
       self.ball_on += play.yardage
       if ball_on >= 100
         play.yardage -= ball_on - 100
