@@ -1,4 +1,6 @@
 class Game < ActiveRecord::Base
+  extend GameEnum
+
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
   has_many :plays         , dependent: :destroy
@@ -7,9 +9,6 @@ class Game < ActiveRecord::Base
   attr_reader   :defensive_play, :result, :defensive_play_set,
                 :previous_spot, :announcement
   attr_accessor :offensive_play, :offensive_play_set, :error_message
-
-  enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
-  enum status: {huddle: 0, playing: 1, end_of_quarter: 2, end_of_half: 3, end_of_game: 4}
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20

@@ -1,10 +1,9 @@
 class GameSnapshot < ActiveRecord::Base
+  extend GameEnum
+
   belongs_to :game
 
   delegate :home_team, :visitors, to: :game
-
-  enum next_play: {kickoff: 0, extra_point: 1, two_point_conversion: 2, scrimmage: 3}
-  enum status: {playing: 0, huddle: 1, end_of_quarter: 2, end_of_half: 3, end_of_game: 4}
 
   def self.take_snapshot_of(game)
     attrs = game.attributes
