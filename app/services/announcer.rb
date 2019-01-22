@@ -35,7 +35,12 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     air_yardage = 0
     run_yardage_after = 0
-    if play.sacked?
+    if play.field_goal?
+      announcement.add("Snap", 1000)
+      time = (run_from + 7 + 10) * 50 - 500
+      announcement.add("Kick is up, and it's", time)
+      announcement.add("Kick is up, and it's #{play.scoring}", 2000)
+    elsif play.sacked?
       air_yardage = determine_air_yardage(offensive_play, play)
       time = [air_yardage / 10.0 * 1200, 1000].max + rand(0 .. 2000)
       announcement.set_time_to_last(time)
@@ -59,7 +64,7 @@ module Announcer
       if play.throw?
         time = [air_yardage / 10.0 * 1200, 1000].max + rand(0 .. 1000)
         announcement.set_time_to_last(time)
-        announcement.add("Throws", time)
+        announcement.add("Throws", time + rand(-500 .. 500))
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
       else # kick_and_return?
