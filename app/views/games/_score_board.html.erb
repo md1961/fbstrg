@@ -12,7 +12,9 @@
     <td><%= game.visitors.abbr %></td>
     <td class="numeric"><%= game.score_visitors %></td>
     <td><%= '.' * game.timeout_visitors %></td>
-    <td><%= time_left_display(game.time_left) %></td>
+    <td class="<%= game.clock_stopped ? '' : 'elapsing' %>">
+      <%= time_left_display(game.time_left) %>
+    </td>
     <td><%= ball_on_display(game) %></td>
   </tr>
 <% end -%>
