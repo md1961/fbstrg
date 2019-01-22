@@ -1,7 +1,7 @@
 require 'awesome_print'
 AwesomePrint.pry!
 
-require 'hirb'
+#require 'hirb'
 if defined? Hirb
   # Slightly dirty hack to fully support in-session Hirb.disable/enable toggling
   Hirb::View.instance_eval do
