@@ -139,7 +139,7 @@ class Game < ActiveRecord::Base
     else
       yardage_play(@result)
     end
-    advance_clock(@result.time_to_take)
+    advance_clock(Clocker.time_to_take(@result, self))
 
     game_snapshot.update_scores
     @result.record(self, game_snapshot)

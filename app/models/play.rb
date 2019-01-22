@@ -9,7 +9,7 @@ class Play < ActiveRecord::Base
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
-  attr_accessor :scoring
+  attr_accessor :scoring, :time_to_take
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
@@ -121,22 +121,6 @@ class Play < ActiveRecord::Base
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
-  def time_to_take
-    t = if extra_point?
-      0
-    elsif incomplete? || penalty? || fumble? || field_goal? || kick_and_return?
-      15
-    elsif intercepted?
-      30
-    elsif yardage >= 20
-      45
-    else
-      30
-    end
-    t -= 15 if out_of_bounds?
-    [t, 0].max
-  end
-
   def change_due_to(game)
     if intercepted? && game.ball_on + yardage >= 110
       self.incomplete!
@@ -158,7 +142,7 @@ class Play < ActiveRecord::Base
     a << fumble unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
-    a << "(#{time_to_take}sec)"
+    a << "(#{time_to_take || '? '}sec)"
     a << scoring if scoring.present?
     a.join(' ')
   end
