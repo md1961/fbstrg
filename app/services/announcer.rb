@@ -38,8 +38,9 @@ module Announcer
     if play.sacked?
       air_yardage = determine_air_yardage(offensive_play, play)
       time = [air_yardage / 10.0 * 1000, 1000].max + rand(0 .. 2000)
+      announcement.set_time_to_last(time)
       text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
-      announcement.add(text, time)
+      announcement.add(text, 1000)
       if play.scoring == 'SAFETY'
         announcement.add("SAFETY", 1000)
       else
@@ -57,13 +58,15 @@ module Announcer
         end
       if play.throw?
         time = [air_yardage / 10.0 * 1500, 1000].max + rand(0 .. 1000)
+        announcement.set_time_to_last(time)
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
-        announcement.add(text, time)
+        announcement.add(text, 1000)
       else # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
       end
     end
+
     if play.on_ground? || play.complete? || play.intercepted? || play.kick_and_return?
       if offensive_play.draw?
         time = play.yardage < 0 ? 500 : 1000
@@ -121,8 +124,10 @@ module Announcer
           time = 2000 if offensive_play.sweep?
           "Pitch"
         when 7, 10 .. 20
+          time = 1500
           "Drop back"
         when 9
+          time = 1500
           play.on_ground? ? "Hand off" : "Drop back"
         else
           "???"
