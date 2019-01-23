@@ -128,13 +128,13 @@ class Play < ActiveRecord::Base
     elsif field_goal?
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
-      if rand(100) < pct_blocked
+      if rand * 100 < pct_blocked
         field_goal_blocked!
         rand(4).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
         self.yardage = -7 - rand(10)
       end
     elsif punt_and_return?
-      if false
+      if rand * 100 < 1.0
         punt_blocked!
         rand(6).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
         self.yardage = -13 - rand(5)
