@@ -15,12 +15,16 @@ class GameSnapshot < ActiveRecord::Base
     100 - ball_on <= yard_to_go
   end
 
-  def build_game
-    attrs = attributes
-    attrs.delete('game_id')
-    attrs['home_team_id'] = game.home_team_id
-    attrs['visitors_id' ] = game.visitors_id
-    Game.new(attrs)
+  def attributes_for_game
+    attributes.dup.tap { |attrs|
+      attrs.delete('id')
+      attrs.delete('game_id')
+      attrs.delete('play_id')
+      attrs.delete('created_at')
+      attrs.delete('updated_at')
+      attrs['home_team_id'] = game.home_team_id
+      attrs['visitors_id' ] = game.visitors_id
+    }
   end
 
   def offense
