@@ -24,7 +24,7 @@ module Announcer
   def announce(play, game)
     offensive_play = game.offensive_play
     announcement = Views::Announcement.new
-    if offensive_play.normal? || offensive_play.punt?
+    if offensive_play.normal? || (offensive_play.punt? && !play.punt_blocked?)
       announcement.add("Snap", 1000)
       time = offensive_play.normal? ? 1000 : 2500
       announcement.add(*first_announce(offensive_play, play))
@@ -35,14 +35,14 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     air_yardage = 0
     run_yardage_after = 0
-    if play.field_goal? || play.field_goal_blocked?
+    if play.field_goal? || play.extra_point? || play.field_goal_blocked? || play.punt_blocked?
       announcement.add("Snap", 1000)
-      if play.field_goal_blocked?
+      if play.field_goal_blocked? || play.punt_blocked?
         announcement.add("BLOCKED", 1500)
         team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
         announcement.add("Recovered by #{team} #{at_yard_line(game.ball_on)}", 2000)
       else
-        time = (run_from + 7 + 10) * 50 - 500
+        time = (100 - run_from + 7 + 10) * 50 - 500
         announcement.add("Kick is up, and it's", time)
         announcement.add("Kick is up, and it's #{play.scoring}", 2000)
       end
