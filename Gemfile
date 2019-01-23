@@ -56,8 +56,8 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'awesome_print', require: 'ap'
-  # gem 'hirb'
-  # gem 'hirb-unicode'
+  gem 'hirb'
+  gem 'hirb-unicode'
   gem 'pry-doc'
   gem 'pry-stack_explorer'
 end
