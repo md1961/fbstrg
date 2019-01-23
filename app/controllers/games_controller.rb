@@ -39,8 +39,8 @@ class GamesController < ApplicationController
     else
       @game.offensive_play     = OffensivePlay   .find_by(id: session[:offensive_play_id])
       @game.offensive_play_set = OffensivePlaySet.find_by(id: session[:offensive_play_set_id])
-      unless @game.offensive_play
-        @game.huddle!
+      if params[:play] == 'cancel' || !@game.offensive_play
+        @game.cancel_offensive_play
         render :show and return
       end
       @game.play(params[:play])
