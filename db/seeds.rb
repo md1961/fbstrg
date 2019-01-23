@@ -134,24 +134,24 @@ PRO_STYLE_RESULTS = [
   %w(0 -1 +15 +2 +2 +2 -2 +15 +5 +5),
   %w(0 +2 -3 +3 +4 +7 +8 -3 +13 +18),
 
-  %w(-4 -1 fmb pen+15 -3 +6 +9ob +2 +21ob +25ob),
+  %w(-4 -1 fmb +4 -3 +6 +9ob +2 +21ob +25ob),
   %w(-2 +1ob -4 fmb +7 +10 +13ob -6 +20ob long),
   %w(+1 +2 -2 +2 +10 -2 +5 -3 +12 +22),
   %w(+3 -1 +9 +4 +2 0 fmb +15 +9 +11),
 
-  %w(pen-15 cmp+13ob +5 incmp +20 incmp int_opp-25 cmp+25 +5 incmp),
-  %w(cmp+3 cmp+6 incmp cmp+5ob cmp+3ob cmp+1 incmp cmp-2 cmp+17ob pen+5af),
+  %w(-5 cmp+13ob +5 incmp +20 incmp int_opp-25 cmp+25 +5 incmp),
+  %w(cmp+3 cmp+6 incmp cmp+5ob cmp+3ob cmp+1 incmp cmp-2 cmp+17ob cmp+4ob),
   %w(cmp+14ob incmp int_opp+7 cmp+7ob cmp+5ob cmp+4ob cmp+3ob incmp incmp incmp),
-  %w(cmp+9 incmp cmp+6 incmp incmp incmp cmp+11 cmp+6 cmp+4 pen-15),
+  %w(cmp+9 incmp cmp+6 incmp incmp incmp cmp+11 cmp+6 cmp+4 cmp+5),
 
   %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob sck-10 incmp cmp+12 incmp incmp),
   %w(cmp+19 cmp+16 cmp+11 cmp+8 incmp incmp cmp+4 incmp incmp incmp),
   %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp sck-5),
-  %w(long long sck-15 +11ob pen-15 sck-20 sck-15 fmb long long),
+  %w(long long sck-15 +11ob -5 sck-20 sck-15 fmb long long),
 
   %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp sck-15ob int_opp+20 incmp),
   %w(cmp+45 cmp+35 sck-5 cmp+35 cmp+30 int_opp-30 incmp incmp incmp incmp),
-  %w(cmp+long cmp+long incmp cmp+35ob sck-15 incmp incmp incmp pen+30af int_opp-30),
+  %w(cmp+long cmp+long cmp+30 cmp+35ob sck-15 incmp incmp incmp incmp int_opp-30),
   %w(cmp+35 cmp+30 incmp incmp incmp incmp cmp+35ob cmp+30ob incmp int_opp-25),
 ]
 STDOUT.puts "Creating PlayResultChart (Pro style)..."
