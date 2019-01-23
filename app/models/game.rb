@@ -62,13 +62,16 @@ class Game < ActiveRecord::Base
 
   def determine_offensive_play(play_input)
     return if timeout?(play_input)
-    if offense_human?
+    @offensive_play_set = nil
+    if offense_human? || OffensivePlay.find_by(number: play_input.to_i)
       play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
       play = OffensivePlay.find_by(number: play_input.to_i)
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       self.error_message = "Illegal offensive play '#{play_input}'" unless play
       @offensive_play = play
-      @offensive_play_set = nil
+    elsif play_input != 'scrimmage'
+      self.error_message = "Illegal offensive play '#{play_input}'"
+      @offensive_play = nil
     else
       offensive_strategy = offense.offensive_strategy
       @offensive_play = offensive_strategy.choose_play(self)
