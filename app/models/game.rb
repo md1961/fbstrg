@@ -69,7 +69,7 @@ class Game < ActiveRecord::Base
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       self.error_message = "Illegal offensive play '#{play_input}'" unless play
       @offensive_play = play
-    elsif play_input != 'scrimmage'
+    elsif !Game.next_plays.keys.include?(play_input)
       self.error_message = "Illegal offensive play '#{play_input}'"
       @offensive_play = nil
     else
