@@ -175,7 +175,7 @@ class Game < ActiveRecord::Base
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
-    if @result.field_goal? || @result.extra_point?
+    if @result.field_goal? || @result.extra_point? || @result.field_goal_blocked?
       try_field_goal(@result)
     elsif @result.possession_changing?
       change_possesion(@result.yardage)
@@ -230,7 +230,9 @@ class Game < ActiveRecord::Base
 
     def try_field_goal(play)
       result = 'NO GOOD'
-      if play.yardage >= 100 - ball_on
+      if play.field_goal_blocked?
+        play.fumble_rec_by_own? ? yardage_play(play) : change_possesion(play.yardage)
+      elsif play.yardage >= 100 - ball_on
         score(play.field_goal? ? 3 : 1)
         result = 'GOOD'
       elsif play.field_goal?

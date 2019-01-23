@@ -82,8 +82,8 @@ class Play < ActiveRecord::Base
     play = new
     play.field_goal!
     percentile = rand(1 .. 100)
-    play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile) \
-                                    : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile)
+    play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile).round \
+                                    : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile).round
     play
   end
 
@@ -125,6 +125,20 @@ class Play < ActiveRecord::Base
     if intercepted? && game.ball_on + yardage >= 110
       self.incomplete!
       self.yardage = 0
+    elsif field_goal?
+      length = 100 - game.ball_on + 7 + 10
+      pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
+      if rand(100) < pct_blocked
+        field_goal_blocked!
+        rand(4).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
+        self.yardage = -7 - rand(10)
+      end
+    elsif punt?
+      if false
+        punt_blocked!
+        rand(6).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
+        self.yardage = -13 - rand(5)
+      end
     end
   end
 
@@ -139,7 +153,7 @@ class Play < ActiveRecord::Base
   def to_s
     a = []
     a << "#{result} #{yardage} yard"
-    a << fumble unless no_fumble?
+    a << fumble_to_s unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
     a << "(#{time_to_take || '? '}sec)"
@@ -151,5 +165,9 @@ class Play < ActiveRecord::Base
 
     def self.long_yardage
       30 + rand(21)
+    end
+
+    def fumble_to_s
+      field_goal_blocked? || punt_blocked? ? fumble.sub('fumble_', '') : fumble
     end
 end
