@@ -31,6 +31,10 @@ class OffensivePlaySet < ActiveRecord::Base
           next if choice.offensive_play.inside_20?
           choice.weight = 0
         end
+      elsif game.ball_on <= 30 + rand(0 .. 10)
+        offensive_play_set_choices.find { |choice|
+          choice.offensive_play.razzle_dazzle?
+        }.weight = 0
       end
       if game.yard_to_go > 1
         offensive_play_set_choices.find { |choice|
