@@ -17,7 +17,9 @@ class GamesController < ApplicationController
 
   def update
     @game_snapshot_prev = nil
-    if tampering_game?(params[:play])
+    if params[:play] == 'revert'
+      @game.revert!
+    elsif tampering_game?(params[:play])
       @game.tamper(params[:play])
     elsif @game.end_of_game?
       # No action.
