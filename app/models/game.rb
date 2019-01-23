@@ -61,6 +61,7 @@ class Game < ActiveRecord::Base
   end
 
   def determine_offensive_play(play_input)
+    return if timeout?(play_input)
     if offense_human?
       play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
       play = OffensivePlay.find_by(number: play_input.to_i)
@@ -79,6 +80,35 @@ class Game < ActiveRecord::Base
   end
 
   private
+
+    def timeout?(play_input)
+      is_offense = \
+        case play_input.upcase
+        when 'T'
+          defense_human? ? offense_human? : true
+        when 'TO'
+          true
+        when 'TD'
+          false
+        else
+          return false
+        end
+      return false if timeout_left(is_offense).zero?
+      use_timeout(is_offense)
+      return true
+    end
+
+    def timeout_left(is_offense)
+      is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
+      is_home ? timeout_home : timeout_visitors
+    end
+
+    def use_timeout(is_offense)
+      is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
+      is_home ? self.timeout_home -= 1 : self.timeout_visitors -= 1
+      self.clock_stopped = true
+      save!
+    end
 
     def play_result_from_chart(defensive_play = nil)
       if defensive_play

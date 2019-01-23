@@ -31,7 +31,7 @@ class GamesController < ApplicationController
       end
     elsif @game.huddle?
       @game.determine_offensive_play(params[:play]).tap do |play|
-        session[:offensive_play_id]     = play.id
+        session[:offensive_play_id]     = play&.id
         session[:offensive_play_set_id] = @game.offensive_play_set&.id
       end
     else
