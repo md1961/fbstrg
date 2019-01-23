@@ -35,11 +35,17 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     air_yardage = 0
     run_yardage_after = 0
-    if play.field_goal?
+    if play.field_goal? || play.field_goal_blocked?
       announcement.add("Snap", 1000)
-      time = (run_from + 7 + 10) * 50 - 500
-      announcement.add("Kick is up, and it's", time)
-      announcement.add("Kick is up, and it's #{play.scoring}", 2000)
+      if play.field_goal_blocked?
+        announcement.add("BLOCKED", 1500)
+        team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
+        announcement.add("Recovered by #{team} #{at_yard_line(game.ball_on)}", 2000)
+      else
+        time = (run_from + 7 + 10) * 50 - 500
+        announcement.add("Kick is up, and it's", time)
+        announcement.add("Kick is up, and it's #{play.scoring}", 2000)
+      end
     elsif play.sacked?
       air_yardage = determine_air_yardage(offensive_play, play)
       time = [air_yardage / 10.0 * 1200, 1000].max + rand(0 .. 2000)
@@ -91,9 +97,9 @@ module Announcer
         end
       end
       text = \
-        if !play.no_fumble?
+        if play.fumble?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
-          play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPP"
+          play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.scoring.blank?
           verb = play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
