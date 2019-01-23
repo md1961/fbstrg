@@ -201,6 +201,13 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def cancel_offensive_play
+    return unless playing?
+    self.offensive_play = nil
+    self.offensive_play_set = nil
+    huddle!
+  end
+
   def tamper(value)
     self.error_message = nil
     attrs = value.scan(/(\w+):\s+[+-]?(\d+)/).map { |k, v| [k, v.to_i] }.to_h
