@@ -49,7 +49,7 @@ module Announcer
       if play.scoring == 'SAFETY'
         announcement.add("SAFETY", 1000)
       else
-        announcement.add("Down #{at_yard_line(game.ball_on)}", 1000)
+        announcement.add("Down #{at_yard_line(game.ball_on)}", 2000)
       end
     elsif play.throw? || play.kick_and_return?
       air_yardage = determine_air_yardage(offensive_play, play)
@@ -95,15 +95,16 @@ module Announcer
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPP"
         elsif play.scoring.blank?
+          verb = play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
-            "Down #{at_yard_line(game.ball_on)}"
+            "#{verb} #{at_yard_line(game.ball_on)}"
           elsif play.yardage < 0
-            "Stopped behind the scrimmage"
+            "#{verb} behind the line of scrimmage"
           elsif play.yardage.zero?
-            "Stopped at the scrimmage"
+            "#{verb} at the line of scrimmage"
           else
             at = is_long_gain ? " #{at_yard_line(game.ball_on)}" : ""
-            "Stopped#{at} for #{play.yardage} yard gain"
+            "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
           announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown'
@@ -111,6 +112,7 @@ module Announcer
         end
       announcement.add(text, 2000)
     end
+    announcement.set_time_to_last(2000)
     announcement
   end
 
