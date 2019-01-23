@@ -133,7 +133,7 @@ class Play < ActiveRecord::Base
         rand(4).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
         self.yardage = -7 - rand(10)
       end
-    elsif punt?
+    elsif punt_and_return?
       if false
         punt_blocked!
         rand(6).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
