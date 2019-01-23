@@ -160,6 +160,13 @@ defensive_plays = DefensivePlay.order(:name)
 PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
   STDOUT.puts "  for OffensivePlay '#{offensive_play.number}'..."
   row.zip(defensive_plays) do |result, defensive_play|
+    begin
+      result.split('_or_').each do |r|
+        Play.parse(r)
+      end
+    rescue Exceptions::IllegalResultStringError => e
+      raise "#{e} for '#{offensive_play}' x '#{defensive_play}'"
+    end
     result_chart.play_results.create!(offensive_play: offensive_play, defensive_play: defensive_play, result: result)
   end
 end
