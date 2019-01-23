@@ -147,7 +147,7 @@ PRO_STYLE_RESULTS = [
   %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob sck-10 incmp cmp+12 incmp incmp),
   %w(cmp+19 cmp+16 cmp+11 cmp+8 incmp incmp cmp+4 incmp incmp incmp),
   %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp sck-5),
-  %w(long long -15 +11ob pen-15 -20 -15 fmb long long),
+  %w(long long sck-15 +11ob pen-15 sck-20 sck-15 fmb long long),
 
   %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp sck-15ob int_opp+20 incmp),
   %w(cmp+45 cmp+35 sck-5 cmp+35 cmp+30 int_opp-30 incmp incmp incmp incmp),
