@@ -23,29 +23,29 @@ class Play < ActiveRecord::Base
 
     play = new
 
-    case _result
+    case _result&.downcase
     when nil
       ;
     when 'long'
       yardage = '+long'
     when 'cmp'
-      play.result = :complete
+      play.complete!
     when 'incmp'
-      play.result = :incomplete
+      play.incomplete!
     when 'int_opp'
-      play.result = :intercepted
+      play.intercepted!
       # yardage is gain for defense.  converts it to gain for offense.
       yardage = -(yardage.to_i)
     when 'sck'
-      play.result = :sacked
+      play.sacked!
     when 'fmb'
       play.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
     when 'pen'
       play.penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
-        play.penalty = :off_penalty
+        play.off_penalty!
       else
-        play.penalty = :def_penalty
+        play.def_penalty!
         play.auto_firstdown = true if play.penalty_yardage >= 15
       end
     else
@@ -65,7 +65,7 @@ class Play < ActiveRecord::Base
 
   def self.kickoff
     play = new
-    play.result = :kickoff_and_return
+    play.kickoff_and_return!
     return_ends_at = 20 + rand(31) - 10
     play.yardage = 50 - return_ends_at + (50 - 35)
     play
@@ -73,14 +73,14 @@ class Play < ActiveRecord::Base
 
   def self.punt
     play = new
-    play.result = :punt_and_return
+    play.punt_and_return!
     play.yardage = 30 + rand(21) - 10
     play
   end
 
   def self.field_goal
     play = new
-    play.result = :field_goal
+    play.field_goal!
     percentile = rand(1 .. 100)
     play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile) \
                                     : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile)
@@ -89,7 +89,7 @@ class Play < ActiveRecord::Base
 
   def self.extra_point
     play = field_goal
-    play.result = :extra_point
+    play.extra_point!
     play
   end
 
