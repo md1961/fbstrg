@@ -1,7 +1,7 @@
 class DefensivePlaySet < ActiveRecord::Base
   include PlaySetTool
 
-  has_many :defensive_play_set_choices
+  has_many :defensive_play_set_choices, dependent: :destroy
 
   class << self
     DefensivePlaySet.pluck(:name).each do |name|

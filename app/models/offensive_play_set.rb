@@ -1,7 +1,7 @@
 class OffensivePlaySet < ActiveRecord::Base
   include PlaySetTool
 
-  has_many :offensive_play_set_choices
+  has_many :offensive_play_set_choices, dependent: :destroy
 
   attr_accessor :weight_correctors
 
