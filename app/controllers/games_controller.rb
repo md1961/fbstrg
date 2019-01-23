@@ -35,8 +35,12 @@ class GamesController < ApplicationController
         session[:offensive_play_set_id] = @game.offensive_play_set&.id
       end
     else
-      @game.offensive_play     = OffensivePlay   .find(       session[:offensive_play_id])
+      @game.offensive_play     = OffensivePlay   .find_by(id: session[:offensive_play_id])
       @game.offensive_play_set = OffensivePlaySet.find_by(id: session[:offensive_play_set_id])
+      unless @game.offensive_play
+        @game.huddle!
+        render :show and return
+      end
       @game.play(params[:play])
       if @game.error_message.blank?
         session[:offensive_play_id] = nil
