@@ -213,6 +213,22 @@ class Game < ActiveRecord::Base
     self.error_message = "Failed to update with '#{value}'" unless is_updated
   end
 
+  def revert!
+    raise "No GameSnapshot's" if game_snapshots.empty?
+    snapshot, snapshot_before = game_snapshots.order(play_id: :desc).first(2)
+    attrs = snapshot.attributes_for_game
+    attrs[:status] = :huddle
+    if snapshot_before
+      attrs[:score_home    ] = snapshot_before.score_home
+      attrs[:score_visitors] = snapshot_before.score_visitors
+    end
+    Game.transaction do
+      update!(attrs)
+      snapshot.play.destroy
+      snapshot.destroy
+    end
+  end
+
   private
 
     def firstdown
