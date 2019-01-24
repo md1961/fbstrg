@@ -96,7 +96,7 @@ module Announcer
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
-          end_on = play.possession_changing? ? 100 - game.ball_on : game.ball_on
+          end_on = play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
           long_gain_statements(start_on, end_on).each do |text, time|
             announcement.add(text, time)
           end
