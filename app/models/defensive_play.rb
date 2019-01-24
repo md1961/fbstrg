@@ -5,6 +5,14 @@ class DefensivePlay < ActiveRecord::Base
     [lineman, linebacker, cornerback, safety].join('-')
   end
 
+  def num_LBs
+    linebacker.to_i
+  end
+
+  def num_DBs
+    cornerback.to_i + safety.to_i
+  end
+
   def to_s
     "#{name}: #{formation}\n" \
       + "Run: #{against_run}, Pass: #{against_pass}"
