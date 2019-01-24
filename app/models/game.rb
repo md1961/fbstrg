@@ -175,11 +175,8 @@ class Game < ActiveRecord::Base
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
-    # FIXME: Consider merge #yardage_play() and #change_possesion() for touchdown by recovery, etc.
-    if @result.field_goal? || @result.extra_point? || @result.field_goal_blocked?
+    if @result.field_goal? || @result.extra_point?
       try_field_goal(@result)
-    elsif @result.possession_changing?
-      change_possesion(@result.yardage)
     else
       yardage_play(@result)
     end
@@ -254,9 +251,7 @@ class Game < ActiveRecord::Base
 
     def try_field_goal(play)
       result = 'NO GOOD'
-      if play.field_goal_blocked?
-        play.fumble_rec_by_own? ? yardage_play(play) : change_possesion(play.yardage)
-      elsif play.yardage >= 100 - ball_on
+      if play.yardage >= 100 - ball_on
         score(play.field_goal? ? 3 : 1)
         result = 'GOOD'
       elsif play.field_goal?
@@ -294,11 +289,17 @@ class Game < ActiveRecord::Base
         end
       end
       self.ball_on += play.yardage
+      toggle_possesion if play.possession_changing?
       if ball_on >= 100
         play.yardage -= ball_on - 100
         touchdown
       elsif ball_on <= 0
-        safety
+        if play.intercepted? || kick_and_return?
+          touchback
+        else
+          play.yardage += -ball_on
+          safety
+        end
       else
         self.yard_to_go -= play.yardage
         self.down += 1 if play.no_penalty?
@@ -308,12 +309,6 @@ class Game < ActiveRecord::Base
           toggle_possesion
         end
       end
-    end
-
-    def change_possesion(yard)
-      self.ball_on += yard
-      touchback if ball_on >= 100
-      toggle_possesion
     end
 
     def touchback
