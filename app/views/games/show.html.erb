@@ -22,7 +22,7 @@
   -%>
 
 <% announcement = @game.announcement -%>
-<div id="announce_board" data-announcements="<%= announcement %>"></div>
+<div id="announce_board" data-announcements="<%= announcement&.to_s(speed: @speed_of_announce) %>"></div>
 <table id="information_board" <%= 'hidden' if announcement && !announcement.empty? %>>
   <tr>
     <td><%= @game.result %></td>

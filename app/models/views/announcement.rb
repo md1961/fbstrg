@@ -28,11 +28,12 @@ class Announcement
     @statements.map(&:time).sum
   end
 
-  def to_s
+  def to_s(speed: nil)
+    speed = 1 if speed.to_i.zero?
     texts = @statements.map(&:text) + ['__END__']
     times = [0] + @statements.map(&:time)
     "[#{texts.zip(times).map { |text, time|
-      %Q!["#{text}",#{time}]!
+      %Q!["#{text}",#{time / speed}]!
     }.join(',')}]"
   end
 

@@ -8,9 +8,14 @@ class ApplicationController < ActionController::Base
   protected
 
     def configure
-      if params[:real].present?
+      if params[:real]
         session[:body_class] = params[:real] == 'true' ? 'real' : nil
       end
       @body_class = session[:body_class]
+
+      if params[:speed]
+        session[:speed_of_announce] = params[:speed].to_f
+      end
+      @speed_of_announce = session[:speed_of_announce]
     end
 end
