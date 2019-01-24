@@ -30,6 +30,9 @@ class Play < ActiveRecord::Base
       yardage = '+long'
     when 'cmp'
       play.complete!
+    when 'cmp_fmb'
+      play.complete!
+      play.determine_fumble_recovery
     when 'incmp'
       play.incomplete!
     when 'int_opp'
@@ -38,8 +41,11 @@ class Play < ActiveRecord::Base
       yardage = -(yardage.to_i)
     when 'sck'
       play.sacked!
+    when 'sck_fmb'
+      play.sacked!
+      play.determine_fumble_recovery
     when 'fmb'
-      play.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+      play.determine_fumble_recovery
     when 'pen'
       play.penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
@@ -119,6 +125,18 @@ class Play < ActiveRecord::Base
 
   def possession_changing?
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
+  end
+
+  def determine_fumble_recovery
+    pct_rec_by_own = \
+      if complete?
+        33
+      elsif sacked?
+        67
+      else
+        50
+      end
+    rand(100) < pct_rec_by_own ? fumble_rec_by_own! : fumble_rec_by_opponent!
   end
 
   def change_due_to(game)
