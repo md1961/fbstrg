@@ -175,6 +175,7 @@ class Game < ActiveRecord::Base
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
+    # FIXME: Consider merge #yardage_play() and #change_possesion() for touchdown by recovery, etc.
     if @result.field_goal? || @result.extra_point? || @result.field_goal_blocked?
       try_field_goal(@result)
     elsif @result.possession_changing?

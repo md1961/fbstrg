@@ -48,19 +48,25 @@ module Announcer
       end
     elsif play.sacked?
       air_yardage = determine_air_yardage(offensive_play, play)
-      time = [air_yardage / 10.0 * 1200, 1000].max + rand(0 .. 2000)
+      time = [air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
-      text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
-      announcement.add(text, 1000)
-      if play.scoring == 'SAFETY'
-        announcement.add("SAFETY", 1000)
+      if play.fumble?
+        announcement.add("FUMBLE", 2500)
+        text = play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
+        announcement.add(text, 2000)
       else
-        announcement.add("Down #{at_yard_line(game.ball_on)}", 2000)
+        text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
+        announcement.add(text, 1000)
+        if play.scoring == 'SAFETY'
+          announcement.add("SAFETY", 1000)
+        else
+          announcement.add("Down #{at_yard_line(game.ball_on)}", 2000)
+        end
       end
     elsif play.throw? || play.kick_and_return?
       air_yardage = determine_air_yardage(offensive_play, play)
       run_from += air_yardage
-      run_from = 100 - run_from if play.possession_changing?
+      run_from = 100 - run_from if play.intercepted? || play.kick_and_return?
       run_yardage_after = \
         if play.complete?
           play.yardage - air_yardage
@@ -68,9 +74,9 @@ module Announcer
           air_yardage - play.yardage
         end
       if play.throw?
-        time = [air_yardage / 10.0 * 1200, 1000].max + rand(0 .. 1000)
-        announcement.set_time_to_last(time)
-        announcement.add("Throws", time + rand(-500 .. 500))
+        time = [air_yardage / 10.0 * 1200, 1000].max
+        announcement.set_time_to_last(time * rand(1.0 .. 1.5))
+        announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
       else # kick_and_return?
@@ -90,7 +96,8 @@ module Announcer
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
         if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
-          long_gain_statements(start_on, game.ball_on).each do |text, time|
+          end_on = play.possession_changing? ? 100 - game.ball_on : game.ball_on
+          long_gain_statements(start_on, end_on).each do |text, time|
             announcement.add(text, time)
           end
           is_long_gain = true
