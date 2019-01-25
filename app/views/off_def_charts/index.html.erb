@@ -1,0 +1,12 @@
+<div class="off_def_charts_index">
+  <table id="off_def_chart">
+    <% @offensive_plays.each do |op| -%>
+      <tr>
+        <td><%= op %></td>
+        <% @defensive_plays.each do |dp| -%>
+          <td class="numeric"><%= @f_item.call(op, dp) %></td>
+        <% end -%>
+      </tr>
+    <% end -%>
+  </table>
+</div>
