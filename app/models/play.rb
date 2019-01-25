@@ -146,8 +146,8 @@ class Play < ActiveRecord::Base
         op = game.offensive_play
         self.yardage = rand(op.min_throw_yard .. op.max_throw_yard)
         # TODO: Adjust interception return yardage determination.
-        if rand(1).zero?
-          self.yardage -= rand(20) + rand(20)
+        if rand(2).zero?
+          self.yardage -= rand(21) + rand(21)
         end
       end
     end
