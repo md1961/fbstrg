@@ -1,12 +1,7 @@
 <div class="off_def_charts_index">
   <table id="off_def_chart">
     <thead>
-      <tr>
-        <th>
-        <% @defensive_plays.each do |dp| -%>
-          <th><%= [dp.name, dp.formation, dp.against_run, dp.against_pass].join('<br>').html_safe %></th>
-        <% end -%>
-      </tr>
+      <%= render 'defensive_play_header' %>
     </thead>
     <tbody>
       <% @offensive_plays.each do |op| -%>

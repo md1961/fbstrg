@@ -1,0 +1,21 @@
+<%
+  #names, formations, against_runs, against_passes
+  dp_attrs = \
+    @defensive_plays.each_with_object([[], [], [], []]) { |dp, acc|
+      acc[0] << dp.name
+      acc[1] << dp.formation
+      acc[2] << dp.against_run
+      acc[3] << dp.against_pass
+    }
+-%>
+
+<% dp_attrs.each_with_index do |dp_attrs, index| -%>
+  <tr>
+    <th>
+      <%= [nil, nil, 'against_run', 'against_pass'][index] %>
+    </th>
+    <% dp_attrs.each do |attr| -%>
+      <th><%= attr.split(', ').join('<br>').html_safe %></th>
+    <% end -%>
+  </tr>
+<% end -%>
