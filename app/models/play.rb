@@ -207,7 +207,7 @@ class Play < ActiveRecord::Base
       num_LBs = defensive_play.num_LBs
       num_DBs = defensive_play.num_DBs
       num_defenders = max_throw_yard >= 20 ? num_DBs : num_LBs
-      num_defenders * 0.4
+      num_defenders * 1.0
     end
 
     def fumble_to_s
