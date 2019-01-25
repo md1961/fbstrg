@@ -17,9 +17,7 @@
         <tr>
           <th class="border_right_thick"><%= op %></th>
           <% @defensive_plays.each do |dp| -%>
-            <td class="<%= @type ? 'numeric' : 'centered' %>">
-              <%= @f_item.call(op, dp) %>
-            </td>
+            <%= off_def_chart_item_display(op, dp) %>
           <% end -%>
         </tr>
       <% end -%>
