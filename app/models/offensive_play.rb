@@ -20,7 +20,8 @@ class OffensivePlay < ActiveRecord::Base
     end
   end
 
-  scope :pass_plays, -> { where.not(max_throw_yard: nil) }
+  scope :normal_plays, -> { where("number < 100") }
+  scope :pass_plays  , -> { where.not(max_throw_yard: nil) }
 
   def normal?
     number < 100
