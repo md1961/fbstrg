@@ -7,4 +7,30 @@
       margin-right: 10px;
     }
   }
+
+  table#off_def_chart {
+
+    td.long_gain {
+      color: white;
+      background-color: green;
+    }
+
+    td.gain {
+      background-color: lawngreen;
+    }
+
+    td.loss {
+      color: white;
+      background-color: magenta;
+    }
+
+    td.incomplete {
+      background-color: gray;
+    }
+
+    td.big_loss {
+      color: white;
+      background-color: red;
+    }
+  }
 }
