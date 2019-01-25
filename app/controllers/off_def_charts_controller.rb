@@ -12,7 +12,7 @@ class OffDefChartsController < ApplicationController
         [
           :pass_plays,
           ->(offensive_play, defensive_play) {
-            "%5.1f" % Play.pct_intercept_base(offensive_play, defensive_play)
+            Play.pct_intercept_base(offensive_play, defensive_play)
           }
         ]
       else
