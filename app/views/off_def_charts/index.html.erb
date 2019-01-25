@@ -1,4 +1,13 @@
 <div class="off_def_charts_index">
+  <div class="tab_navi">
+    <% OffDefChartsController::TYPES.each do |type| -%>
+      <span class="tab">
+        <% params = {type: type} if type -%>
+        <%= link_to_unless_current type.capitalize, off_def_charts_path(params) %>
+      </span>
+    <% end -%>
+  </div>
+
   <table id="off_def_chart" class="table_base">
     <thead>
       <%= render 'defensive_play_header' %>

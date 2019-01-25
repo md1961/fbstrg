@@ -1,7 +1,11 @@
 class OffDefChartsController < ApplicationController
 
+  DEFAULT_TYPE = 'result'
+  TYPES = [DEFAULT_TYPE, 'int']
+
   def index
     @type = params[:type]
+    redirect_to off_def_charts_path(type: DEFAULT_TYPE) if @type.blank?
     offensive_play_scope, @f_item = \
       case @type
       when 'int'
