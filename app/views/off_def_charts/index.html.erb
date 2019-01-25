@@ -15,7 +15,8 @@
     <tbody>
       <% @offensive_plays.each do |op| -%>
         <tr>
-          <th class="border_right_thick"><%= op %></th>
+          <th><%= op.number %></th>
+          <th class="border_right_thick"><%= op.name %></th>
           <% @defensive_plays.each do |dp| -%>
             <%= off_def_chart_item_display(op, dp) %>
           <% end -%>

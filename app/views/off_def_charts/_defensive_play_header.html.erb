@@ -14,11 +14,11 @@
            : index == 3 ? 'border_bottom_thick'
            : '' -%>
   <tr>
-    <th class="border_right_thick <%= clazz %>">
-      <%= [nil, nil, 'against_run', 'against_pass'][index] %>
+    <th colspan="2" class="border_right_thick <%= clazz %>">
+      <%= [nil, nil, 'against run', 'against pass'][index] %>
     </th>
     <% dp_attrs.each do |attr| -%>
-      <th class="<%= clazz %>">
+      <th ccolspan="2" class="<%= clazz %>">
         <%= attr.split(', ').join('<br>').html_safe %>
       </th>
     <% end -%>
