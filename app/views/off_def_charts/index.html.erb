@@ -1,12 +1,24 @@
 <div class="off_def_charts_index">
   <table id="off_def_chart">
-    <% @offensive_plays.each do |op| -%>
+    <thead>
       <tr>
-        <td><%= op %></td>
+        <th>
         <% @defensive_plays.each do |dp| -%>
-          <td class="numeric"><%= @f_item.call(op, dp) %></td>
+          <th><%= [dp.name, dp.formation, dp.against_run, dp.against_pass].join('<br>').html_safe %></th>
         <% end -%>
       </tr>
-    <% end -%>
+    </thead>
+    <tbody>
+      <% @offensive_plays.each do |op| -%>
+        <tr>
+          <th><%= op %></th>
+          <% @defensive_plays.each do |dp| -%>
+            <td class="<%= @type ? 'numeric' : 'centered' %>">
+              <%= @f_item.call(op, dp) %>
+            </td>
+          <% end -%>
+        </tr>
+      <% end -%>
+    </tbody>
   </table>
 </div>
