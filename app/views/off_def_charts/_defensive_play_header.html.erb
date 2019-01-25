@@ -10,12 +10,17 @@
 -%>
 
 <% dp_attrs.each_with_index do |dp_attrs, index| -%>
+  <% clazz = index <= 1 ? 'border_bottom_none border_top_none'
+           : index == 3 ? 'border_bottom_thick'
+           : '' -%>
   <tr>
-    <th>
+    <th class="border_right_thick <%= clazz %>">
       <%= [nil, nil, 'against_run', 'against_pass'][index] %>
     </th>
     <% dp_attrs.each do |attr| -%>
-      <th><%= attr.split(', ').join('<br>').html_safe %></th>
+      <th class="<%= clazz %>">
+        <%= attr.split(', ').join('<br>').html_safe %>
+      </th>
     <% end -%>
   </tr>
 <% end -%>

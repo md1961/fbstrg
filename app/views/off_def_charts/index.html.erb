@@ -1,12 +1,12 @@
 <div class="off_def_charts_index">
-  <table id="off_def_chart">
+  <table id="off_def_chart" class="table_base">
     <thead>
       <%= render 'defensive_play_header' %>
     </thead>
     <tbody>
       <% @offensive_plays.each do |op| -%>
         <tr>
-          <th><%= op %></th>
+          <th class="border_right_thick"><%= op %></th>
           <% @defensive_plays.each do |dp| -%>
             <td class="<%= @type ? 'numeric' : 'centered' %>">
               <%= @f_item.call(op, dp) %>
