@@ -141,7 +141,15 @@ class Play < ActiveRecord::Base
 
   def change_due_to(game)
     if complete? || incomplete?
-      # TODO: Implement Play#change_due_to() for pct and yardage.
+      if rand(0.0 .. 100.0) < self.class.pct_intercept(game)
+        self.intercepted!
+        op = game.offensive_play
+        self.yardage = rand(op.min_throw_yard .. op.max_throw_yard)
+        # TODO: Adjust interception return yardage determination.
+        if rand(1).zero?
+          self.yardage -= rand(20) + rand(20)
+        end
+      end
     end
 
     if intercepted? && game.ball_on + yardage >= 110
