@@ -1,26 +1,6 @@
 module Announcer
   module_function
 
-  # | 1  | 1      | Power Up Middle      | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 2  | 2      | Power Off Tackle     | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 3  | 3      | Quarterback Keep     | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 4  | 4      | Slant                | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 5  | 5      | Sweep                | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 6  | 6      | Reverse              | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 7  | 7      | Draw                 | 2019-01-15 22:31:43 UTC | 2019-01-15 22:31:43 UTC |
-  # | 8  | 8      | Trap                 | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 9  | 9      | Run Pass Option      | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 10 | 10     | Flair Pass           | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 11 | 11     | Sideline Pass        | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 12 | 12     | Look-In Pass         | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 13 | 13     | Screen Pass          | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 14 | 14     | Pop Pass             | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 15 | 15     | Button Hook Pass     | 2019-01-15 22:31:44 UTC | 2019-01-15 22:31:44 UTC |
-  # | 16 | 16     | Razzle Dazzle        | 2019-01-15 22:31:45 UTC | 2019-01-15 22:31:45 UTC |
-  # | 17 | 17     | Down & Out Pass      | 2019-01-15 22:31:45 UTC | 2019-01-15 22:31:45 UTC |
-  # | 18 | 18     | Down & In Pass       | 2019-01-15 22:31:45 UTC | 2019-01-15 22:31:45 UTC |
-  # | 19 | 19     | Long Bomb            | 2019-01-15 22:31:45 UTC | 2019-01-15 22:31:45 UTC |
-  # | 20 | 20     | Stop & Go Pass       | 2019-01-15 22:31:45 UTC | 2019-01-15 22:31:45 UTC |
   def announce(play, game)
     offensive_play = game.offensive_play
     announcement = Views::Announcement.new
@@ -50,6 +30,7 @@ module Announcer
       air_yardage = determine_air_yardage(offensive_play, play)
       time = [air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
+      announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5))
       if play.fumble?
         announcement.add("FUMBLE", 2500)
         text = play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
@@ -75,6 +56,7 @@ module Announcer
         end
       if play.throw?
         time = [air_yardage / 10.0 * 1200, 1000].max
+        announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
@@ -145,10 +127,10 @@ module Announcer
           "Pitch"
         when 7, 10 .. 20
           time = 1500
-          "Drop back"
+          "Back to throw"
         when 9
           time = 1500
-          play.on_ground? ? "Hand off" : "Drop back"
+          play.on_ground? ? "Hand off" : "Back to throw"
         else
           "???"
         end
