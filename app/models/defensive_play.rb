@@ -5,6 +5,10 @@ class DefensivePlay < ActiveRecord::Base
     [lineman, linebacker, cornerback, safety].join('-')
   end
 
+  def num_fronts
+    lineman.to_i
+  end
+
   def num_LBs
     linebacker.ends_with?('Blz') ? 1 : linebacker.to_i
   end
