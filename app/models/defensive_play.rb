@@ -13,6 +13,10 @@ class DefensivePlay < ActiveRecord::Base
     cornerback.to_i + safety.to_i
   end
 
+  def blitz?
+    [linebacker, cornerback, safety].any? { |s| s.ends_with?('Blz') }
+  end
+
   def to_s
     "#{name}: #{formation}\n" \
       + "Run: #{against_run}, Pass: #{against_pass}"
