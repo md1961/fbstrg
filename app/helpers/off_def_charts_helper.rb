@@ -12,11 +12,11 @@ module OffDefChartsHelper
           value = nil
           'incomplete'
         elsif play.fumble?
-          'big_loss'
+          'fumble'
         elsif (play.on_ground? || play.complete?)
           play.yardage >= 10 ? 'long_gain' : play.yardage > 0 ? 'gain' : 'loss'
         else
-          'big_loss'
+          'sacked'
         end
     end
     content_tag :td, value, class: classes.join(' ')
