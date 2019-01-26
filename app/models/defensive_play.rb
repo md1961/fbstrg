@@ -6,7 +6,7 @@ class DefensivePlay < ActiveRecord::Base
   end
 
   def num_LBs
-    linebacker.to_i
+    linebacker.ends_with?('Blz') ? 1 : linebacker.to_i
   end
 
   def num_DBs
