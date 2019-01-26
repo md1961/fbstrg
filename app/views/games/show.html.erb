@@ -38,8 +38,8 @@
 <div id="form_command">
   <br>
   <%= form_tag @game, method: :patch do %>
-    <%= @game.status %>
-    <%= text_field_tag :play, @game.prompt, autofocus: true, onfocus: "this.select();" %>
+    <%= @game.prompt %>
+    <%= text_field_tag :play, @game.default_play_input, autofocus: true, onfocus: "this.select();" %>
     <%= submit_tag :proceed %>
     <%= content_tag :div, @game.error_message, class: :error %>
   <% end -%>

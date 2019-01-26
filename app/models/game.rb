@@ -47,6 +47,10 @@ class Game < ActiveRecord::Base
   end
 
   def prompt
+    status
+  end
+
+  def default_play_input
     return 'choose offense' if choose_offense?
     return 'choose defense' if choose_defense?
     next_play
