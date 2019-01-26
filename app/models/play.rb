@@ -205,7 +205,9 @@ class Play < ActiveRecord::Base
     end
 
     def self.pct_intercept_base(offensive_play, defensive_play)
-      return 0.1 if offensive_play.screen_pass?
+      if offensive_play.screen_pass?
+        return defensive_play.blitz? ? 0.0 : 0.1 * defensive_play.num_fronts
+      end
       max_throw_yard = offensive_play.max_throw_yard
       num_LBs = defensive_play.num_LBs
       num_DBs = defensive_play.num_DBs
@@ -218,6 +220,9 @@ class Play < ActiveRecord::Base
     end
 
     def self.pct_sack_base(offensive_play, defensive_play)
+      if offensive_play.screen_pass?
+        return defensive_play.blitz? ? 0.0 : 0.1
+      end
       max_throw_yard = offensive_play.max_throw_yard
       num_linemen = defensive_play.lineman.to_i
       pct = max_throw_yard / 10.0 * 2
