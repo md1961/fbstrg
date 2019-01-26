@@ -8,7 +8,8 @@ class Game < ActiveRecord::Base
 
   attr_reader   :defensive_play, :result, :defensive_play_set,
                 :previous_spot, :announcement
-  attr_accessor :offensive_play, :offensive_play_set, :error_message
+  attr_accessor :offensive_play, :offensive_play_set,
+                :no_huddle, :error_message
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
@@ -47,7 +48,7 @@ class Game < ActiveRecord::Base
   end
 
   def prompt
-    status
+    "#{status}#{no_huddle ? '(no huddle)' : ''}"
   end
 
   def default_play_input
@@ -65,7 +66,7 @@ class Game < ActiveRecord::Base
   end
 
   def determine_offensive_play(play_input)
-    return if timeout?(play_input)
+    return if timeout_taken?(play_input) || with_no_huddle?(play_input)
     @offensive_play_set = nil
     play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
     if offense_human? || OffensivePlay.find_by(number: play_input.to_i)
@@ -88,7 +89,7 @@ class Game < ActiveRecord::Base
 
   private
 
-    def timeout?(play_input)
+    def timeout_taken?(play_input)
       is_offense = \
         case play_input.upcase
         when 'T'
@@ -103,6 +104,12 @@ class Game < ActiveRecord::Base
       return false if timeout_left(is_offense).zero?
       use_timeout(is_offense)
       return true
+    end
+
+    def with_no_huddle?(play_input)
+      return false unless play_input.upcase == 'NH'
+      @no_huddle = !@no_huddle unless clock_stopped
+      true
     end
 
     def timeout_left(is_offense)
@@ -160,10 +167,11 @@ class Game < ActiveRecord::Base
 
   def play(value=nil)
     unless clock_stopped
-      time_to_huddle = 40 - rand(0 .. 5)
+      time_to_huddle = (no_huddle ? 10 : 40) - rand(0 .. 5)
       advance_clock(time_to_huddle)
       return if clock_runs_out?
     end
+
     game_snapshot = GameSnapshot.take_snapshot_of(self)
 
     value = nil if Game.next_plays.keys.include?(value)

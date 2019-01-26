@@ -16,6 +16,7 @@ class GamesController < ApplicationController
   end
 
   def update
+    @game.no_huddle = session[:no_huddle]
     @game_snapshot_prev = nil
     if params[:play] == 'revert'
       @game.revert!
@@ -35,6 +36,7 @@ class GamesController < ApplicationController
       @game.determine_offensive_play(params[:play]).tap do |play|
         session[:offensive_play_id]     = play&.id
         session[:offensive_play_set_id] = @game.offensive_play_set&.id
+        session[:no_huddle] = @game.no_huddle
       end
     else
       @game.offensive_play     = OffensivePlay   .find_by(id: session[:offensive_play_id])
@@ -47,6 +49,8 @@ class GamesController < ApplicationController
       if @game.error_message.blank?
         session[:offensive_play_id] = nil
         @game.save!
+        @game.no_huddle = false
+        session[:no_huddle] = false
       end
       @game_snapshot_prev = @game.game_snapshots.order(:play_id).last
     end
