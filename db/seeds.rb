@@ -144,14 +144,14 @@ PRO_STYLE_RESULTS = [
   %w(cmp+14ob incmp incmp cmp+7ob cmp+5ob cmp+4ob cmp+3ob incmp incmp incmp),
   %w(cmp+9 incmp cmp+6 incmp incmp incmp cmp+11 cmp+6 cmp+4 cmp+5),
 
-  %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob sck-10 incmp cmp+12 incmp incmp),
+  %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob cmp+3 incmp cmp+12 incmp incmp),
   %w(cmp+19 cmp+16 cmp+11 cmp+8 incmp incmp cmp+4 incmp incmp incmp),
-  %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp sck-5),
+  %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp cmp+12),
   %w(long long sck-15 +11ob -5 sck-20 sck-15 fmb long long),
 
-  %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp sck-15ob incmp incmp),
-  %w(cmp+45 cmp+35 sck-5 cmp+35 cmp+30 incmp incmp incmp incmp incmp),
-  %w(cmp+long cmp+long cmp+30 cmp+35ob sck-15 incmp incmp incmp incmp incmp),
+  %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp incmp incmp incmp),
+  %w(cmp+45 cmp+35 cmp+25 cmp+35 cmp+30 incmp incmp incmp incmp incmp),
+  %w(cmp+long cmp+long cmp+30 cmp+35ob incmp incmp incmp incmp incmp incmp),
   %w(cmp+35 cmp+30 incmp incmp incmp incmp cmp+35ob cmp+30ob incmp incmp),
 ]
 STDOUT.puts "Creating PlayResultChart (Pro style)..."
