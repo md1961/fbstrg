@@ -141,8 +141,11 @@ class Play < ActiveRecord::Base
 
   def change_due_to(game)
     if complete? || incomplete?
-      if rand(0.0 .. 100.0) < self.class.pct_intercept(game)
-        self.intercepted!
+      if rand(0.0 .. 100.0) < self.class.pct_sack(game)
+        sacked!
+        self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
+      elsif rand(0.0 .. 100.0) < self.class.pct_intercept(game)
+        intercepted!
         op = game.offensive_play
         self.yardage = rand(op.min_throw_yard .. op.max_throw_yard)
         # TODO: Adjust interception return yardage determination.
@@ -208,6 +211,19 @@ class Play < ActiveRecord::Base
       num_DBs = defensive_play.num_DBs
       num_defenders = max_throw_yard >= 20 ? num_DBs : num_LBs
       num_defenders * 1.0
+    end
+
+    def self.pct_sack(game)
+      pct_sack_base(game.offensive_play, game.defensive_play)
+    end
+
+    def self.pct_sack_base(offensive_play, defensive_play)
+      max_throw_yard = offensive_play.max_throw_yard
+      num_linemen = defensive_play.lineman.to_i
+      pct = max_throw_yard / 10.0 * 2
+      pct += 5 if defensive_play.blitz?
+      pct += 2 if num_linemen >= 4
+      pct
     end
 
     def fumble_to_s
