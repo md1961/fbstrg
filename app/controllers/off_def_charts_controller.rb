@@ -1,7 +1,7 @@
 class OffDefChartsController < ApplicationController
 
   DEFAULT_TYPE = 'result'
-  TYPES = [DEFAULT_TYPE, 'int']
+  TYPES = [DEFAULT_TYPE, 'int', 'sack']
 
   def index
     @type = params[:type]
@@ -13,6 +13,13 @@ class OffDefChartsController < ApplicationController
           :pass_plays,
           ->(offensive_play, defensive_play) {
             Play.pct_intercept_base(offensive_play, defensive_play)
+          }
+        ]
+      when 'sack'
+        [
+          :pass_plays,
+          ->(offensive_play, defensive_play) {
+            Play.pct_sack_base(offensive_play, defensive_play)
           }
         ]
       else

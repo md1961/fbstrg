@@ -1,13 +1,15 @@
 module OffDefChartsHelper
 
   def off_def_chart_item_display(offensive_play, defensive_play)
-    classes = [@type == 'int' ? 'numeric' : 'centered']
+    classes = []
     value = @f_item.call(offensive_play, defensive_play)
-    if @type == 'int'
+    case @type
+    when 'int', 'sack'
+      classes << 'numeric'
       value = value.zero? ? '-' : "%5.1f" % value
-    elsif @type == 'result'
+    else
       play = Play.parse(value)
-      classes << \
+      classes << 'centered' << \
         if play.incomplete?
           value = nil
           'incomplete'
