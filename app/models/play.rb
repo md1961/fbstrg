@@ -9,22 +9,26 @@ class Play < ActiveRecord::Base
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
-  attr_accessor :scoring, :time_to_take
+  attr_accessor :scoring, :time_to_take, :air_yardage
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
   def self.parse(str, offensive_play)
-    if offensive_play.kickoff?
-      kickoff
-    elsif offensive_play.extra_point?
-      extra_point
-    elsif offensive_play.punt?
-      punt
-    elsif offensive_play.field_goal?
-      field_goal
-    else
-      parse_result(str, offensive_play)
-    end
+    instance = \
+      if offensive_play.kickoff?
+        kickoff
+      elsif offensive_play.extra_point?
+        extra_point
+      elsif offensive_play.punt?
+        punt
+      elsif offensive_play.field_goal?
+        field_goal
+      else
+        parse_result(str, offensive_play)
+      end
+    instance.tap { |i|
+      i.air_yardage = i.determine_air_yardage(offensive_play)
+    }
   end
 
   # TODO: Split into methods.
@@ -189,6 +193,18 @@ class Play < ActiveRecord::Base
         self.yardage = -13 - rand(5)
       end
     end
+  end
+
+  def determine_air_yardage(offensive_play)
+    return rand(55 .. 65) if offensive_play.kickoff?
+    return rand(40 .. 50) if offensive_play.punt?
+    return 0 unless offensive_play.min_throw_yard
+    min = offensive_play.min_throw_yard
+    max = offensive_play.max_throw_yard
+    min = [min, yardage].max if intercepted?
+    max = [max, yardage].min if complete?
+    min = max if max < min
+    rand(min .. max)
   end
 
   def record(game, game_snapshot)

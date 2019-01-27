@@ -13,7 +13,6 @@ module Announcer
     end
 
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
-    air_yardage = 0
     run_yardage_after = 0
     if play.field_goal? || play.extra_point? || play.field_goal_blocked? || play.punt_blocked?
       announcement.add("Snap", 1000)
@@ -27,8 +26,7 @@ module Announcer
         announcement.add("Kick is up, and it's #{play.scoring}", 2000)
       end
     elsif play.sacked?
-      air_yardage = determine_air_yardage(offensive_play, play)
-      time = [air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
+      time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
       announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5))
       if play.fumble?
@@ -45,17 +43,16 @@ module Announcer
         end
       end
     elsif play.throw? || play.kick_and_return?
-      air_yardage = determine_air_yardage(offensive_play, play)
-      run_from += air_yardage
+      run_from += play.air_yardage
       run_from = 100 - run_from if play.intercepted? || play.kick_and_return?
       run_yardage_after = \
         if play.complete?
-          play.yardage - air_yardage
+          play.yardage - play.air_yardage
         elsif play.possession_changing?
-          air_yardage - play.yardage
+          play.air_yardage - play.yardage
         end
       if play.throw?
-        time = [air_yardage / 10.0 * 1200, 1000].max
+        time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         announcement.add("Throws", time)
@@ -155,16 +152,5 @@ module Announcer
         time -= 50
         [prefix + at_yard_line(ball_on, true), [time, 750].max]
       }
-    end
-
-    def determine_air_yardage(offensive_play, play)
-      return rand(55 .. 65) if offensive_play.kickoff?
-      return rand(40 .. 50) if offensive_play.punt?
-      min = offensive_play.min_throw_yard
-      max = offensive_play.max_throw_yard
-      min = [min, play.yardage].max if play.intercepted?
-      max = [max, play.yardage].min if play.complete?
-      min = max if max < min
-      rand(min .. max)
     end
 end
