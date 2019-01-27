@@ -140,6 +140,8 @@ class Play < ActiveRecord::Base
   end
 
   def change_due_to(game)
+    return if game.offensive_play.nil? || game.defensive_play.nil?
+
     if complete? || incomplete?
       if rand(0.0 .. 100.0) < self.class.pct_sack(game)
         sacked!
