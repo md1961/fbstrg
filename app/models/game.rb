@@ -289,7 +289,7 @@ class Game < ActiveRecord::Base
       end
       self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
       self.next_play = :kickoff
-      self.status = :end_of_game if quarter > 4
+      finish_quarter
     end
 
     def yardage_play(play)
@@ -339,13 +339,22 @@ class Game < ActiveRecord::Base
         self.time_left = 0
         if (extra_point? || two_point_conversion?) && quarter <= 4
           # Another play.
-        elsif quarter >= 4 && score_home != score_visitors
-          self.status = :end_of_game
-        elsif quarter == 2
-          self.status = :end_of_half
         else
-          self.status = :end_of_quarter
+          finish_quarter
         end
+      end
+    end
+
+    def finish_quarter
+      self.clock_stopped = true
+      self.offensive_play = nil
+      self.offensive_play_set = nil
+      if quarter >= 4 && score_diff != 0
+        end_of_game!
+      elsif quarter == 2
+        end_of_half!
+      else
+        end_of_quarter!
       end
     end
 end
