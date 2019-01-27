@@ -137,11 +137,6 @@ class Game < ActiveRecord::Base
       result_chart.result(@offensive_play, @defensive_play)
     end
 
-    def get_plays(defensive_play = nil)
-      str_results = play_result_from_chart(defensive_play).split('_or_')
-      str_results.map { |str_result| Play.parse(str_result) }
-    end
-
     def get_play(value)
       # TODO: Shorten withou if ... elsif ...
       if offensive_play.kickoff?
@@ -152,14 +147,18 @@ class Game < ActiveRecord::Base
         Play.punt
       elsif offensive_play.field_goal?
         Play.field_goal
-      elsif value.blank?
-        get_plays.first
-      elsif defense_human?
-        defensive_play = DefensivePlay.find_by(name: value.upcase)
-        raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
-        get_plays(defensive_play).first
       else
-        Play.parse(value)
+        if defense_human?
+          defensive_play = DefensivePlay.find_by(name: value.upcase)
+          raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
+        end
+        result = \
+          if defense_human? || value.blank?
+            play_result_from_chart(defensive_play)
+          else
+            value
+          end
+        Play.parse(result)
       end
     end
 
