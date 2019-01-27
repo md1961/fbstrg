@@ -8,7 +8,7 @@ module OffDefChartsHelper
       classes << 'numeric'
       value = value.zero? ? '-' : "%5.1f" % value
     else
-      play = Play.parse(value)
+      play = Play.parse(value, offensive_play)
       classes << 'centered' << \
         if play.incomplete?
           value = nil

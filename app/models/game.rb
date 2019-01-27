@@ -158,7 +158,7 @@ class Game < ActiveRecord::Base
           else
             value
           end
-        Play.parse(result)
+        Play.parse(result, offensive_play)
       end
     end
 

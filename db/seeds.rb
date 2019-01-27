@@ -162,7 +162,7 @@ PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
   row.zip(defensive_plays) do |result, defensive_play|
     begin
       result.split('_or_').each do |r|
-        Play.parse(r)
+        Play.parse(r, offensive_play)
       end
     rescue Exceptions::IllegalResultStringError => e
       raise "#{e} for '#{offensive_play}' x '#{defensive_play}'"
