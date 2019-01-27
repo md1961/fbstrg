@@ -288,7 +288,7 @@ class Game < ActiveRecord::Base
       end
       self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
       self.next_play = :kickoff
-      finish_quarter
+      finish_quarter if quarter > 4
     end
 
     def yardage_play(play)
