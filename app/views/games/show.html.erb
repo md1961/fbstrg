@@ -6,21 +6,6 @@
 </table>
 
 <br>
-
-  <%#
-      previous_spot = 72
-      @game.instance_variable_set('@previous_spot', previous_spot)
-
-      @game.offensive_play = OffensivePlay.find(10)
-      @game.instance_variable_set('@defensive_play', DefensivePlay.find(3))
-      play = Play.parse('cmp+27')
-      play.scoring = ''#'TOUCHDOWN'
-      @game.ball_on = previous_spot + play.yardage
-      @game.instance_variable_set('@result', play)
-
-      @game.instance_variable_set('@announcement', Announcer.announce(play, @game))
-  -%>
-
 <% announcement = @game.announcement -%>
 <div id="announce_board" data-announcements="<%= announcement&.to_s(speed: @speed_of_announce) %>"></div>
 <table id="information_board" <%= 'hidden' if announcement && !announcement.empty? %>>
