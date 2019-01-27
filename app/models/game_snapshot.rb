@@ -1,4 +1,4 @@
-class GameSnapshot < ActiveRecord::Base
+class GameSnapshot < ApplicationRecord
   extend GameEnum
 
   belongs_to :game

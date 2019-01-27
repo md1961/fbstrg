@@ -1,4 +1,4 @@
-class Play < ActiveRecord::Base
+class Play < ApplicationRecord
   belongs_to :game, optional: true
   belongs_to :team, optional: true
   has_one :game_snapshot

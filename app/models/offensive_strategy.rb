@@ -1,4 +1,4 @@
-class OffensiveStrategy < ActiveRecord::Base
+class OffensiveStrategy < ApplicationRecord
   include StrategyTool
 
   attr_reader :play_set

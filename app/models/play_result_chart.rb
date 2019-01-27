@@ -1,4 +1,4 @@
-class PlayResultChart < ActiveRecord::Base
+class PlayResultChart < ApplicationRecord
   has_many :play_results, dependent: :destroy
 
   def result(offensive_play, defensive_play)
