@@ -138,10 +138,12 @@ module Announcer
     end
 
     def at_yard_line(ball_on, only_yardage = false)
+      side = ''
+      side = ball_on < 50 ? 'own ' : 'opponent ' if ball_on.between?(40, 60) && ball_on != 50
       return "in zone" if ball_on <= 0 || ball_on >= 100
       yardage = ball_on <= 50 ? ball_on : 100 - ball_on
       return yardage.to_s if only_yardage
-      "at #{yardage} yard line"
+      "at #{side}#{yardage} yard line"
     end
 
     def long_gain_statements(start_on, end_on)
