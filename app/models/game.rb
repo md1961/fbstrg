@@ -138,28 +138,17 @@ class Game < ActiveRecord::Base
     end
 
     def get_play(value)
-      # TODO: Shorten withou if ... elsif ...
-      if offensive_play.kickoff?
-        Play.kickoff
-      elsif offensive_play.extra_point?
-        Play.extra_point
-      elsif offensive_play.punt?
-        Play.punt
-      elsif offensive_play.field_goal?
-        Play.field_goal
-      else
-        if defense_human?
-          defensive_play = DefensivePlay.find_by(name: value.upcase)
-          raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
-        end
-        result = \
-          if defense_human? || value.blank?
-            play_result_from_chart(defensive_play)
-          else
-            value
-          end
-        Play.parse(result, offensive_play)
+      if defense_human?
+        defensive_play = DefensivePlay.find_by(name: value.upcase)
+        raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
       end
+      result = \
+        if offensive_play&.normal? && (defense_human? || value.blank?)
+          play_result_from_chart(defensive_play)
+        else
+          value
+        end
+      Play.parse(result, offensive_play)
     end
 
   public

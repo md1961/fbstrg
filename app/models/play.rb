@@ -13,8 +13,22 @@ class Play < ActiveRecord::Base
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
-  # TODO: Split into methods.
   def self.parse(str, offensive_play)
+    if offensive_play.kickoff?
+      kickoff
+    elsif offensive_play.extra_point?
+      extra_point
+    elsif offensive_play.punt?
+      punt
+    elsif offensive_play.field_goal?
+      field_goal
+    else
+      parse_result(str, offensive_play)
+    end
+  end
+
+  # TODO: Split into methods.
+  def self.parse_result(str, offensive_play)
     m = str.match(RE_STR_RESULT)
     raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
     _result = m[1]
