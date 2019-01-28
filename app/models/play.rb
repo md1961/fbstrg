@@ -195,6 +195,11 @@ class Play < ApplicationRecord
         self.yardage = -13 - rand(5)
       end
     end
+
+    if rand * 100 < pct_fumble(game)
+      determine_fumble_recovery
+      # TODO: Reduce yardage for fumble on the way.
+    end
   end
 
   def determine_air_yardage(offensive_play)
@@ -255,12 +260,15 @@ class Play < ApplicationRecord
       if offensive_play.screen_pass?
         return defensive_play.blitz? ? 0.0 : 0.1 * defensive_play.num_fronts
       end
+      divisor = offensive_play.flair_pass? || offensive_play.sideline_pass? ? 2 : 1
+      num_defenders_for_pass(offensive_play, defensive_play) * 1.0 / divisor
+    end
+
+    def self.num_defenders_for_pass(offensive_play, defensive_play)
       max_throw_yard = offensive_play.max_throw_yard
       num_LBs = defensive_play.num_LBs
       num_DBs = defensive_play.num_DBs
       num_defenders = max_throw_yard >= 20 ? num_DBs : num_LBs
-      divisor = offensive_play.flair_pass? || offensive_play.sideline_pass? ? 2 : 1
-      num_defenders * 1.0 / divisor
     end
 
     def self.pct_sack(game)
@@ -277,6 +285,27 @@ class Play < ApplicationRecord
       pct += 5 if defensive_play.blitz?
       pct += 2 if num_linemen >= 4
       pct
+    end
+
+    def pct_fumble(game)
+      pct_fumble_base(game.offensive_play, game.defensive_play)
+    end
+
+    def pct_fumble_base(offensive_play, defensive_play)
+      if on_ground?
+        1.0 + defensive_play.num_fronts * 0.2
+      elsif complete?
+        num_defenders = self.class.num_defenders_for_pass(offensive_play, defensive_play)
+        0.5 + num_defenders * 0.1
+      elsif sacked?
+        3.0 + (defensive_play.blitz? ? 3.0 : 0)
+      elsif kickoff_and_return?
+        2.0
+      elsif punt_and_return?
+        1.0
+      else
+        0.0
+      end
     end
 
     def fumble_to_s
