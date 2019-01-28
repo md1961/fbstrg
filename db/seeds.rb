@@ -130,14 +130,14 @@ end
 
 PRO_STYLE_RESULTS = [
   %w(-2 -1 +10 +1 +1 +2 +3 +7 +9 +10),
-  %w(-1 fmb -2 +3 +5 +7 +9 -1 +11 +14),
+  %w(-1 0 -2 +3 +5 +7 +9 -1 +11 +14),
   %w(0 -1 +15 +2 +2 +2 -2 +15 +5 +5),
   %w(0 +2 -3 +3 +4 +7 +8 -3 +13 +18),
 
-  %w(-4 -1 fmb +4 -3 +6 +9ob +2 +21ob +25ob),
-  %w(-2 +1ob -4 fmb +7 +10 +13ob -6 +20ob long),
+  %w(-4 -1 0 +4 -3 +6 +9ob +2 +21ob +25ob),
+  %w(-2 +1ob -4 0 +7 +10 +13ob -6 +20ob long),
   %w(+1 +2 -2 +2 +10 -2 +5 -3 +12 +22),
-  %w(+3 -1 +9 +4 +2 0 fmb +15 +9 +11),
+  %w(+3 -1 +9 +4 +2 0 +4 +15 +9 +11),
 
   %w(-5 cmp+13ob +5 incmp +20 incmp incmp cmp+25 +5 incmp),
   %w(cmp+3 cmp+6 incmp cmp+5ob cmp+3ob cmp+1 incmp cmp-2 cmp+17ob cmp+4ob),
@@ -147,7 +147,7 @@ PRO_STYLE_RESULTS = [
   %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob cmp+3 incmp cmp+12 incmp incmp),
   %w(cmp+19 cmp+16 cmp+11 cmp+8 incmp incmp cmp+4 incmp incmp incmp),
   %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp cmp+12),
-  %w(long long sck-15 +11ob -5 sck-20 sck-15 fmb long long),
+  %w(long long sck-15 +11ob -5 sck-10 sck-10 sck-15 long long),
 
   %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp incmp incmp incmp),
   %w(cmp+45 cmp+35 cmp+25 cmp+35 cmp+30 incmp incmp incmp incmp incmp),
