@@ -1,6 +1,4 @@
 #! /bin/sh
 
-bin/rake db:drop
-bin/rake db:create
-bin/rake db:migrate
-bin/rake db:seed
+bin/rails db:environment:set RAILS_ENV=development
+bin/rails db:drop db:create db:migrate db:seed
