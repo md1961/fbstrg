@@ -234,6 +234,15 @@ class Game < ApplicationRecord
     end
   end
 
+  def restore_from_json(str)
+    attrs = JSON.parse(str)
+    attrs.delete('id')
+    self.home_team = Team.find(attrs.delete('home_team_id'))
+    self.visitors  = Team.find(attrs.delete('visitors_id'))
+    update(attrs)
+    save!
+  end
+
   private
 
     def firstdown
