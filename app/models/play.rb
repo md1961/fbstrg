@@ -259,7 +259,8 @@ class Play < ActiveRecord::Base
       num_LBs = defensive_play.num_LBs
       num_DBs = defensive_play.num_DBs
       num_defenders = max_throw_yard >= 20 ? num_DBs : num_LBs
-      num_defenders * 1.0
+      divisor = offensive_play.flair_pass? || offensive_play.sideline_pass? ? 2 : 1
+      num_defenders * 1.0 / divisor
     end
 
     def self.pct_sack(game)
