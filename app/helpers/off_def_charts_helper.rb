@@ -8,17 +8,17 @@ module OffDefChartsHelper
       classes << 'numeric'
       value = value.zero? ? '-' : "%5.1f" % value
     else
-      play = Play.parse(value, offensive_play)
       classes << 'centered' << \
-        if play.incomplete?
+        if value == 'incmp'
           value = nil
           'incomplete'
-        elsif play.fumble?
+        elsif value.starts_with?('fmb')
           'fumble'
-        elsif (play.on_ground? || play.complete?)
-          play.yardage >= 10 ? 'long_gain' : play.yardage > 0 ? 'gain' : 'loss'
-        else
+        elsif value.starts_with?('sck')
           'sacked'
+        else
+          yardage = value.sub(/^cmp/, '').to_i
+          value.ends_with?('long') ? 'long_gain' : yardage >= 10 ? 'good_gain' : yardage > 0 ? 'gain' : 'loss'
         end
     end
     content_tag :td, value, class: classes.join(' ')
