@@ -1,4 +1,4 @@
-class CreateOffensivePlaySets < ActiveRecord::Migration
+class CreateOffensivePlaySets < ActiveRecord::Migration[4.2]
 
   def change
     create_table :offensive_play_sets do |t|

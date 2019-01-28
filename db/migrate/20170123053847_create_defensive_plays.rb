@@ -1,4 +1,4 @@
-class CreateDefensivePlays < ActiveRecord::Migration
+class CreateDefensivePlays < ActiveRecord::Migration[4.2]
 
   def change
     create_table :defensive_plays do |t|

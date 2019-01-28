@@ -1,4 +1,4 @@
-class CreateDefensiveStrategies < ActiveRecord::Migration
+class CreateDefensiveStrategies < ActiveRecord::Migration[4.2]
 
   def change
     create_table :defensive_strategies do |t|

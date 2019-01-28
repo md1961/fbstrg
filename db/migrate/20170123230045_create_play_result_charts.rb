@@ -1,4 +1,4 @@
-class CreatePlayResultCharts < ActiveRecord::Migration
+class CreatePlayResultCharts < ActiveRecord::Migration[4.2]
 
   def change
     create_table :play_result_charts do |t|
