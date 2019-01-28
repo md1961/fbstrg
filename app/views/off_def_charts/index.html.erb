@@ -2,8 +2,11 @@
   <div class="tab_navi">
     <% OffDefChartsController::TYPES.each do |type| -%>
       <span class="tab">
-        <% params = {type: type} if type -%>
-        <%= link_to_unless_current type.capitalize, off_def_charts_path(params) %>
+        <% params = {type: type} if type
+           label = type.capitalize + (type != 'result' ? '%' : '') -%>
+        <%= link_to_unless_current label, off_def_charts_path(params) do -%>
+          <span class="current"><%= label %></span>
+        <% end -%>
       </span>
     <% end -%>
   </div>
