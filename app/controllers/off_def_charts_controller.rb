@@ -1,7 +1,7 @@
 class OffDefChartsController < ApplicationController
 
   DEFAULT_TYPE = 'result'
-  TYPES = [DEFAULT_TYPE, 'int', 'sack']
+  TYPES = [DEFAULT_TYPE, 'int', 'sack', 'fumble']
 
   def index
     @type = params[:type]
@@ -20,6 +20,15 @@ class OffDefChartsController < ApplicationController
           :pass_plays,
           ->(offensive_play, defensive_play) {
             Play.pct_sack_base(offensive_play, defensive_play)
+          }
+        ]
+      when 'fumble'
+        play = Play.new
+        [
+          :normal_plays,
+          ->(offensive_play, defensive_play) {
+            offensive_play.run? ? play.on_ground! : play.complete!
+            play.send(:pct_fumble_base, offensive_play, defensive_play)
           }
         ]
       else

@@ -4,7 +4,7 @@ module OffDefChartsHelper
     classes = []
     value = @f_item.call(offensive_play, defensive_play)
     case @type
-    when 'int', 'sack'
+    when 'int', 'sack', 'fumble'
       classes << 'numeric'
       value = value.zero? ? '-' : "%5.1f" % value
     else
