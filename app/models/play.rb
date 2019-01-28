@@ -90,8 +90,6 @@ class Play < ActiveRecord::Base
   def self.kickoff
     play = new
     play.kickoff_and_return!
-    return_ends_at = 20 + rand(31) - 10
-    play.yardage = 50 - return_ends_at + (50 - 35)
     play
   end
 
@@ -202,13 +200,15 @@ class Play < ActiveRecord::Base
   def determine_air_yardage(offensive_play)
     @air_yardage = \
       if offensive_play.kickoff?
-        2.times.map { rand(25 .. 35) }.sum
+        2.times.map { rand(25 .. 35) }.sum.tap { |air_y|
+          self.yardage = air_y - (rand(21) + rand(21))
+        }
       elsif offensive_play.punt?
         3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
-          pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 50.0], air_y)
+          pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 60.0], air_y)
           is_returnable = rand * 100 < pct_returnable
           # TODO: Adjust punt return yardage determination.
-          self.yardage = air_y - (is_returnable ? rand(10) : 0)
+          self.yardage = air_y - (is_returnable ? rand(10) + rand(10) : 0)
         }
       elsif !offensive_play.min_throw_yard
         0
