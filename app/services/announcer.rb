@@ -58,7 +58,7 @@ module Announcer
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
-      else # kick_and_return?
+      elsif !play.fair_catch? # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
       end
     end
@@ -87,7 +87,7 @@ module Announcer
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.scoring.blank?
-          verb = play.out_of_bounds? ? "Out of bounds" : "Stopped"
+          verb = play.fair_catch? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
             "#{verb} #{at_yard_line(game.ball_on)}"
           elsif play.yardage < 0
