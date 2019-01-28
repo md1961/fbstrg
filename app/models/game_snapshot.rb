@@ -1,8 +1,8 @@
-class GameSnapshot < ActiveRecord::Base
+class GameSnapshot < ApplicationRecord
   extend GameEnum
 
   belongs_to :game
-  belongs_to :play
+  belongs_to :play, optional: true
 
   delegate :home_team, :visitors, to: :game
 

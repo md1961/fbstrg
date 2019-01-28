@@ -1,4 +1,4 @@
-class Game < ActiveRecord::Base
+class Game < ApplicationRecord
   extend GameEnum
 
   belongs_to :home_team, class_name: 'Team'

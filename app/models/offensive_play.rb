@@ -1,4 +1,4 @@
-class OffensivePlay < ActiveRecord::Base
+class OffensivePlay < ApplicationRecord
   has_many :play_results
 
   # Define methods such as OffensivePlay.power_up_middle, etc.

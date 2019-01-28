@@ -1,4 +1,4 @@
-class OffensivePlaySet < ActiveRecord::Base
+class OffensivePlaySet < ApplicationRecord
   include PlaySetTool
 
   has_many :offensive_play_set_choices, dependent: :destroy

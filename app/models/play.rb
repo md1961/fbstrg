@@ -1,6 +1,6 @@
-class Play < ActiveRecord::Base
-  belongs_to :game
-  belongs_to :team
+class Play < ApplicationRecord
+  belongs_to :game, optional: true
+  belongs_to :team, optional: true
   has_one :game_snapshot
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,

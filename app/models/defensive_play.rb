@@ -1,4 +1,4 @@
-class DefensivePlay < ActiveRecord::Base
+class DefensivePlay < ApplicationRecord
   has_many :play_results
 
   def formation
