@@ -27,7 +27,7 @@ class Play < ActiveRecord::Base
         parse_result(str, offensive_play)
       end
     instance.tap { |i|
-      i.air_yardage = i.determine_air_yardage(offensive_play)
+      i.determine_air_yardage(offensive_play)
     }
   end
 
@@ -98,7 +98,6 @@ class Play < ActiveRecord::Base
   def self.punt
     play = new
     play.punt_and_return!
-    play.yardage = 30 + rand(21) - 10
     play
   end
 
@@ -145,6 +144,10 @@ class Play < ActiveRecord::Base
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
+  def fair_catch?
+    punt_and_return? && yardage == air_yardage
+  end
+
   def determine_fumble_recovery
     pct_rec_by_own = \
       if complete?
@@ -157,6 +160,7 @@ class Play < ActiveRecord::Base
     rand(100) < pct_rec_by_own ? fumble_rec_by_own! : fumble_rec_by_opponent!
   end
 
+  # TODO: Change for coffin-corner, roll-into-zone for punt.
   def change_due_to(game)
     return if game.offensive_play.nil? || game.defensive_play.nil?
 
@@ -196,15 +200,26 @@ class Play < ActiveRecord::Base
   end
 
   def determine_air_yardage(offensive_play)
-    return rand(55 .. 65) if offensive_play.kickoff?
-    return rand(40 .. 50) if offensive_play.punt?
-    return 0 unless offensive_play.min_throw_yard
-    min = offensive_play.min_throw_yard
-    max = offensive_play.max_throw_yard
-    min = [min, yardage].max if intercepted?
-    max = [max, yardage].min if complete?
-    min = max if max < min
-    rand(min .. max)
+    @air_yardage = \
+      if offensive_play.kickoff?
+        2.times.map { rand(25 .. 35) }.sum
+      elsif offensive_play.punt?
+        3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
+          pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 50.0], air_y)
+          is_returnable = rand * 100 < pct_returnable
+          # TODO: Adjust punt return yardage determination.
+          self.yardage = air_y - (is_returnable ? rand(10) : 0)
+        }
+      elsif !offensive_play.min_throw_yard
+        0
+      else
+        min = offensive_play.min_throw_yard
+        max = offensive_play.max_throw_yard
+        min = [min, yardage].max if intercepted?
+        max = [max, yardage].min if complete?
+        min = max if max < min
+        rand(min .. max)
+      end
   end
 
   def record(game, game_snapshot)
