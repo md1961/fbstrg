@@ -1,0 +1,25 @@
+<div class="offensive_play_sets_index">
+  <table id="offensive_play_sets" class="table_base">
+    <thead>
+    </thead>
+    <tbody>
+      <tr>
+        <th colspan="2">
+        <% @play_sets.each do |play_set| -%>
+          <th><%= play_set %></th>
+        <% end -%>
+      </tr>
+      <% @offensive_plays.each do |op| -%>
+        <tr>
+          <th><%= op.number %></th>
+          <th><%= op.name %></th>
+          <% @play_sets.each do |play_set| -%>
+            <td class="numeric">
+              <%= play_set.offensive_play_set_choices.find_by(offensive_play: op)&.weight %>
+            </td>
+          <% end -%>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+</div>
