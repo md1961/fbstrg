@@ -169,10 +169,9 @@ class Play < ApplicationRecord
       elsif rand(0.0 .. 100.0) < self.class.pct_intercept(game)
         intercepted!
         op = game.offensive_play
-        self.yardage = rand(op.min_throw_yard .. op.max_throw_yard)
         # TODO: Adjust interception return yardage determination.
         if rand(2).zero?
-          self.yardage -= rand(21) + rand(21)
+          self.yardage = air_yardage - rand(21) + rand(21)
         end
       end
     end
