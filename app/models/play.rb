@@ -171,7 +171,7 @@ class Play < ApplicationRecord
         op = game.offensive_play
         # TODO: Adjust interception return yardage determination.
         if rand(2).zero?
-          self.yardage = air_yardage - rand(21) + rand(21)
+          self.yardage = air_yardage - (rand(21) + rand(21))
         end
       end
     end
