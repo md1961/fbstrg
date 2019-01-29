@@ -1,4 +1,4 @@
-class OffensivePlaySetsController < ApplicationController
+class PlaySetsController < ApplicationController
 
   def index
     @play_sets = OffensivePlaySet.all.includes(:offensive_play_set_choices)
