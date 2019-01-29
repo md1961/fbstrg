@@ -27,7 +27,7 @@ class OffDefChartsController < ApplicationController
         [
           :normal_plays,
           ->(offensive_play, defensive_play) {
-            offensive_play.run? ? play.on_ground! : play.complete!
+            play.result = offensive_play.run? ? :on_ground : :complete
             play.send(:pct_fumble_base, offensive_play, defensive_play)
           }
         ]

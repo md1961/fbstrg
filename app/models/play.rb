@@ -47,29 +47,29 @@ class Play < ApplicationRecord
     when 'long'
       yardage = '+long'
     when 'cmp'
-      play.complete!
+      play.result = :complete
     when 'cmp_fmb'
-      play.complete!
+      play.result = :complete
       play.determine_fumble_recovery
     when 'incmp'
-      play.incomplete!
+      play.result = :incomplete
     when 'int_opp'
-      play.intercepted!
+      play.result = :intercepted
       # yardage is gain for defense.  converts it to gain for offense.
       yardage = -(yardage.to_i)
     when 'sck'
-      play.sacked!
+      play.result = :sacked
     when 'sck_fmb'
-      play.sacked!
+      play.result = :sacked
       play.determine_fumble_recovery
     when 'fmb'
       play.determine_fumble_recovery
     when 'pen'
       play.penalty_yardage = yardage.to_i
       if yardage.start_with?('-')
-        play.off_penalty!
+        play.penalty = :off_penalty
       else
-        play.def_penalty!
+        play.penalty = :def_penalty
         play.auto_firstdown = true if play.penalty_yardage >= 15
       end
     else
@@ -89,19 +89,19 @@ class Play < ApplicationRecord
 
   def self.kickoff
     play = new
-    play.kickoff_and_return!
+    play.result = :kickoff_and_return
     play
   end
 
   def self.punt
     play = new
-    play.punt_and_return!
+    play.result = :punt_and_return
     play
   end
 
   def self.field_goal
     play = new
-    play.field_goal!
+    play.result = :field_goal
     percentile = rand(1 .. 100)
     play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile).round \
                                     : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile).round
@@ -110,7 +110,7 @@ class Play < ApplicationRecord
 
   def self.extra_point
     play = field_goal
-    play.extra_point!
+    play.result = :extra_point
     play
   end
 
@@ -155,7 +155,7 @@ class Play < ApplicationRecord
       else
         50
       end
-    rand(100) < pct_rec_by_own ? fumble_rec_by_own! : fumble_rec_by_opponent!
+    self.fumble = rand(100) < pct_rec_by_own ? :fumble_rec_by_own : :fumble_rec_by_opponent
   end
 
   # TODO: Change for coffin-corner, roll-into-zone for punt.
@@ -164,10 +164,10 @@ class Play < ApplicationRecord
 
     if complete? || incomplete?
       if rand(0.0 .. 100.0) < self.class.pct_sack(game)
-        sacked!
+        self.result = :sacked
         self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
       elsif rand(0.0 .. 100.0) < self.class.pct_intercept(game)
-        intercepted!
+        self.result = :intercepted
         op = game.offensive_play
         # TODO: Adjust interception return yardage determination.
         if rand(2).zero?
@@ -177,20 +177,20 @@ class Play < ApplicationRecord
     end
 
     if intercepted? && game.ball_on + yardage >= 110
-      self.incomplete!
+      self.result = :incomplete
       self.yardage = 0
     elsif field_goal?
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
-        field_goal_blocked!
-        rand(4).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
+        self.result = :field_goal_blocked
+        self.fumble = rand(4).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         self.yardage = -7 - rand(10)
       end
     elsif punt_and_return?
       if rand * 100 < 1.0
-        punt_blocked!
-        rand(6).zero? ? fumble_rec_by_own! : fumble_rec_by_opponent!
+        self.result = :punt_blocked
+        self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         self.yardage = -13 - rand(5)
       end
     end
