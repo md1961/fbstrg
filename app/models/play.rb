@@ -1,7 +1,7 @@
 class Play < ApplicationRecord
   belongs_to :game, optional: true
   belongs_to :team, optional: true
-  has_one :game_snapshot
+  has_one :game_snapshot, dependent: :destroy
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
@@ -229,9 +229,9 @@ class Play < ApplicationRecord
 
   def record(game, game_snapshot)
     self.game = game
+    self.game_snapshot = game_snapshot
     self.team = game_snapshot.offense
     self.number = game.plays.maximum(:number).to_i + 1
-    self.game_snapshot = game_snapshot
     save!
   end
 

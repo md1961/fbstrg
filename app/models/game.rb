@@ -4,7 +4,7 @@ class Game < ApplicationRecord
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
   has_many :plays         , dependent: :destroy
-  has_many :game_snapshots, dependent: :destroy
+  has_many :game_snapshots, through: :plays
 
   attr_reader   :defensive_play, :result, :defensive_play_set,
                 :previous_spot, :announcement
@@ -184,7 +184,7 @@ class Game < ApplicationRecord
     @result.time_to_take = (@announcement.total_time / 1000.0).ceil - 1
     advance_clock(Clocker.time_to_take(@result, self))
 
-    game_snapshot.update_scores
+    game_snapshot.update_scores_by(self)
     @result.record(self, game_snapshot)
   end
 
@@ -220,8 +220,10 @@ class Game < ApplicationRecord
 
   def revert!
     raise "No GameSnapshot's" if game_snapshots.empty?
-    snapshot, snapshot_before = game_snapshots.order(play_id: :desc).first(2)
-    attrs = snapshot.attributes_for_game
+    play_last, play_before = plays.order(number: :desc).first(2)
+    snapshot_last   = play_last  .game_snapshot
+    snapshot_before = play_before.game_snapshot
+    attrs = snapshot_last.attributes_for_game
     attrs[:status] = :huddle
     if snapshot_before
       attrs[:score_home    ] = snapshot_before.score_home
@@ -229,8 +231,7 @@ class Game < ApplicationRecord
     end
     Game.transaction do
       update!(attrs)
-      snapshot.play.destroy
-      snapshot.destroy
+      play_last.destroy
     end
   end
 
