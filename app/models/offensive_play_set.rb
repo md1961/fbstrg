@@ -5,6 +5,8 @@ class OffensivePlaySet < ApplicationRecord
 
   attr_accessor :weight_correctors
 
+  scope :normal, -> { where("name != 'Dumb Even'") }
+
   class << self
     OffensivePlaySet.pluck(:name).each do |name|
       method_name = name.titleize.gsub(/\s+/, '').underscore

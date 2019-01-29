@@ -3,6 +3,8 @@ class DefensivePlaySet < ApplicationRecord
 
   has_many :defensive_play_set_choices, dependent: :destroy
 
+  scope :normal, -> { where("name != 'Dumb Even'") }
+
   class << self
     DefensivePlaySet.pluck(:name).each do |name|
       method_name = name.titleize.gsub(/\s+/, '').underscore
