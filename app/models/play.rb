@@ -173,6 +173,8 @@ class Play < ApplicationRecord
         if rand(2).zero?
           self.yardage = air_yardage - (rand(21) + rand(21))
         end
+      elsif game.no_huddle && complete?
+        self.result = :incomplete if rand(0.0 .. 100.0) < 5.0
       end
     end
 
@@ -252,7 +254,9 @@ class Play < ApplicationRecord
     end
 
     def self.pct_intercept(game)
-      pct_intercept_base(game.offensive_play, game.defensive_play)
+      plus = 0.0
+      plus = 2.0 if game.no_huddle
+      pct_intercept_base(game.offensive_play, game.defensive_play) + plus
     end
 
     def self.pct_intercept_base(offensive_play, defensive_play)
@@ -271,7 +275,9 @@ class Play < ApplicationRecord
     end
 
     def self.pct_sack(game)
-      pct_sack_base(game.offensive_play, game.defensive_play)
+      plus = 0.0
+      plus = 4.0 if game.no_huddle
+      pct_sack_base(game.offensive_play, game.defensive_play) + plus
     end
 
     def self.pct_sack_base(offensive_play, defensive_play)
@@ -287,7 +293,9 @@ class Play < ApplicationRecord
     end
 
     def pct_fumble(game)
-      pct_fumble_base(game.offensive_play, game.defensive_play)
+      plus = 0.0
+      plus = 1.0 if game.no_huddle
+      pct_fumble_base(game.offensive_play, game.defensive_play) + plus
     end
 
     def pct_fumble_base(offensive_play, defensive_play)
