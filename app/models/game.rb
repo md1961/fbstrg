@@ -156,8 +156,8 @@ class Game < ApplicationRecord
   def play(value=nil)
     unless clock_stopped
       time_to_huddle = (no_huddle ? 10 : 40) - rand(0 .. 5)
-      advance_clock(time_to_huddle)
-      return if clock_runs_out?
+      advance_clock(time_to_huddle, in_play: false)
+      return if clock_runs_out? || two_minute_warning?
     end
 
     game_snapshot = GameSnapshot.take_snapshot_of(self)
@@ -201,9 +201,9 @@ class Game < ApplicationRecord
 
   def cancel_offensive_play
     return unless playing?
+    huddle!
     self.offensive_play = nil
     self.offensive_play_set = nil
-    huddle!
   end
 
   def tamper(value)
@@ -330,7 +330,19 @@ class Game < ApplicationRecord
       firstdown
     end
 
-    def advance_clock(sec)
+    def two_minute_warning?(sec_to_advance = 0)
+      [2, 4].include?(quarter) && time_left >= 120 && time_left - sec_to_advance <= 120
+    end
+
+    def advance_clock(sec, in_play: true)
+      if two_minute_warning?(sec)
+        self.clock_stopped = true
+        unless in_play
+          self.time_left = 120
+          cancel_offensive_play
+          return
+        end
+      end
       self.time_left -= sec
       if time_left <= 0
         self.time_left = 0
