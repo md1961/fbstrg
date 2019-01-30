@@ -1,0 +1,14 @@
+<div class="strategy_tool_judgments">
+  <table>
+    <tbody>
+      <% StrategyToolJudge.judgments(game).each do |name, value| -%>
+        <tr>
+          <td><%= name %></td>
+          <td style="text-align: right; padding-left: 10px;">
+            <%= value.is_a?(TrueClass) ? 'TRUE' : value.is_a?(Float) ? "%6.1f" % value : value %>
+          </td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+</div>

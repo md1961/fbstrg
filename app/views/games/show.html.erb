@@ -31,6 +31,9 @@
 </div>
 
 <br>
+<%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
+
+<br>
 <% if @game.choose_offense? -%>
   <table class="plays_to_choose">
     <% OffensivePlay.all.each do |offensive_play| -%>
