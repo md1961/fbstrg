@@ -304,13 +304,13 @@ class Game < ApplicationRecord
         play.yardage -= ball_on - 100
         touchdown
       elsif ball_on <= 0
-        if play.intercepted? || kick_and_return?
+        if play.intercepted? || play.kick_and_return?
           touchback
         else
           play.yardage += -ball_on
           safety
         end
-      else
+      elsif !play.possession_changing?
         self.yard_to_go -= play.yardage
         self.down += 1 if play.no_penalty?
         if yard_to_go <= 0 || play.auto_firstdown?
