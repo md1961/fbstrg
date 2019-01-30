@@ -6,6 +6,8 @@ $ ->
   $('span#toggle_plays_display').click ->
     $('table#play_by_play').toggle()
 
+  $('#strategy_tool_judgments').hide()
+
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
@@ -15,6 +17,7 @@ $ ->
           $('#score_board_prev').hide()
           $('#score_board').show()
           $('#form_command').show()
+          $('#strategy_tool_judgments').show()
         else
           $('#announce_board').html(text)
         resolve()

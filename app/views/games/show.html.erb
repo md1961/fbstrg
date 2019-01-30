@@ -30,8 +30,10 @@
   <% end -%>
 </div>
 
-<br>
-<%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
+<div id="strategy_tool_judgments">
+  <br>
+  <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
+</div>
 
 <br>
 <% if @game.choose_offense? -%>
