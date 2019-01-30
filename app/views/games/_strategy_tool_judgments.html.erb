@@ -6,7 +6,7 @@
           <td><%= name %></td>
           <td style="text-align: right; padding-left: 10px;">
             <%= value.is_a?(TrueClass) ? 'TRUE'
-              : value.is_a?(Float)     ? time_left_display((value * 60).to_i)
+              : value.is_a?(Float)     ? time_left_display(value.to_i)
               : value %>
           </td>
         </tr>

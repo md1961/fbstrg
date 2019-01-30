@@ -5,7 +5,7 @@ module StrategyTool
   VERY_SHORT_YARDAGE = 2
   MINUTES_ENDING_HALF = 4
 
-  MINUTES_TO_MOVE_5_YARDS = 40.0 / 60 / 8 * 5
+  SECONDS_TO_MOVE_5_YARDS = 40.0 / 8 * 5
 
   def offense_running_out_of_time?(game)
     game.score_diff < 0 && time_running_out?(game)
@@ -18,13 +18,13 @@ module StrategyTool
   # TODO: Add conditions for possible-tie or sudden-death in overtime.
   def time_running_out?(game)
     game.quarter == 4 && (
-      (game.score_diff <= -3 && game.time_left <= minutes_needed_for_touchdown(game)) ||
-      (game.score_diff <=  0 && game.time_left <= minutes_needed_for_field_goal(game))
+      (game.score_diff <= -3 && game.time_left <= seconds_needed_for_touchdown(game)) ||
+      (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game))
     )
   end
 
   def need_to_hurry_before_halftime?(game)
-    game.quarter == 2 && game.score_diff <= 7 && game.time_left <= minutes_needed_for_touchdown(game)
+    game.quarter == 2 && game.score_diff <= 7 && game.time_left <= seconds_needed_for_touchdown(game)
   end
 
   def half_ending?(game)
@@ -47,13 +47,13 @@ module StrategyTool
     game.down == 3 && game.yard_to_go <= VERY_SHORT_YARDAGE
   end
 
-    def minutes_needed_for_touchdown(game)
-      (100 - game.ball_on) / 5.0 * MINUTES_TO_MOVE_5_YARDS
+    def seconds_needed_for_touchdown(game)
+      (100 - game.ball_on) / 5.0 * SECONDS_TO_MOVE_5_YARDS
     end
 
     YARD_LINE_TO_REACH_FOR_FIELD_GOAL = 25
 
-    def minutes_needed_for_field_goal(game)
-      (100 - YARD_LINE_TO_REACH_FOR_FIELD_GOAL - game.ball_on) / 5.0 * MINUTES_TO_MOVE_5_YARDS
+    def seconds_needed_for_field_goal(game)
+      (100 - YARD_LINE_TO_REACH_FOR_FIELD_GOAL - game.ball_on) / 5.0 * SECONDS_TO_MOVE_5_YARDS
     end
 end
