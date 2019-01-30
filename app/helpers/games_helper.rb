@@ -16,8 +16,8 @@ module GamesHelper
   end
 
   def time_left_display(time_left)
-    m = time_left / 60
-    format("%02d:%02d", m, time_left - m * 60)
+    mins = time_left / 60
+    format("%d:%02d", mins, time_left - mins * 60)
   end
 
   def ball_on_display(game)
