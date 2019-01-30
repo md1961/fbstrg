@@ -43,6 +43,11 @@ class Game < ApplicationRecord
     playing? && defense_human?
   end
 
+  def timeout_left(is_offense = true)
+    is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
+    is_home ? timeout_home : timeout_visitors
+  end
+
   def clock_runs_out?
     end_of_quarter? || end_of_half? || end_of_game?
   end
@@ -110,11 +115,6 @@ class Game < ApplicationRecord
       return false unless play_input.upcase == 'NH'
       @no_huddle = !@no_huddle unless clock_stopped
       true
-    end
-
-    def timeout_left(is_offense)
-      is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
-      is_home ? timeout_home : timeout_visitors
     end
 
     def use_timeout(is_offense)
