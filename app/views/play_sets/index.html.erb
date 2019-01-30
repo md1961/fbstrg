@@ -3,8 +3,8 @@
     <thead>
     </thead>
     <tbody>
-      <tr>
-        <th colspan="2">
+      <tr class="border_bottom_thick">
+        <th colspan="2" class="border_right_thick">
         <% @offensive_play_sets.each do |play_set| -%>
           <th><%= play_set %></th>
         <% end -%>
@@ -12,7 +12,7 @@
       <% @offensive_plays.each do |op| -%>
         <tr>
           <th><%= op.number %></th>
-          <th><%= op.name %></th>
+          <th class="border_right_thick"><%= op.name %></th>
           <% @offensive_play_sets.each do |play_set| -%>
             <td class="numeric">
               <%= play_set.offensive_play_set_choices.find_by(offensive_play: op)&.weight %>
@@ -27,8 +27,8 @@
     <thead>
     </thead>
     <tbody>
-      <tr>
-        <th colspan="2">
+      <tr class="border_bottom_thick">
+        <th colspan="2" class="border_right_thick">
         <% @defensive_play_sets.each do |play_set| -%>
           <th><%= play_set %></th>
         <% end -%>
@@ -36,7 +36,7 @@
       <% @defensive_plays.each do |dp| -%>
         <tr>
           <th><%= dp.name %></th>
-          <th><%= dp.formation %></th>
+          <th class="border_right_thick"><%= dp.formation %></th>
           <% @defensive_play_sets.each do |play_set| -%>
             <td class="numeric">
               <%= play_set.defensive_play_set_choices.find_by(defensive_play: dp)&.weight %>
