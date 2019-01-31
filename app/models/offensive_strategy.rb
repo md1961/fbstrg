@@ -27,7 +27,10 @@ class OffensiveStrategy < ApplicationRecord
       OffensivePlay.normal_kickoff
     elsif game.extra_point?
       OffensivePlay.extra_point
-    elsif kick_FG_now?(game)
+    end
+    return [nil, 'TO'] if needs_offense_timeout?(game)
+    return [nil, 'NH'] if needs_no_huddle?(game)
+    if kick_FG_now?(game)
       OffensivePlay.field_goal
     elsif game.down == 4
       choose_on_4th_down(game)

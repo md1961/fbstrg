@@ -84,7 +84,8 @@ class Game < ApplicationRecord
       @offensive_play = nil
     else
       offensive_strategy = offense.offensive_strategy
-      @offensive_play = offensive_strategy.choose_play(self)
+      @offensive_play, option = offensive_strategy.choose_play(self)
+      return if timeout_taken?(option) || with_no_huddle?(option)
       @offensive_play_set = offensive_strategy.play_set
     end
     self.status = :playing if @offensive_play
@@ -95,6 +96,7 @@ class Game < ApplicationRecord
   private
 
     def timeout_taken?(play_input)
+      return false if play_input.blank?
       is_offense = \
         case play_input.upcase
         when 'T'
@@ -108,11 +110,12 @@ class Game < ApplicationRecord
         end
       return false if timeout_left(is_offense).zero?
       use_timeout(is_offense)
+      @result = "Timeout ##{3 - timeout_left(is_offense)} by #{is_offense ? 'offense' : 'defense'}"
       return true
     end
 
     def with_no_huddle?(play_input)
-      return false unless play_input.upcase == 'NH'
+      return false unless play_input&.upcase == 'NH'
       @no_huddle = !@no_huddle unless clock_stopped
       true
     end
