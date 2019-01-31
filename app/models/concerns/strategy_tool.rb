@@ -47,6 +47,23 @@ module StrategyTool
     game.down == 3 && game.yard_to_go <= VERY_SHORT_YARDAGE
   end
 
+  def needs_offense_timeout?(game)
+    return false if [1, 3].include?(game.quarter) || game.time_left >= 60 * 2
+    return false if game.clock_stopped || game.timeout_left <= 0
+    if game.time_left >= 40 * 2
+      return game.timeout_left >= 3
+    elsif game.time_left >= 40 * 1
+      return game.timeout_left >= 2
+    end
+    return true if game.timeout_left >= 2
+    game.time_left <= 15 && game.timeout_left >= 1
+  end
+
+  def needs_no_huddle?(game)
+    return false if game.clock_stopped || game.no_huddle
+    time_running_out?(game) || need_to_hurry_before_halftime?(game)
+  end
+
     def seconds_needed_for_touchdown(game)
       (100 - game.ball_on) / 5.0 * SECONDS_TO_MOVE_5_YARDS
     end
