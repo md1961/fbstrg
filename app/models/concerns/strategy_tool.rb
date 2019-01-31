@@ -30,10 +30,6 @@ module StrategyTool
     )
   end
 
-  def half_ending?(game)
-    game.quarter == 2 && game.time_left <= MINUTES_ENDING_HALF * 60
-  end
-
   def threatening_into_end_zone?(game)
     game.ball_on >= 80
   end
