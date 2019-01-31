@@ -24,9 +24,12 @@ module StrategyTool
   end
 
   def need_to_hurry_before_halftime?(game)
-    game.quarter == 2 && game.time_left <= seconds_needed_for_touchdown(game) && (
-      (zone_aggresive?(game)) ||
-      (game.score_diff <= 7 && !zone_conservative?(game))
+    game.quarter == 2 && (
+      game.time_left <= 120 && threatening_into_end_zone?(game) ||
+      game.time_left <= seconds_needed_for_touchdown(game) && (
+        (zone_aggresive?(game)) ||
+        (game.score_diff <= 7 && !zone_conservative?(game))
+      )
     )
   end
 
