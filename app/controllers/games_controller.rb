@@ -20,7 +20,7 @@ class GamesController < ApplicationController
     @game_snapshot_prev = nil
     if params[:play] == 'revert'
       @game.revert!
-    elsif tampering_game?(params[:play])
+    elsif Game.tampering_game?(params[:play])
       @game.tamper(params[:play])
     elsif @game.end_of_game?
       # No action.
@@ -69,11 +69,5 @@ class GamesController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         redirect_to games_path
       end
-    end
-
-    RE_TAMPER_GAME = /\A\s*{\s*(:?\w+:\s+[+-]?\d+\s*,?\s*)+\s*}\s*\z/
-
-    def tampering_game?(value)
-      value =~ RE_TAMPER_GAME
     end
 end

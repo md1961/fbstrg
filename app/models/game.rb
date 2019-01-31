@@ -209,9 +209,18 @@ class Game < ApplicationRecord
     self.offensive_play_set = nil
   end
 
+  # Hash literal such as '{down: 1, yard_to_go: 10, clock_stopped: false}'.
+  RE_TAMPER_GAME = /\A{(:?\w+: (:?\d+|true|false)(?:, )?)+}\z/
+
+  def self.tampering_game?(play_input)
+    play_input =~ RE_TAMPER_GAME
+  end
+
   def tamper(value)
     self.error_message = nil
-    attrs = value.scan(/(\w+):\s+[+-]?(\d+)/).map { |k, v| [k, v.to_i] }.to_h
+    attrs = value.scan(/(\w+): (\d+|true|false)/).map { |k, v|
+      [k, v == 'true' ? true : v == 'false' ? false : v.to_i]
+    }.to_h
     unknown_names = attrs.keys.select { |name| !attributes.include?(name) }
     unless unknown_names.empty?
       self.error_message = "Unknown attribute name: #{unknown_names.join(', ')}"
