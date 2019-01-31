@@ -36,6 +36,16 @@ table#play_by_play {
 
 div.strategy_tool_judgments {
   font-size: x-small;
+
+  td.true {
+    color: red;
+    font-weight: bold;
+  }
+
+  td.value {
+    text-align: right;
+    padding-left: 10px;
+  }
 }
 
 span.button {

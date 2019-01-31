@@ -2,11 +2,14 @@
   <table>
     <tbody>
       <% StrategyToolJudge.judgments(game).each do |name, value| -%>
+        <% is_true = value.is_a?(TrueClass) -%>
         <tr>
-          <td><%= name %></td>
-          <td style="text-align: right; padding-left: 10px;">
-            <%= value.is_a?(TrueClass) ? 'TRUE'
-              : value.is_a?(Float)     ? time_left_display(value.to_i)
+          <td class="<%= is_true ? 'true' : '' %>">
+            <%= name %>
+          </td>
+          <td class="<%= is_true ? 'true' : '' %> value">
+            <%= is_true            ? 'TRUE'
+              : value.is_a?(Float) ? time_left_display(value.to_i)
               : value %>
           </td>
         </tr>
