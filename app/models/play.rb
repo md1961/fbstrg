@@ -88,30 +88,28 @@ class Play < ApplicationRecord
   end
 
   def self.kickoff
-    play = new
-    play.result = :kickoff_and_return
-    play
+    new.tap { |play|
+      play.result = :kickoff_and_return
+    }
   end
 
   def self.punt
-    play = new
-    play.result = :punt_and_return
-    play
+    new.tap { |play|
+      play.result = :punt_and_return
+    }
   end
 
   def self.field_goal
-    play = new
-    play.result = :field_goal
-    percentile = rand(1 .. 100)
-    play.yardage = percentile >= 50 ? MathUtil.linear_interporation([95,  2], [50, 33], percentile).round \
-                                    : MathUtil.linear_interporation([50, 33], [ 0, 60], percentile).round
-    play
+    new.tap { |play|
+      play.result = :field_goal
+      play.yardage = rand(0 .. 100)
+    }
   end
 
   def self.extra_point
-    play = field_goal
-    play.result = :extra_point
-    play
+    field_goal.tap { |play|
+      play.result = :extra_point
+    }
   end
 
   def throw?
