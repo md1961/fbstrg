@@ -37,6 +37,10 @@ table#play_by_play {
 div.strategy_tool_judgments {
   font-size: x-small;
 
+  td {
+    padding: 0;
+  }
+
   td.true {
     color: red;
     font-weight: bold;
@@ -86,6 +90,10 @@ body.real {
 
   table#information_board td {
     font-size: large;
+  }
+
+  div.strategy_tool_judgments {
+    font-size: small;
   }
 
   table#play_by_play {
