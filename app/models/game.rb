@@ -353,6 +353,7 @@ class Game < ApplicationRecord
         unless in_play
           self.time_left = 120
           cancel_offensive_play
+          @result = "Two minute warning"
           return
         end
       end
