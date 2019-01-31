@@ -22,6 +22,8 @@ class OffensivePlaySet < ApplicationRecord
   end
 
   class BasicWeightCorrector
+    include StrategyTool
+
     def correct(offensive_play_set_choices, game)
       if game.ball_on >= 100 - 10
         offensive_play_set_choices.each do |choice|
@@ -33,7 +35,7 @@ class OffensivePlaySet < ApplicationRecord
           next if choice.offensive_play.inside_20?
           choice.weight = 0
         end
-      elsif game.ball_on <= 30 + rand(0 .. 10)
+      elsif zone_conservative?(game) || game.no_huddle
         offensive_play_set_choices.find { |choice|
           choice.offensive_play.razzle_dazzle?
         }.weight = 0
