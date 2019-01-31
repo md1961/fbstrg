@@ -54,11 +54,4 @@ class OffensiveStrategy < ApplicationRecord
         rand(1 .. 100) > pct_for_FG ? OffensivePlay.normal_punt : OffensivePlay.field_goal
       end
     end
-
-    TIME_LEFT_TO_KICK_FG_NOW = 15
-
-    def kick_FG_now?(game)
-      return false if [1, 3].include?(game.quarter) || game.ball_on < 50
-      game.time_left <= TIME_LEFT_TO_KICK_FG_NOW && (game.quarter == 2 || game.final_FG_stands?)
-    end
 end

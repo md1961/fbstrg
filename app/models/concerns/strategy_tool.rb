@@ -49,6 +49,14 @@ module StrategyTool
     game.down == 3 && game.yard_to_go <= VERY_SHORT_YARDAGE
   end
 
+  def kick_FG_now?(game)
+    return false if [1, 3].include?(game.quarter) || game.ball_on < 50
+    (game.quarter == 2 || game.final_FG_stands?) && (
+      (game.time_left <= 15 && game.timeout_left <= 0) ||
+      (game.time_left <= 10 * game.timeout_left)
+    )
+  end
+
   def needs_offense_timeout?(game)
     return false if [1, 3].include?(game.quarter) || game.time_left >= 60 * 2
     return false if game.clock_stopped || game.timeout_left <= 0
