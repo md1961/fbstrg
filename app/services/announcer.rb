@@ -14,6 +14,7 @@ module Announcer
 
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     run_yardage_after = 0
+    is_in_zone = false
     if play.field_goal? || play.extra_point? || play.field_goal_blocked? || play.punt_blocked?
       announcement.add("Snap", 1000)
       if play.field_goal_blocked? || play.punt_blocked?
@@ -58,6 +59,7 @@ module Announcer
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
+        is_in_zone = true if run_from >= 100
       elsif !play.fair_catch? # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
       end
@@ -99,7 +101,7 @@ module Announcer
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
-          announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown'
+          announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown' && !is_in_zone
           play.scoring
         end
       announcement.add(text, 2000)
