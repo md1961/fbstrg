@@ -19,7 +19,8 @@ module StrategyTool
   def time_running_out?(game)
     game.quarter == 4 && (
       (game.score_diff <= -3 && game.time_left <= seconds_needed_for_touchdown(game)) ||
-      (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game))
+      (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game)) ||
+      (game.score_diff <=  0 && game.time_left <= 120 && zone_aggresive?(game))
     )
   end
 
