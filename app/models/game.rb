@@ -159,8 +159,8 @@ class Game < ApplicationRecord
   def play(value=nil)
     unless clock_stopped
       time_to_huddle = (no_huddle ? 10 : 40) - rand(0 .. 5)
-      advance_clock(time_to_huddle, in_play: false)
-      return if clock_runs_out? || two_minute_warning?
+      is_two_minute_warning = advance_clock(time_to_huddle, in_play: false)
+      return if clock_runs_out? || is_two_minute_warning
     end
 
     game_snapshot = GameSnapshot.take_snapshot_of(self)
@@ -343,8 +343,8 @@ class Game < ApplicationRecord
       firstdown
     end
 
-    def two_minute_warning?(sec_to_advance = 0)
-      [2, 4].include?(quarter) && time_left >= 120 && time_left - sec_to_advance <= 120
+    def two_minute_warning?(sec_to_advance)
+      [2, 4].include?(quarter) && time_left > 120 && time_left - sec_to_advance <= 120
     end
 
     def advance_clock(sec, in_play: true)
@@ -354,7 +354,7 @@ class Game < ApplicationRecord
           self.time_left = 120
           cancel_offensive_play
           @result = "Two minute warning"
-          return
+          return true
         end
       end
       self.time_left -= sec
@@ -366,6 +366,7 @@ class Game < ApplicationRecord
           finish_quarter
         end
       end
+      false
     end
 
     def finish_quarter
