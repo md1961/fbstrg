@@ -18,7 +18,9 @@ class GamesController < ApplicationController
   def update
     @game.no_huddle = session[:no_huddle]
     @game_snapshot_prev = nil
-    if params[:play] == 'revert'
+    if params[:play] == 'to_final_minutes'
+      @game.to_final_minutes!
+    elsif params[:play] == 'revert'
       @game.revert!
     elsif Game.tampering_game?(params[:play])
       @game.tamper(params[:play])
