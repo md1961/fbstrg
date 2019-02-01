@@ -256,6 +256,26 @@ class Game < ApplicationRecord
     save!
   end
 
+  ATTRS_FOR_FINAL_MINUTES = {
+    score_home:         23,
+    score_visitors:     20,
+    timeout_home:        3,
+    timeout_visitors:    3,
+    quarter:             4,
+    time_left:         180,
+    clock_stopped:   false,
+    home_has_ball:   false,
+    ball_on:            50,
+    down:                1,
+    yard_to_go:         10,
+    next_play:  :scrimmage,
+    status:        :huddle,
+  }
+
+  def to_final_minutes!(attrs = {})
+    update!(ATTRS_FOR_FINAL_MINUTES.merge(attrs))
+  end
+
   private
 
     def firstdown
