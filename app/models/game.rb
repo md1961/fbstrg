@@ -187,7 +187,6 @@ class Game < ApplicationRecord
     @result.time_to_take = (@announcement.total_time / 1000.0).ceil - 1
     advance_clock(Clocker.time_to_take(@result, self))
 
-    game_snapshot.update_scores_by(self)
     @result.record(self, game_snapshot)
   end
 
