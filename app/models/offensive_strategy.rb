@@ -14,7 +14,7 @@ class OffensiveStrategy < ApplicationRecord
       OffensivePlaySet.aim_long
     elsif need_very_short_yardage?(game)
       OffensivePlaySet.aim_short
-    elsif half_ending?(game)
+    elsif need_to_hurry_before_halftime?(game)
       OffensivePlaySet.hurry_up
     else
       OffensivePlaySet.standard

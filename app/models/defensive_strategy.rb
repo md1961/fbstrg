@@ -16,7 +16,7 @@ class DefensiveStrategy < ApplicationRecord
       DefensivePlaySet.stop_short
     elsif threatening_into_end_zone?(game)
       DefensivePlaySet.goal_stand
-    elsif half_ending?(game)
+    elsif need_to_hurry_before_halftime?(game)
       DefensivePlaySet.slow_down
     else
       DefensivePlaySet.standard
