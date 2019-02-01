@@ -35,7 +35,7 @@ class OffensivePlaySet < ApplicationRecord
           next if choice.offensive_play.inside_20?
           choice.weight = 0
         end
-      elsif zone_conservative?(game) || game.no_huddle
+      elsif !game.ball_on.between?(40, 60) || game.no_huddle
         offensive_play_set_choices.find { |choice|
           choice.offensive_play.razzle_dazzle?
         }.weight = 0
