@@ -7,6 +7,11 @@ module StrategyTool
 
   SECONDS_TO_MOVE_5_YARDS = 40.0 / 8 * 5
 
+  NOTABLE_METHODS = %i[
+    needs_offense_timeout?
+    needs_no_huddle?
+  ]
+
   def offense_running_out_of_time?(game)
     game.score_diff < 0 && time_running_out?(game)
   end
