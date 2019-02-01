@@ -32,6 +32,9 @@
 
 <div id="strategy_tool_judgments">
   <br>
+  <div style="margin-bottom: 5px;">
+    <%= "speed = #{@speed_of_announce || 1}" %>
+  </div>
   <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
 </div>
 
