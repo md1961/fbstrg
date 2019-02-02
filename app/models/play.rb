@@ -158,6 +158,11 @@ class Play < ApplicationRecord
 
   # TODO: Change for coffin-corner, roll-into-zone for punt.
   def change_due_to(game)
+    if punt_and_return? && game.ball_on + air_yardage >= 100
+      self.yardage = air_yardage
+      return
+    end
+
     return if game.offensive_play.nil? || game.defensive_play.nil?
 
     if complete? || incomplete?
