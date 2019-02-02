@@ -353,7 +353,7 @@ class Game < ApplicationRecord
     end
 
     def touchback
-      self.ball_on = 100 - TOUCHBACK_YARDLINE
+      self.ball_on = TOUCHBACK_YARDLINE
     end
 
     def toggle_possesion
