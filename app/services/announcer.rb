@@ -60,7 +60,9 @@ module Announcer
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
         is_in_zone = true if run_from >= 100
-      elsif !play.fair_catch? # kick_and_return?
+      elsif play.fair_catch?
+        announcement.add("Into zone", 1000) if run_from <= 0
+      else # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
       end
     end
@@ -75,7 +77,9 @@ module Announcer
       is_long_gain = false
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
-        if play.yardage >= 10 || (play.throw? && run_yardage_after > 5) || play.kick_and_return?
+        if (play.on_ground? && play.yardage >= 10) ||
+           (play.throw? && run_yardage_after > 5) ||
+           (play.kick_and_return? && !play.fair_catch?)
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           end_on = play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
           long_gain_statements(start_on, end_on).each do |text, time|
@@ -91,7 +95,11 @@ module Announcer
         elsif play.scoring.blank?
           verb = play.fair_catch? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
-            "#{verb} #{at_yard_line(game.ball_on)}"
+            if play.fair_catch? && run_from <= 0
+              "Touchback"
+            else
+              "#{verb} #{at_yard_line(game.ball_on)}"
+            end
           elsif play.yardage < 0
             "#{verb} behind the line of scrimmage"
           elsif play.yardage.zero?
