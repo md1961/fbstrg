@@ -158,8 +158,27 @@ class Play < ApplicationRecord
 
   # TODO: Change for coffin-corner, roll-into-zone for punt.
   def change_due_to(game)
-    if punt_and_return? && game.ball_on + air_yardage >= 100
-      self.yardage = air_yardage
+    if intercepted? && game.ball_on + yardage >= 110
+      self.result = :incomplete
+      self.yardage = 0
+      return
+    elsif field_goal?
+      length = 100 - game.ball_on + 7 + 10
+      pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
+      if rand * 100 < pct_blocked
+        self.result = :field_goal_blocked
+        self.fumble = rand(4).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        self.yardage = -7 - rand(10)
+      end
+      return
+    elsif punt_and_return?
+      if rand * 100 < 1.0
+        self.result = :punt_blocked
+        self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        self.yardage = -13 - rand(5)
+      elsif game.ball_on + air_yardage >= 100
+        self.yardage = air_yardage
+      end
       return
     end
 
@@ -178,25 +197,6 @@ class Play < ApplicationRecord
         end
       elsif game.no_huddle && complete?
         self.result = :incomplete if rand(0.0 .. 100.0) < 5.0
-      end
-    end
-
-    if intercepted? && game.ball_on + yardage >= 110
-      self.result = :incomplete
-      self.yardage = 0
-    elsif field_goal?
-      length = 100 - game.ball_on + 7 + 10
-      pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
-      if rand * 100 < pct_blocked
-        self.result = :field_goal_blocked
-        self.fumble = rand(4).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
-        self.yardage = -7 - rand(10)
-      end
-    elsif punt_and_return?
-      if rand * 100 < 1.0
-        self.result = :punt_blocked
-        self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
-        self.yardage = -13 - rand(5)
       end
     end
 
