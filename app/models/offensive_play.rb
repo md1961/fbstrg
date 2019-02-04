@@ -39,6 +39,14 @@ class OffensivePlay < ApplicationRecord
     number <= 16
   end
 
+  # TODO: Do not rely on OffensivePlay#number.
+  def hard_to_go_out_of_bounds?
+    [1, 2, 3, 4, 7, 8, 9].include?(number)
+  end
+  def easy_to_go_out_of_bounds?
+    [5, 6, 10, 11, 13, 17].include?(number)
+  end
+
   def kickoff?
     name.ends_with?('Kickoff')
   end
