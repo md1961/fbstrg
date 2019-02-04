@@ -16,6 +16,8 @@ class DefensiveStrategy < ApplicationRecord
       DefensivePlaySet.stop_long
     elsif needs_very_short_yardage?(game)
       DefensivePlaySet.stop_short
+    elsif plays_safe_back_on_goal_line?(game)
+      DefensivePlaySet.back_on_goal
     elsif threatening_into_end_zone?(game)
       DefensivePlaySet.goal_stand
     elsif needs_to_hurry_before_halftime?(game)
