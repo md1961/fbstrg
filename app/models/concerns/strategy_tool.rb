@@ -29,7 +29,7 @@ module StrategyTool
     )
   end
 
-  def need_to_hurry_before_halftime?(game)
+  def needs_to_hurry_before_halftime?(game)
     game.quarter == 2 && (
       game.time_left <= 120 && threatening_into_end_zone?(game) ||
       game.time_left <= seconds_needed_for_touchdown(game) && (
@@ -46,6 +46,10 @@ module StrategyTool
     )
   end
 
+  def plays_safe_back_on_goal_line?(game)
+    game.ball_on <= 15 && !time_running_out?(game)
+  end
+
   def threatening_into_end_zone?(game)
     game.ball_on >= 80
   end
@@ -54,11 +58,11 @@ module StrategyTool
     game.ball_on >= 97
   end
 
-  def need_long_yardage?(game)
+  def needs_long_yardage?(game)
     game.yard_to_go.to_f / (4 - game.down) >= LONG_YARDAGE_PER_DOWN
   end
 
-  def need_very_short_yardage?(game)
+  def needs_very_short_yardage?(game)
     game.down == 3 && game.yard_to_go <= VERY_SHORT_YARDAGE
   end
 
@@ -84,7 +88,7 @@ module StrategyTool
 
   def needs_no_huddle?(game)
     return false if game.clock_stopped || game.no_huddle
-    time_running_out?(game) || need_to_hurry_before_halftime?(game)
+    time_running_out?(game) || needs_to_hurry_before_halftime?(game)
   end
 
     def zone_conservative?(game)
