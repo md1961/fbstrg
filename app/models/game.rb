@@ -158,7 +158,12 @@ class Game < ApplicationRecord
 
   def play(value=nil)
     unless clock_stopped
-      time_to_huddle = (no_huddle ? 10 : 40) - rand(0 .. 5)
+      time_to_huddle = \
+        if last_play_out_of_bounds?
+          no_huddle ? rand(2 .. 5) : 30 - rand(0 .. 5)
+        else
+          (no_huddle ? 10 : 40) - rand(0 .. 5)
+        end
       is_two_minute_warning = advance_clock(time_to_huddle, in_play: false)
       return if clock_runs_out? || is_two_minute_warning
     end
@@ -276,6 +281,10 @@ class Game < ApplicationRecord
   end
 
   private
+
+    def last_play_out_of_bounds?
+      plays.order(:number).last&.out_of_bounds?
+    end
 
     def firstdown
       self.down = 1
