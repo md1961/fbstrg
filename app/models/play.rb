@@ -214,6 +214,15 @@ class Play < ApplicationRecord
       determine_fumble_recovery
       # TODO: Reduce yardage for fumble on the way.
     end
+
+    if (on_ground? || complete?) && game.offensive_play_set&.hurry_up? && game.ball_on < 95
+      if !game.offensive_play&.hard_to_go_out_of_bounds? && !out_of_bounds
+        minus_yardage  = rand(2 .. 7)
+        minus_yardage -= rand(0 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
+        self.yardage -= [minus_yardage, 0].max
+        self.out_of_bounds = true
+      end
+    end
   end
 
   def determine_air_yardage(offensive_play)
