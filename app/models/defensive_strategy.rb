@@ -4,7 +4,9 @@ class DefensiveStrategy < ApplicationRecord
   attr_reader :play_set
 
   def defensive_play_set(game)
-    if close_to_goal_line?(game)
+    if cannot_down_in_field?(game)
+      DefensivePlaySet.pass_only
+    elsif close_to_goal_line?(game)
       DefensivePlaySet.goal_line
     elsif defense_running_out_of_time?(game)
       DefensivePlaySet.expect_run

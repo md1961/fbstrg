@@ -4,7 +4,9 @@ class OffensiveStrategy < ApplicationRecord
   attr_reader :play_set
 
   def offensive_play_set(game)
-    if close_to_goal_line?(game)
+    if cannot_down_in_field?(game)
+      OffensivePlaySet.pass_only
+    elsif close_to_goal_line?(game)
       OffensivePlaySet.goal_line
     elsif offense_running_out_of_time?(game)
       OffensivePlaySet.aggresive
