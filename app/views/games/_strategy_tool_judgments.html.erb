@@ -1,6 +1,15 @@
 <div class="strategy_tool_judgments">
   <table>
     <tbody>
+      <tr>
+        <td>Offensive play set:</td>
+        <td><%= game.offense.offensive_strategy.offensive_play_set(game) %></td>
+      </tr>
+      <tr>
+        <td>Defensive play set:</td>
+        <td><%= game.defense.defensive_strategy.defensive_play_set(game) %></td>
+      </tr>
+
       <% StrategyToolJudge.judgments(game).each do |name, value| -%>
         <% is_true = value.is_a?(TrueClass) -%>
         <tr>
