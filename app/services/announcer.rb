@@ -98,6 +98,7 @@ module Announcer
             if play.fair_catch? && run_from <= 0
               "Touchback"
             else
+              verb = "Ball dead" if play.fair_catch? && run_from < 10
               "#{verb} #{at_yard_line(game.ball_on)}"
             end
           elsif play.yardage < 0
@@ -119,7 +120,15 @@ module Announcer
   end
 
     def first_announce(offensive_play, play)
-      return ["Punt", 2500] if offensive_play.punt?
+      if offensive_play.punt?
+        if play.air_yardage < 30
+          return ["Wobbling punt", 2000]
+        elsif play.air_yardage > 50
+          return ["Booming punt", 3000]
+        else
+          return ["Punt", 2500]
+        end
+      end
 
       time = 1000
       text = \
