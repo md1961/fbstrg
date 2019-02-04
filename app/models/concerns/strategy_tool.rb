@@ -39,6 +39,13 @@ module StrategyTool
     )
   end
 
+  def cannot_down_in_field?(game)
+    game.timeout_left == 0 && game.time_left <= 20 && (
+      (game.quarter == 4 && game.score_diff.between?(-3, 0) && game.ball_on >= 50) ||
+      (game.quarter == 2 && game.ball_on >= 40)
+    )
+  end
+
   def threatening_into_end_zone?(game)
     game.ball_on >= 80
   end
