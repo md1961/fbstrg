@@ -21,6 +21,10 @@ class OffensivePlaySet < ApplicationRecord
     @weight_correctors = [BasicWeightCorrector.new]
   end
 
+  def hurry_up?
+    name.downcase == 'hurry up'
+  end
+
   class BasicWeightCorrector
     include StrategyTool
 
