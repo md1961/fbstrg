@@ -198,11 +198,14 @@ class Game < ApplicationRecord
   def advance_to_next_quarter
     self.quarter += 1
     self.time_left = 15 * 60
+    self.clock_stopped = true
     self.status = :huddle
-    if quarter == 3
+    if quarter == 3 || quarter == 5
       self.home_has_ball = !home_kicks_first
       self.ball_on = KICKOFF_YARDLINE
       self.next_play = :kickoff
+      self.timeout_home     = 3
+      self.timeout_visitors = 3
     end
   end
 
