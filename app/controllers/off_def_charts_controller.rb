@@ -1,7 +1,7 @@
 class OffDefChartsController < ApplicationController
 
   DEFAULT_TYPE = 'result'
-  TYPES = [DEFAULT_TYPE, 'int', 'sack', 'fumble']
+  TYPES = [DEFAULT_TYPE, 'int', 'sack', 'fumble', 'breakaway']
 
   def index
     @type = params[:type]
@@ -29,6 +29,15 @@ class OffDefChartsController < ApplicationController
           ->(offensive_play, defensive_play) {
             play.result = offensive_play.run? ? :on_ground : :complete
             play.send(:pct_fumble_base, offensive_play, defensive_play)
+          }
+        ]
+      when 'breakaway'
+        play = Play.new
+        [
+          :normal_plays,
+          ->(offensive_play, defensive_play) {
+            play.result = offensive_play.run? ? :on_ground : :complete
+            play.send(:pct_breakaway_base, offensive_play, defensive_play)
           }
         ]
       else

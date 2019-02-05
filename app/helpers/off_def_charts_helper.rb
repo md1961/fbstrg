@@ -3,8 +3,7 @@ module OffDefChartsHelper
   def off_def_chart_item_display(offensive_play, defensive_play)
     classes = []
     value = @f_item.call(offensive_play, defensive_play)
-    case @type
-    when 'int', 'sack', 'fumble'
+    if @type != 'result'
       classes << 'numeric'
       value = value.zero? ? '-' : "%5.1f" % value
     else
