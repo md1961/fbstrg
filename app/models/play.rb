@@ -9,7 +9,7 @@ class Play < ApplicationRecord
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
-  attr_accessor :scoring, :time_to_take, :air_yardage
+  attr_accessor :scoring, :time_to_take, :air_yardage, :after_safety
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
@@ -93,9 +93,10 @@ class Play < ApplicationRecord
     }
   end
 
-  def self.punt
+  def self.punt(after_safety: false)
     new.tap { |play|
       play.result = :punt_and_return
+      play.after_safety = after_safety
     }
   end
 
@@ -177,7 +178,7 @@ class Play < ApplicationRecord
       end
       return
     elsif punt_and_return?
-      if rand * 100 < 1.0
+      if rand * 100 < 1.0 && !after_safety
         self.result = :punt_blocked
         self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         self.yardage = -13 - rand(5)
@@ -248,7 +249,7 @@ class Play < ApplicationRecord
         2.times.map { rand(25 .. 35) }.sum.tap { |air_y|
           self.yardage = air_y - (rand(21) + rand(21))
         }
-      elsif offensive_play.punt?
+      elsif offensive_play.punt? || offensive_play.kickoff_after_safety?
         3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
           pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 60.0], air_y)
           is_returnable = rand * 100 < pct_returnable
