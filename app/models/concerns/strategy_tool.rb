@@ -10,6 +10,7 @@ module StrategyTool
   NOTABLE_METHODS = %i[
     needs_offense_timeout?
     needs_no_huddle?
+    needs_defense_timeout?
   ]
 
   def offense_running_out_of_time?(game)
@@ -96,6 +97,17 @@ module StrategyTool
     return false if game.clock_stopped || game.no_huddle
     return false if game.time_left >= 40 && game.down == 4 && !tries_fourth_down_gamble?(game)
     time_running_out?(game) || needs_to_hurry_before_halftime?(game)
+  end
+
+  def needs_defense_timeout?(game)
+    return false if game.clock_stopped || game.timeout_left(false) <= 0
+    return false if [1, 3].include?(game.quarter) || game.time_left >= 60 * 3
+    game.quarter == 4 && game.score_diff <= 0 && (
+      false
+    ) ||
+    game.quarter == 2 && (
+      (game.down == 4 && !tries_fourth_down_gamble?(game))
+    )
   end
 
     def zone_conservative?(game)
