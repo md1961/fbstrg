@@ -43,6 +43,7 @@ OFFENSIVE_PLAYS = [
   [103, 'Onside Kickoff'],
   [201, 'Normal Punt'],
   [202, 'Coffin Corner Punt'],
+  [203, 'Kickoff After Safety'],
   [301, 'Field Goal'],
   [401, 'Extra Point'],
   [402, 'Two Point Conversion'],
