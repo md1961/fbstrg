@@ -31,6 +31,8 @@ class OffensiveStrategy < ApplicationRecord
       OffensivePlay.normal_kickoff
     elsif game.extra_point?
       OffensivePlay.extra_point
+    elsif game.kickoff_after_safety?
+      OffensivePlay.kickoff_after_safety
     elsif needs_offense_timeout?(game)
       [nil, 'TO']
     elsif needs_no_huddle?(game)

@@ -328,8 +328,8 @@ class Game < ApplicationRecord
       else
         self.score_visitors += value
       end
-      self.ball_on = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
-      self.next_play = :kickoff
+      self.ball_on   = for_offense ? KICKOFF_YARDLINE : KICKOFF_YARDLINE_AFTER_SAFETY
+      self.next_play = for_offense ? :kickoff         : :kickoff_after_safety
       finish_quarter if quarter > 4
     end
 

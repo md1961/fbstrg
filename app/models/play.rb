@@ -23,6 +23,8 @@ class Play < ApplicationRecord
         punt
       elsif offensive_play.field_goal?
         field_goal
+      elsif offensive_play.kickoff_after_safety?
+        punt(after_safety: true)
       else
         parse_result(str, offensive_play)
       end
