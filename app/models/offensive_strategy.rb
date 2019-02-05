@@ -35,6 +35,8 @@ class OffensiveStrategy < ApplicationRecord
       [nil, 'TO']
     elsif needs_no_huddle?(game)
       [nil, 'NH']
+    elsif needs_defense_timeout?(game)
+      [nil, 'TD']
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
     elsif game.down == 4
