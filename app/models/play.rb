@@ -154,6 +154,12 @@ class Play < ApplicationRecord
         50
       end
     self.fumble = rand(100) < pct_rec_by_own ? :fumble_rec_by_own : :fumble_rec_by_opponent
+    if yardage - air_yardage >= 10
+      min_y = [10, air_yardage].max
+      max_y = yardage
+      min_y, max_y = max_y, min_x if min_y > max_y
+      self.yardage = rand(min_y .. max_y)
+    end
   end
 
   def change_due_to(game)
@@ -212,7 +218,6 @@ class Play < ApplicationRecord
 
     if rand * 100 < pct_fumble(game)
       determine_fumble_recovery
-      # TODO: Reduce yardage for fumble on the way.
     end
 
     if (on_ground? || complete?) && game.offensive_play_set&.hurry_up? && game.ball_on < 95
