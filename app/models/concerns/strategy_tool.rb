@@ -66,6 +66,11 @@ module StrategyTool
     game.down == 3 && game.yard_to_go <= VERY_SHORT_YARDAGE
   end
 
+  def tries_fourth_down_gamble?(game)
+    return false unless game.down == 4
+    false
+  end
+
   def kick_FG_now?(game)
     return false if [1, 3].include?(game.quarter) || game.ball_on < 50
     (game.quarter == 2 || game.final_FG_stands?) && (
