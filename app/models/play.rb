@@ -196,6 +196,14 @@ class Play < ApplicationRecord
         end
       end
       return
+    elsif kickoff_and_return?
+      if rand * 100 < pct_breakaway(game)
+        determine_breakaway(game)
+      end
+      if rand * 100 < pct_fumble(game)
+        determine_fumble_recovery
+      end
+      return
     end
 
     return if game.offensive_play.nil? || game.defensive_play.nil?
@@ -216,17 +224,21 @@ class Play < ApplicationRecord
       end
     end
 
-    if rand * 100 < pct_fumble(game)
-      determine_fumble_recovery
+    if on_ground? || complete? || intercepted?
+      if rand * 100 < pct_breakaway(game)
+        determine_breakaway(game)
+      elsif (on_ground? || complete?) && game.offensive_play_set&.hurry_up? && game.ball_on < 95
+        if !game.offensive_play&.hard_to_go_out_of_bounds? && !out_of_bounds
+          minus_yardage  = rand(2 .. 7)
+          minus_yardage -= rand(0 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
+          self.yardage -= [minus_yardage, 0].max
+          self.out_of_bounds = true
+        end
+      end
     end
 
-    if (on_ground? || complete?) && game.offensive_play_set&.hurry_up? && game.ball_on < 95
-      if !game.offensive_play&.hard_to_go_out_of_bounds? && !out_of_bounds
-        minus_yardage  = rand(2 .. 7)
-        minus_yardage -= rand(0 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
-        self.yardage -= [minus_yardage, 0].max
-        self.out_of_bounds = true
-      end
+    if (on_ground? || complete?) && rand * 100 < pct_fumble(game)
+      determine_fumble_recovery
     end
   end
 
@@ -339,6 +351,39 @@ class Play < ApplicationRecord
         1.0
       else
         0.0
+      end
+    end
+
+    def pct_breakaway(game)
+      pct_breakaway_base(game.offensive_play, game.defensive_play)
+    end
+
+    def pct_breakaway_base(offensive_play, defensive_play)
+      if punt_blocked? || field_goal_blocked?
+        return 5.0
+      elsif intercepted?
+        return offensive_play.flair_pass? || offensive_play.sideline_pass? ? 5.0 : 2.0
+      elsif kick_and_return?
+        return 1.0
+      end
+
+      pct = 0.5
+      if offensive_play.screen_pass?
+        pct += 2.0
+      elsif !offensive_play.run?
+        pct += 0.1 * offensive_play.max_throw_yard
+      end
+      pct - defensive_play.num_DBs * 0.05 + (defensive_play.blitz? ? 0.5 : 0.0)
+    end
+
+    def determine_breakaway(game)
+      if punt_blocked? || field_goal_blocked?
+        # TODO: determine_breakaway for punt_blocked and field_goal_blocked.
+      elsif intercepted? || kick_and_return?
+        self.yardage -= rand(10 .. 120)
+      else
+        self.yardage += rand(10 .. 100)
+        self.yardage = [yardage, rand(20 .. 40)].min if game.defensive_play&.num_DBs >= 7 && rand(3).nonzero?
       end
     end
 
