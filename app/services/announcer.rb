@@ -10,6 +10,8 @@ module Announcer
       announcement.add(*first_announce(offensive_play, play))
     elsif offensive_play.kickoff?
       announcement.add("Kickoff", 1500)
+    elsif offensive_play.kickoff_after_safety?
+      announcement.add(*first_announce(offensive_play, play))
     end
 
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
@@ -120,7 +122,7 @@ module Announcer
   end
 
     def first_announce(offensive_play, play)
-      if offensive_play.punt?
+      if offensive_play.punt? || offensive_play.kickoff_after_safety?
         if play.air_yardage < 30
           return ["Wobbling punt", 2000]
         elsif play.air_yardage > 50
