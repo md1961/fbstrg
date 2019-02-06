@@ -2,6 +2,7 @@
    return unless gss
    game = play.game -%>
 <tr>
+  <td><%= "##{play.number}" %></td>
   <td><%= "Q#{gss.quarter}" %></td>
   <td><%= time_left_display(gss.time_left) %></td>
   <td><%= gss.offense %></td>
