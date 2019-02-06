@@ -17,8 +17,8 @@
             <%= name %>
           </td>
           <td class="<%= is_true ? 'true' : '' %> value">
-            <%= is_true            ? 'TRUE'
-              : value.is_a?(Float) ? time_left_display(value.to_i)
+            <%= is_true              ? 'TRUE'
+              : value.is_a?(Numeric) ? time_left_display(value.to_i)
               : value %>
           </td>
         </tr>
