@@ -5,7 +5,7 @@ class Play < ApplicationRecord
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
-                 field_goal: 8, field_goal_blocked: 9, extra_point: 10}
+                 field_goal: 8, field_goal_blocked: 9, extra_point: 10, kneel_down: 11}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -15,7 +15,9 @@ class Play < ApplicationRecord
 
   def self.parse(str, offensive_play)
     instance = \
-      if offensive_play.kickoff?
+      if offensive_play.kneel_down?
+        kneel_down
+      elsif offensive_play.kickoff?
         kickoff
       elsif offensive_play.extra_point?
         extra_point
@@ -87,6 +89,13 @@ class Play < ApplicationRecord
 
     play.yardage = yardage.try(:end_with?, 'long') ? long_yardage : Integer(yardage || 0)
     play
+  end
+
+  def self.kneel_down
+    new.tap { |play|
+      play.result = :kneel_down
+      play.yardage = -2
+    }
   end
 
   def self.kickoff
@@ -166,6 +175,8 @@ class Play < ApplicationRecord
   end
 
   def change_due_to(game)
+    return if kneel_down?
+
     if intercepted? && game.ball_on + yardage >= 110
       self.result = :incomplete
       self.yardage = 0
