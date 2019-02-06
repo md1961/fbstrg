@@ -27,9 +27,7 @@ class OffensiveStrategy < ApplicationRecord
 
   def choose_play(game)
     @play_set = nil
-    if kneel_down_to_finish_game?(game)
-      OffensivePlay.kneel_down
-    elsif game.kickoff?
+    if game.kickoff?
       OffensivePlay.normal_kickoff
     elsif game.extra_point?
       OffensivePlay.extra_point
@@ -41,6 +39,8 @@ class OffensiveStrategy < ApplicationRecord
       [nil, 'NH']
     elsif needs_defense_timeout?(game)
       [nil, 'TD']
+    elsif kneel_down_to_finish_game?(game)
+      OffensivePlay.kneel_down
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
     elsif game.down == 4 && !tries_fourth_down_gamble?(game)
