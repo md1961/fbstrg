@@ -21,8 +21,8 @@ class OffensivePlaySet < ApplicationRecord
     @weight_correctors = [BasicWeightCorrector.new]
   end
 
-  def hurry_up?
-    name.downcase == 'hurry up'
+  def hurrying?
+    [ 'hurry up', 'pass only'].include?(name.downcase)
   end
 
   class BasicWeightCorrector
