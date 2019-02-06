@@ -41,7 +41,7 @@ class OffensiveStrategy < ApplicationRecord
       [nil, 'TD']
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
-    elsif game.down == 4
+    elsif game.down == 4 && !tries_fourth_down_gamble?(game)
       choose_on_4th_down(game)
     else
       @play_set = offensive_play_set(game)

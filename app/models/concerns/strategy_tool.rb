@@ -69,7 +69,13 @@ module StrategyTool
 
   def tries_fourth_down_gamble?(game)
     return false unless game.down == 4
-    false
+    game.quarter == 4 && (
+      (game.score_diff < -3 &&
+       game.time_left <= seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) ||
+      (game.score_diff < -7 && !zone_conservative?(game)
+       game.time_left <= (seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) * 2)
+    ) ||
+    (game.ball_on <= (100 - 35) - rand(5) && game.yard_to_go <= 3)
   end
 
   def kick_FG_now?(game)
@@ -128,5 +134,9 @@ module StrategyTool
 
     def seconds_needed_for_field_goal(game)
       (100 - YARD_LINE_TO_REACH_FOR_FIELD_GOAL - game.ball_on) / 5.0 * SECONDS_TO_MOVE_5_YARDS
+    end
+
+    def seconds_needed_to_get_ball_back(game)
+      50 * 4 - 35 * game.timeout_left
     end
 end
