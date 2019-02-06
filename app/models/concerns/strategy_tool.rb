@@ -118,6 +118,11 @@ module StrategyTool
     )
   end
 
+  def kneel_down_to_finish_game?(game)
+    game.ball_on > 2 &&
+      game.time_left <= 40 * (4 - game.down + (game.clock_stopped? ? 1 : 0)) - 39 * game.timeout_left(false)
+  end
+
     def zone_conservative?(game)
       game.ball_on <= 20 + rand(-3 .. 3)
     end
