@@ -29,7 +29,10 @@ while !game.end_of_game?
 
       mins = game.time_left / 60
       time_left_display = format("%d:%02d", mins, game.time_left - mins * 60)
-      puts "#{game.quarter}Q #{time_left_display}"
+      print "#{game.quarter}Q #{time_left_display}"
+      print "  #{game.home_team.abbr} #{game.score_home} - #{game.visitors.abbr} #{game.score_visitors}"
+      print ' ' * 40 + "\r"
     end
   end
 end
+puts
