@@ -30,41 +30,43 @@
   <% end -%>
 </div>
 
-<div id="strategy_tool_judgments">
-  <br>
-  <div style="margin-bottom: 5px;">
-    <%= "speed = #{@speed_of_announce || 1}" %>
+<% unless @game.end_of_game? -%>
+  <div id="strategy_tool_judgments">
+    <br>
+    <div style="margin-bottom: 5px;">
+      <%= "speed = #{@speed_of_announce || 1}" %>
+    </div>
+    <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
   </div>
-  <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
-</div>
 
-<br>
-<% if @game.choose_offense? -%>
-  <table class="plays_to_choose">
-    <% OffensivePlay.all.each do |offensive_play| -%>
-      <tr class="<%= offensive_play.number % 4 == 0 ? 'border_bottom' : '' %>">
-        <td class="numeric"><%= offensive_play.number %></td>
-        <td><%= offensive_play.name %></td>
+  <br>
+  <% if @game.choose_offense? -%>
+    <table class="plays_to_choose">
+      <% OffensivePlay.all.each do |offensive_play| -%>
+        <tr class="<%= offensive_play.number % 4 == 0 ? 'border_bottom' : '' %>">
+          <td class="numeric"><%= offensive_play.number %></td>
+          <td><%= offensive_play.name %></td>
+        </tr>
+      <% end -%>
+    </table>
+  <% elsif @game.choose_defense? -%>
+    <table class="plays_to_choose">
+      <tr class="border_bottom">
+        <td>
+        <td>
+        <td>Against Run</td>
+        <td>Against Pass</td>
       </tr>
-    <% end -%>
-  </table>
-<% elsif @game.choose_defense? -%>
-  <table class="plays_to_choose">
-    <tr class="border_bottom">
-      <td>
-      <td>
-      <td>Against Run</td>
-      <td>Against Pass</td>
-    </tr>
-    <% DefensivePlay.all.each do |defensive_play| -%>
-      <tr class="<%= %>">
-        <td><%= defensive_play.name %></td>
-        <td><%= defensive_play.formation %></td>
-        <td><%= defensive_play.against_run %></td>
-        <td><%= defensive_play.against_pass %></td>
-      </tr>
-    <% end -%>
-  </table>
+      <% DefensivePlay.all.each do |defensive_play| -%>
+        <tr class="<%= %>">
+          <td><%= defensive_play.name %></td>
+          <td><%= defensive_play.formation %></td>
+          <td><%= defensive_play.against_run %></td>
+          <td><%= defensive_play.against_pass %></td>
+        </tr>
+      <% end -%>
+    </table>
+  <% end -%>
 <% end -%>
 
 <br>
