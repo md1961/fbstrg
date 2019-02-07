@@ -33,7 +33,6 @@ $ ->
       announce(elem[0], elem[1])
   )
 
-  $('#form_command').hide()
   arrayAnnounces.reduce((prev, curr) ->
     prev.then(curr)
   , Promise.resolve()

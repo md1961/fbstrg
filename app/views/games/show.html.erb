@@ -20,7 +20,7 @@
   </tr>
 </table>
 
-<div id="form_command">
+<div id="form_command" <%= 'hidden' if announcement && !announcement.empty? %>>
   <br>
   <%= form_tag @game, method: :patch do %>
     <%= @game.prompt %>
