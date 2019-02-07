@@ -1,0 +1,24 @@
+<div class="games_index">
+  <table>
+    <thead>
+      <tr>
+      </tr>
+    </thead>
+    <tbody>
+      <% @games.each do |game| -%>
+        <tr>
+          <td class="numeric"><%= link_to game.id, game %></td>
+          <td><%= game.home_team %></td>
+          <td class="numeric score"><%= game.score_home %></td>
+          <td><%= game.visitors %></td>
+          <td class="numeric score"><%= game.score_visitors %></td>
+          <td><%= "#{game.quarter}Q" %></td>
+          <td class="numeric"><%= time_left_display(game.time_left) %></td>
+          <td><%= game.next_play %></td>
+          <td><%= game.status %></td>
+          <td><%= "#Play's = #{game.plays.count}" %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+</div>

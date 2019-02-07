@@ -15,6 +15,17 @@ tr.border_bottom td {
   border-bottom: solid 1px black;
 }
 
+.games_index {
+
+  td {
+    padding: 2px 5px;
+  }
+
+  td.score {
+    padding-left: 0;
+  }
+}
+
 table.score_board {
   td.elapsing {
     color: red;
