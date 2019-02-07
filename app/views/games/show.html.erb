@@ -24,9 +24,12 @@
   <br>
   <%= form_tag @game, method: :patch do %>
     <%= @game.prompt %>
-    <%= text_field_tag :play, @game.default_play_input, autofocus: true, onfocus: "this.select();" %>
+    <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
     <%= submit_tag :proceed %>
-    <%= content_tag :div, @game.error_message, class: :error %>
+    <span class="link_to_games">
+      <%= link_to "games", games_path %>
+    </span>
+    <div class="error"><%= @game.error_message %></div>
   <% end -%>
 </div>
 
