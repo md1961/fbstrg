@@ -345,6 +345,7 @@ class Game < ApplicationRecord
       toggle_possesion if play.possession_changing?
       if ball_on >= 100
         play.yardage -= ball_on - 100
+        play.save!
         touchdown
       elsif ball_on <= 0
         if play.intercepted? || play.kick_and_return?
@@ -352,6 +353,7 @@ class Game < ApplicationRecord
           touchback
         else
           play.yardage += -ball_on
+          play.save!
           safety
         end
       elsif !play.possession_changing?
