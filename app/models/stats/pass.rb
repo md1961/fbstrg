@@ -26,9 +26,20 @@ class Pass
       @attempts += 1
       @intercepted += 1
     elsif play.sacked?
-      @attempts += 1
       @sacked += 1
     end
+  end
+
+  def pct_comp
+    completions.to_f / attempts * 100
+  end
+
+  def yards_per_attempt
+    yards / attempts
+  end
+
+  def yards_per_completion
+    yards / completions
   end
 end
 
