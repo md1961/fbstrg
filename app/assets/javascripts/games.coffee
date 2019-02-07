@@ -26,7 +26,7 @@ $ ->
     )
 
   announcements = $('#announce_board').data('announcements')
-  if announcements.length == 0
+  if announcements && announcements.length == 0
     announcements = [['__END__', 0]]
   arrayAnnounces = $.map(announcements, (elem, _) ->
     () ->
