@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170130044721) do
+ActiveRecord::Schema.define(version: 20190207045854) do
 
   create_table "defensive_play_set_choices", force: :cascade do |t|
     t.integer "defensive_play_set_id"
@@ -155,6 +155,28 @@ ActiveRecord::Schema.define(version: 20170130044721) do
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_plays_on_game_id"
     t.index ["team_id"], name: "index_plays_on_team_id"
+  end
+
+  create_table "team_traits", force: :cascade do |t|
+    t.integer "team_id"
+    t.integer "run_yardage", default: 0, null: false
+    t.integer "run_breakaway", default: 0, null: false
+    t.integer "pass_short", default: 0, null: false
+    t.integer "pass_long", default: 0, null: false
+    t.integer "pass_breakaway", default: 0, null: false
+    t.integer "pass_protect", default: 0, null: false
+    t.integer "qb_mobility", default: 0, null: false
+    t.integer "run_defense", default: 0, null: false
+    t.integer "run_tackling", default: 0, null: false
+    t.integer "pass_rush", default: 0, null: false
+    t.integer "pass_coverage", default: 0, null: false
+    t.integer "pass_tackling", default: 0, null: false
+    t.integer "place_kicking", default: 0, null: false
+    t.integer "return_breakaway", default: 0, null: false
+    t.integer "return_coverage", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_traits_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
