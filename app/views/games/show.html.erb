@@ -26,7 +26,10 @@
     <%= @game.prompt %>
     <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
     <%= submit_tag :proceed %>
-    <span class="link_to_games">
+    <span class="link">
+      <%= link_to "stats", stats_path(game_id: @game) %>
+    </span>
+    <span class="link">
       <%= link_to "games", games_path %>
     </span>
     <div class="error"><%= @game.error_message %></div>
