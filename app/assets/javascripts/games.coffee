@@ -6,8 +6,6 @@ $ ->
   $('span#toggle_plays_display').click ->
     $('table#play_by_play').toggle()
 
-  $('#strategy_tool_judgments').hide()
-
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
@@ -26,8 +24,12 @@ $ ->
     )
 
   announcements = $('#announce_board').data('announcements')
-  if announcements && announcements.length == 0
-    announcements = [['__END__', 0]]
+  if announcements
+    if announcements.length == 0
+      announcements = [['__END__', 0]]
+    else
+      $('#strategy_tool_judgments').hide()
+
   arrayAnnounces = $.map(announcements, (elem, _) ->
     () ->
       announce(elem[0], elem[1])
