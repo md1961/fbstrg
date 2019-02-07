@@ -291,7 +291,7 @@ class Play < ApplicationRecord
 
   def to_s
     a = []
-    a << "#{result} #{yardage} yard"
+    a << "#{result} #{field_goal? ? 100 - game_snapshot.ball_on + 10 + 7 : yardage} yard"
     a << fumble_to_s unless no_fumble?
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
