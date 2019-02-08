@@ -1,6 +1,7 @@
 <% gss = play.game_snapshot
    return unless gss
-   game = play.game -%>
+   game = play.game
+   is_end_of_game = @game.end_of_game? -%>
 <tr>
   <td><%= "##{play.number}" %></td>
   <td><%= "Q#{gss.quarter}" %></td>
@@ -10,4 +11,14 @@
   <td><%= down_and_yard_display(gss) %></td>
   <td><%= play %></td>
   <td><%= "#{game.home_team} #{gss.score_home} - #{game.visitors} #{gss.score_visitors}" %></td>
+  <% if is_end_of_game -%>
+    <td><span class="toggle_strategy_tool_judgments_display button">[+]</span></td>
+  <% end -%>
 </tr>
+<% if is_end_of_game -%>
+  <tr hidden>
+    <td>
+      <%= render partial: 'strategy_tool_judgments', locals: {game: gss} %>
+    </td>
+  </td>
+<% end -%>
