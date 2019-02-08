@@ -156,6 +156,10 @@ class Play < ApplicationRecord
     punt_and_return? && yardage == air_yardage
   end
 
+  def fourth_down_gambled?
+    game_snapshot&.down == 4 && (on_ground? || pass? || sacked?)
+  end
+
   def determine_fumble_recovery
     pct_rec_by_own = \
       if complete?
@@ -296,6 +300,7 @@ class Play < ApplicationRecord
     a << 'OB' if out_of_bounds
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
     a << "(#{time_to_take || '? '}sec)"
+    a << "GAMBLE" if fourth_down_gambled?
     a << scoring if scoring.present?
     a.join(' ')
   end
