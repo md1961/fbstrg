@@ -38,6 +38,10 @@ while !game.end_of_game?
       time_left_display = format("%d:%02d", mins, game.time_left - mins * 60)
       print "#{game.quarter}Q #{time_left_display}"
       print "  #{game.home_team.abbr} #{game.score_home} - #{game.visitors.abbr} #{game.score_visitors}"
+      ball_on = game.ball_on
+      ball_on_prefix = ball_on == 50 ? '' : ball_on < 50 ? 'Own ' : 'Opp '
+      ball_on = 100 - ball_on if ball_on > 50
+      print "  #{game.offense.abbr} on #{ball_on_prefix}#{ball_on}"
       print ' ' * 40 + "\r"
     end
   end
