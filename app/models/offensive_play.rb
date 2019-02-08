@@ -47,6 +47,18 @@ class OffensivePlay < ApplicationRecord
     [5, 6, 10, 11, 13, 17].include?(number)
   end
 
+  def short_pass?
+    max_throw_yard && max_throw_yard < 11
+  end
+
+  def medium_pass?
+    max_throw_yard && max_throw_yard.between?(11, 20)
+  end
+
+  def long_pass?
+    max_throw_yard && max_throw_yard > 20
+  end
+
   def kickoff?
     name.ends_with?('Kickoff')
   end
