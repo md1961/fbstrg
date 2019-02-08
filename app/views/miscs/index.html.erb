@@ -1,0 +1,11 @@
+<% @freq_dists.each do |freq_dist| -%>
+  <% h = freq_dist.h_freq -%>
+  <table style="margin-bottom: 10px">
+    <% (freq_dist.min .. freq_dist.max).each do |k| -%>
+      <tr>
+        <td style="text-align: right"><%= k %></td>
+        <td><%= '*' * h[k] %></td>
+      </tr>
+    <% end -%>
+  </table>
+<% end -%>
