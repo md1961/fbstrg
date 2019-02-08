@@ -181,11 +181,7 @@ class Play < ApplicationRecord
   def change_due_to(game)
     return if kneel_down?
 
-    if intercepted? && game.ball_on + yardage >= 110
-      self.result = :incomplete
-      self.yardage = 0
-      return
-    elsif field_goal?
+    if field_goal?
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
@@ -240,6 +236,12 @@ class Play < ApplicationRecord
       elsif game.no_huddle && complete?
         self.result = :incomplete if rand(0.0 .. 100.0) < 5.0
       end
+    end
+
+    if intercepted? && game.ball_on + yardage >= 110
+      self.result = :incomplete
+      self.yardage = 0
+      return
     end
 
     if on_ground? || complete? || intercepted?
