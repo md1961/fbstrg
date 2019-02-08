@@ -223,6 +223,7 @@ class Play < ApplicationRecord
     return if game.offensive_play.nil? || game.defensive_play.nil?
 
     if complete? || incomplete?
+      change_pass_by_team_traits(game)
       if rand(0.0 .. 100.0) < self.class.pct_sack(game)
         self.result = :sacked
         self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
@@ -405,6 +406,26 @@ class Play < ApplicationRecord
       else
         self.yardage += rand(10 .. 100)
         self.yardage = [yardage, rand(20 .. 40)].min if game.defensive_play&.num_DBs >= 7 && rand(3).nonzero?
+      end
+    end
+
+    def change_pass_by_team_traits(game)
+      offensive_trait = game.offense.team_trait
+      defensive_trait = game.defense.team_trait
+      fluctuation_factor = rand(-2 .. 2)
+
+      offensive_play = game.offensive_play
+      is_short = offensive_play.short_pass? || (offensive_play.medium_pass? && rand(2).zero?)
+      off_pass_factor = is_short ? offensive_trait.pass_short : offensive_trait.pass_long
+      if incomplete?
+        complete_factor = off_pass_factor - defensive_trait.pass_coverage + fluctuation_factor
+        multiplier = offensive_play.short_pass? ? 2.5 : offensive_play.medium_pass? ? 2.0 : 1.5
+        self.result = :complete if rand * 100 < complete_factor * multiplier
+      end
+      if complete?
+        def_gain_factor = rand(2).zero? ? defensive_trait.pass_coverage : defensive_trait.pass_tackling
+        gain_factor = off_pass_factor - def_gain_factor + fluctuation_factor
+        self.yardage += (yardage * (gain_factor / 10.0) * rand).round
       end
     end
 
