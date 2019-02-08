@@ -124,7 +124,7 @@ class Play < ApplicationRecord
     }
   end
 
-  def throw?
+  def pass?
     complete? || incomplete? || intercepted?
   end
 

@@ -49,7 +49,7 @@ module Announcer
           announcement.add("Down #{at_yard_line(game.ball_on)}", 2000)
         end
       end
-    elsif play.throw? || play.kick_and_return?
+    elsif play.pass? || play.kick_and_return?
       run_from += play.air_yardage
       run_from = 100 - run_from if play.intercepted? || play.kick_and_return?
       run_yardage_after = \
@@ -58,7 +58,7 @@ module Announcer
         elsif play.possession_changing?
           play.air_yardage - play.yardage
         end
-      if play.throw?
+      if play.pass?
         time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
@@ -84,7 +84,7 @@ module Announcer
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
         if (play.on_ground? && play.yardage >= 10) ||
-           (play.throw? && run_yardage_after > 5) ||
+           (play.pass? && run_yardage_after > 5) ||
            (play.kick_and_return? && !play.fair_catch?)
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           end_on = play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
