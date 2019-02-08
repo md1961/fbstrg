@@ -338,7 +338,11 @@ class Play < ApplicationRecord
     def self.pct_sack(game)
       plus = 0.0
       plus = 4.0 if game.no_huddle
-      pct_sack_base(game.offensive_play, game.defensive_play) + plus
+
+      protect_factor = game.offense.team_trait.pass_protect - game.defense.team_trait.pass_rush
+      plus -= protect_factor
+
+      [pct_sack_base(game.offensive_play, game.defensive_play) + plus, 0.1].max
     end
 
     def self.pct_sack_base(offensive_play, defensive_play)
@@ -348,7 +352,7 @@ class Play < ApplicationRecord
       max_throw_yard = offensive_play.max_throw_yard
       num_linemen = defensive_play.lineman.to_i
       pct = max_throw_yard / 10.0 * 2
-      pct += 5 if defensive_play.blitz?
+      pct += 4 if defensive_play.blitz?
       pct += 2 if num_linemen >= 4
       pct
     end
