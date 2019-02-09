@@ -349,7 +349,6 @@ class Game < ApplicationRecord
         touchdown
       elsif ball_on <= 0
         if play.intercepted? || play.kick_and_return?
-          # TODO: Add option to return kickoff from end zone.
           touchback
         else
           play.yardage += -ball_on

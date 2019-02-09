@@ -211,6 +211,7 @@ class Play < ApplicationRecord
       end
       return
     elsif kickoff_and_return?
+      self.yardage = air_yardage if take_touchback_on_kickoff?(game)
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
       end
@@ -263,11 +264,23 @@ class Play < ApplicationRecord
     end
   end
 
+  def take_touchback_on_kickoff?(game)
+    land_on = game.ball_on + air_yardage
+    return false if land_on < 100
+    return true if land_on >= 110
+    return true if game.score_diff < 0  # Receiving team is winning.
+    return true if game.quarter != 4
+    return true if land_on > 105
+    return false if game.score_diff > 14
+    return true if land_on > 102
+    game.score_diff > 7
+  end
+
   def determine_air_yardage(offensive_play)
     @air_yardage = \
       if offensive_play.kickoff?
         2.times.map { rand(25 .. 35) }.sum.tap { |air_y|
-          self.yardage = air_y - (rand(21) + rand(21))
+          self.yardage = air_y - (10 + rand(11) + rand(11))
         }
       elsif offensive_play.punt? || offensive_play.kickoff_after_safety?
         3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
