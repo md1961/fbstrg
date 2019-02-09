@@ -152,8 +152,8 @@ class Play < ApplicationRecord
     kick_and_return? || intercepted? || fumble_rec_by_opponent?
   end
 
-  def fair_catch?
-    punt_and_return? && yardage == air_yardage
+  def no_return_on_kick?
+    kick_and_return? && yardage == air_yardage
   end
 
   def fourth_down_gambled?
