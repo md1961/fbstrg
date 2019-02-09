@@ -240,8 +240,8 @@ class Game < ApplicationRecord
   def revert!
     raise "No GameSnapshot's" if game_snapshots.empty?
     play_last, play_before = plays.order(number: :desc).first(2)
-    snapshot_last   = play_last  .game_snapshot
-    snapshot_before = play_before.game_snapshot
+    snapshot_last   = play_last   .game_snapshot
+    snapshot_before = play_before&.game_snapshot
     attrs = snapshot_last.attributes_for_game
     attrs[:status] = :huddle
     if snapshot_before
