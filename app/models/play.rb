@@ -394,7 +394,22 @@ class Play < ApplicationRecord
     end
 
     def pct_breakaway(game)
-      pct_breakaway_base(game.offensive_play, game.defensive_play)
+      pct = pct_breakaway_base(game.offensive_play, game.defensive_play)
+
+      offensive_trait = game.offense.team_trait
+      defensive_trait = game.defense.team_trait
+      if on_ground?
+        pct_add = (offensive_trait.run_breakaway - defensive_trait.run_tackling) * 0.1
+        [pct + pct_add, 0.1].max
+      elsif complete?
+        pct_add = (offensive_trait.pass_breakaway - defensive_trait.pass_tackling) * 0.5
+        [pct + pct_add, 1.0].max
+      elsif kick_and_return?
+        pct_add = (offensive_trait.return_breakaway - defensive_trait.return_coverage) * 0.1
+        [pct + pct_add, 0.1].max
+      else
+        pct
+      end
     end
 
     def pct_breakaway_base(offensive_play, defensive_play)
