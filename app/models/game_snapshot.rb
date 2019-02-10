@@ -1,11 +1,11 @@
 class GameSnapshot < ApplicationRecord
   extend GameEnum
+  include GameAttributes
 
   belongs_to :play, optional: true
   delegate :game, to: :play
 
-  delegate :home_team, :visitors, :defense, :timeout_left, :score_diff, :no_huddle, :final_FG_stands?,
-           to: :game
+  delegate :home_team, :visitors, to: :game
 
   def self.take_snapshot_of(game)
     attrs = game.attributes
@@ -13,8 +13,12 @@ class GameSnapshot < ApplicationRecord
     new(attrs)
   end
 
-  def goal_to_go?
-    100 - ball_on <= yard_to_go
+  def no_huddle
+    false
+  end
+
+  def total_score
+    score_home + score_visitors
   end
 
   def attributes_for_game
@@ -27,10 +31,6 @@ class GameSnapshot < ApplicationRecord
       attrs['home_team_id'] = game.home_team_id
       attrs['visitors_id' ] = game.visitors_id
     }
-  end
-
-  def offense
-    home_has_ball ? game.home_team : game.visitors
   end
 
   def update_scores_by(game)

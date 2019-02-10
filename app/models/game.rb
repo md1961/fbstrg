@@ -1,5 +1,6 @@
 class Game < ApplicationRecord
   extend GameEnum
+  include GameAttributes
 
   belongs_to :home_team, class_name: 'Team'
   belongs_to :visitors , class_name: 'Team'
@@ -14,18 +15,6 @@ class Game < ApplicationRecord
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
   KICKOFF_YARDLINE_AFTER_SAFETY = 20
-
-  def goal_to_go?
-    100 - ball_on <= yard_to_go
-  end
-
-  def offense
-    home_has_ball ? home_team : visitors
-  end
-
-  def defense
-    home_has_ball ? visitors : home_team
-  end
 
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
@@ -43,11 +32,6 @@ class Game < ApplicationRecord
     playing? && defense_human?
   end
 
-  def timeout_left(is_offense = true)
-    is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
-    is_home ? timeout_home : timeout_visitors
-  end
-
   def clock_runs_out?
     end_of_quarter? || end_of_half? || end_of_game?
   end
@@ -60,14 +44,6 @@ class Game < ApplicationRecord
     return 'choose offense' if choose_offense?
     return 'choose defense' if choose_defense?
     next_play
-  end
-
-  def score_diff
-    (score_home - score_visitors) * (home_has_ball ? 1 : -1)
-  end
-
-  def final_FG_stands?
-    -3 <= score_diff && score_diff <= 0
   end
 
   def determine_offensive_play(play_input)
