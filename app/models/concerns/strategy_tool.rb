@@ -126,7 +126,7 @@ module StrategyTool
 
   def kneel_down_to_finish_game?(game)
     game.quarter == 4 && game.score_diff > 0 && game.ball_on > 2 &&
-      game.time_left <= 40 * (5 - game.down + (game.clock_stopped? ? 1 : 0)) - 39 * game.timeout_left(false)
+      game.time_left <= 40 * (5 - game.down - (game.clock_stopped? ? 1 : 0)) - 39 * game.timeout_left(false)
   end
 
     def zone_conservative?(game)
