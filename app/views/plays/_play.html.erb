@@ -17,8 +17,12 @@
 </tr>
 <% if is_end_of_game -%>
   <tr hidden>
-    <td>
+    <td colspan="6">
       <%= render partial: 'strategy_tool_judgments', locals: {game: gss} %>
+    </td>
+    <td>
+      Play id = <%= play.id %><br>
+      GameSnapshot id = <%= gss.id %><br>
     </td>
   </td>
 <% end -%>

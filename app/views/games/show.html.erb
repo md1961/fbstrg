@@ -78,6 +78,8 @@
 <br>
 <span id="toggle_plays_display" class="button">[+]</span>
 
-<table id="play_by_play" hidden>
-  <%= render @game.plays.order(number: :desc) %>
+<table id="play_by_play" <%= 'hidden' unless @game.end_of_game? %>>
+  <% plays = @game.plays.includes(:game_snapshot).order(number: :desc)
+     PlayUtil.write_scorings(plays) if @game.end_of_game? -%>
+  <%= render plays %>
 </table>
