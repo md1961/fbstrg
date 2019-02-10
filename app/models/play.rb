@@ -246,6 +246,8 @@ class Play < ApplicationRecord
       return
     end
 
+    change_run_yardage_by_team_traits(game) if on_ground?
+
     if on_ground? || complete? || intercepted?
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
@@ -439,6 +441,16 @@ class Play < ApplicationRecord
         self.yardage += rand(10 .. 100)
         self.yardage = [yardage, rand(20 .. 40)].min if game.defensive_play&.num_DBs >= 7 && rand(3).nonzero?
       end
+    end
+
+    # TODO: Take offensive_play and defensive_play into account for change_run_yardage_by_team_traits().
+    def change_run_yardage_by_team_traits(game)
+      offensive_trait = game.offense.team_trait
+      defensive_trait = game.defense.team_trait
+
+      factor = (offensive_trait.run_yardage - defensive_trait.run_defense + 10) * 2 + 1  # 1 .. 41
+      self.yardage += MathUtil.pick_from_decreasing_distribution( 1,  5) if rand * 100 < factor
+      self.yardage += MathUtil.pick_from_decreasing_distribution(10, 20) if rand * 100 < factor / 10.0
     end
 
     def change_pass_by_team_traits(game)
