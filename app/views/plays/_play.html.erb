@@ -1,12 +1,13 @@
-<% gss = play.game_snapshot
+<% return if play.extra_point?
+   gss = play.game_snapshot
    return unless gss
    game = play.game
    is_end_of_game = @game.end_of_game? -%>
 <tr>
-  <td><%= "##{play.number}" %></td>
+  <td class="numeric"><%= "##{play.number}" %></td>
   <td><%= "Q#{gss.quarter}" %></td>
-  <td><%= time_left_display(gss.time_left) %></td>
-  <td><%= gss.offense %></td>
+  <td class="numeric"><%= time_left_display(gss.time_left) %></td>
+  <td><%= gss.offense.abbr %></td>
   <td><%= ball_on_display(gss) %></td>
   <td><%= down_and_yard_display(gss) %></td>
   <td><%= play %></td>
