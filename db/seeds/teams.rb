@@ -53,3 +53,81 @@ Team.create!(
   return_breakaway:  0,
   return_coverage:   0,
 )
+
+Team.create!(
+  name:               'N.Y. Jets',
+  abbr:               'NYJ',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
+).create_team_trait!(
+  run_yardage:       1,
+  run_breakaway:     1,
+  pass_short:        0,
+  pass_long:        -1,
+  pass_breakaway:   -2,
+  pass_protect:     -1,
+  qb_mobility:       3,
+
+  run_defense:       1,
+  run_tackling:      1,
+  pass_rush:         0,
+  pass_coverage:     0,
+  pass_tackling:     0,
+
+  place_kicking:    -1,
+  return_breakaway:  0,
+  return_coverage:   0,
+)
+
+Team.create!(
+  name:               'Chicago',
+  abbr:               'CHI',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
+).create_team_trait!(
+  run_yardage:       4,
+  run_breakaway:     4,
+  pass_short:        2,
+  pass_long:         0,
+  pass_breakaway:    0,
+  pass_protect:     -3,
+  qb_mobility:       4,
+
+  run_defense:       5,
+  run_tackling:      4,
+  pass_rush:         5,
+  pass_coverage:     0,
+  pass_tackling:    -2,
+
+  place_kicking:     2,
+  return_breakaway:  2,
+  return_coverage:   2,
+)
+
+Team.create!(
+  name:               'Green Bay',
+  abbr:               'GB',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
+).create_team_trait!(
+  run_yardage:       3,
+  run_breakaway:     2,
+  pass_short:        3,
+  pass_long:         2,
+  pass_breakaway:    2,
+  pass_protect:      1,
+  qb_mobility:       3,
+
+  run_defense:       2,
+  run_tackling:      3,
+  pass_rush:         2,
+  pass_coverage:     3,
+  pass_tackling:     2,
+
+  place_kicking:     5,
+  return_breakaway:  5,
+  return_coverage:   5,
+)
