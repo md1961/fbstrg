@@ -1,13 +1,10 @@
-ID = 101
-if Game.exists?(ID)
-  print "OK to overwrite Game (id = #{ID})? "
-  exit unless gets.chomp == 'y'
-  Game.find(ID).destroy
-end
+home_team = Team.find_by(abbr: 'MIA')
+visitors  = Team.find_by(abbr: 'NYJ')
 
-home_team = Team.find_by(abbr: 'H')
-visitors  = Team.find_by(abbr: 'V')
-game = Game.create!(id: ID, home_team: home_team, visitors: visitors)
+print "OK to play #{visitors} at #{home_team}? "
+exit unless gets.chomp == 'y'
+
+game = Game.create!(home_team: home_team, visitors: visitors)
 
 session = {}
 while !game.end_of_game?
