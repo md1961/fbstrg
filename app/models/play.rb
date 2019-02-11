@@ -313,12 +313,12 @@ class Play < ApplicationRecord
 
   def to_s
     a = []
-    a << "#{result} #{field_goal? ? 100 - game_snapshot.ball_on + 10 + 7 : yardage} yard"
+    a << result_to_s
     a << fumble_to_s unless no_fumble?
-    a << 'OB' if out_of_bounds
+    a << 'OB' if out_of_bounds && scoring.blank?
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
-    a << "(#{time_to_take || '? '}sec)"
-    a << "GAMBLE" if fourth_down_gambled?
+    a << "(#{time_to_take}sec)" if time_to_take
+    a << "(GAMBLE)" if fourth_down_gambled?
     a << scoring if scoring.present?
     a.join(' ')
   end
@@ -475,5 +475,23 @@ class Play < ApplicationRecord
 
     def fumble_to_s
       field_goal_blocked? || punt_blocked? ? fumble.sub('fumble_', '') : fumble
+    end
+
+    def result_to_s
+      if on_ground?
+        "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
+      elsif complete?
+        "Pass #{yardage} yard"
+      elsif incomplete?
+        "Incomplete"
+      elsif sacked?
+        "QB sacked #{-yardage} yard loss"
+      elsif field_goal?
+        "#{100 - game_snapshot.ball_on + 10 + 7} yard"
+      elsif kneel_down?
+        "QB kneel down"
+      else
+        "#{result} #{yardage} yard"
+      end
     end
 end
