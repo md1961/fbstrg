@@ -77,6 +77,7 @@
 
 <br>
 <span id="toggle_plays_display" class="button">[+]</span>
+<span id="toggle_scorings" class="button">[Scorings]</span>
 
 <table id="play_by_play" <%= 'hidden' unless @game.end_of_game? %>>
   <% plays = @game.plays.includes(:game_snapshot).order(number: :desc)

@@ -3,7 +3,7 @@
    return unless gss
    game = play.game
    is_end_of_game = @game.end_of_game? -%>
-<tr>
+ <tr class="<%= play.scoring.blank? ? 'no_scoring' : '' %>">
   <td class="numeric"><%= "##{play.number}" %></td>
   <td><%= "Q#{gss.quarter}" %></td>
   <td class="numeric"><%= time_left_display(gss.time_left) %></td>
