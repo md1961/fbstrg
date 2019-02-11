@@ -1,13 +1,14 @@
 module Stats
 
 class Run
-  attr_reader :attempts, :yards, :long
+  attr_reader :attempts, :yards, :long, :touchdowns
 
   def initialize(owner)
     @owner = owner
     @attempts = 0
     @yards = 0
     @long = -999
+    @touchdowns = 0
   end
 
   def tally_from(play)
@@ -16,6 +17,7 @@ class Run
       yardage = play.yardage
       @yards += yardage
       @long = yardage if yardage > @long
+      @touchdowns += 1 if play.scoring&.starts_with?('TOUCHDOWN')
     end
   end
 
