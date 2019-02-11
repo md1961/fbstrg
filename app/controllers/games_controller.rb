@@ -2,12 +2,7 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
   def index
-    if Game.count <= 1
-      Game.create!(home_team: Team.first, visitors: Team.second) if Game.count == 0
-      redirect_to Game.first
-    else
-      @games = Game.all
-    end
+    @games = Game.all
   end
 
   def show
