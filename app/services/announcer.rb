@@ -4,6 +4,7 @@ module Announcer
   def announce(play, game)
     offensive_play = game.offensive_play
     announcement = Views::Announcement.new
+    return announcement unless offensive_play
     if offensive_play.kneel_down?
       announcement.add("Kneel down", 2000)
       return announcement
