@@ -487,7 +487,7 @@ class Play < ApplicationRecord
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal?
-        "#{100 - game_snapshot.ball_on + 10 + 7} yard"
+        "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (scoring.present? ? "" : " field goal NO GOOD")
       elsif kneel_down?
         "QB kneel down"
       else
