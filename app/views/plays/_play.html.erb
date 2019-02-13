@@ -22,6 +22,9 @@
       <%= render partial: 'strategy_tool_judgments', locals: {game: gss} %>
     </td>
     <td>
+      <table>
+        <%= render partial: 'score_board', locals: {game: gss} %>
+      </table>
       Play id = <%= play.id %><br>
       GameSnapshot id = <%= gss.id %><br>
     </td>
