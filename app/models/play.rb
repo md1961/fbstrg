@@ -456,18 +456,18 @@ class Play < ApplicationRecord
     def change_pass_by_team_traits(game)
       offensive_trait = game.offense.team_trait
       defensive_trait = game.defense.team_trait
-      fluctuation_factor = rand(-2 .. 2)
 
       offensive_play = game.offensive_play
       is_short = offensive_play.short_pass? || (offensive_play.medium_pass? && rand(2).zero?)
       off_pass_factor = is_short ? offensive_trait.pass_short : offensive_trait.pass_long
       if incomplete?
-        complete_factor = off_pass_factor - defensive_trait.pass_coverage + fluctuation_factor
-        multiplier = offensive_play.short_pass? ? 2.5 : offensive_play.medium_pass? ? 2.0 : 1.5
+        complete_factor = off_pass_factor - defensive_trait.pass_coverage
+        multiplier = offensive_play.short_pass? ? 5.0 : offensive_play.medium_pass? ? 4.0 : 3.0
         self.result = :complete if rand * 100 < complete_factor * multiplier
       end
       if complete?
         def_gain_factor = rand(2).zero? ? defensive_trait.pass_coverage : defensive_trait.pass_tackling
+        fluctuation_factor = rand(-2 .. 2)
         gain_factor = off_pass_factor - def_gain_factor + fluctuation_factor
         self.yardage += (yardage * (gain_factor / 10.0) * rand).round
       end
