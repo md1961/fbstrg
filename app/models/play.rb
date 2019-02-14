@@ -182,6 +182,7 @@ class Play < ApplicationRecord
       min_y, max_y = max_y, min_x if min_y > max_y
       self.yardage = rand(min_y .. max_y)
     end
+    self.out_of_bounds = false
   end
 
   def change_due_to(game)
@@ -234,6 +235,7 @@ class Play < ApplicationRecord
       if rand(0.0 .. 100.0) < self.class.pct_sack(game)
         self.result = :sacked
         self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
+        self.out_of_bounds = false
       elsif rand(0.0 .. 100.0) < self.class.pct_intercept(game)
         self.result = :intercepted
         op = game.offensive_play
@@ -241,8 +243,10 @@ class Play < ApplicationRecord
         if rand(2).zero?
           self.yardage = air_yardage - (rand(31) - rand(31)).abs
         end
+        self.out_of_bounds = false
       elsif game.no_huddle && complete?
         self.result = :incomplete if rand(0.0 .. 100.0) < 5.0
+        self.out_of_bounds = false
       end
     end
 
