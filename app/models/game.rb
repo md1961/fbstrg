@@ -284,6 +284,7 @@ class Game < ApplicationRecord
         score(play.field_goal? ? 3 : 1)
         result = 'GOOD'
       elsif play.field_goal?
+        self.ball_on = ball_on - 7
         toggle_possesion
         self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
       else
