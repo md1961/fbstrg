@@ -71,6 +71,7 @@ module StrategyTool
     return false unless game.down == 4
     return false if game.quarter == 4 && game.score_diff > 0
     return false if game.quarter == 2 && game.time_left <= seconds_needed_for_field_goal(game)
+    return false if game.quarter <= 2 && game.score_diff >= 0 && game.ball_on < 55 + rand(6)
     game.quarter == 4 && (
           (game.score_diff < 0 \
            && game.time_left <= seconds_needed_for_field_goal(game) + seconds_needed_to_get_ball_back(game)) \
