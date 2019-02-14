@@ -55,4 +55,8 @@ module GamesHelper
   def long_runs_display(stats)
     "[#{stats.run_stats.longs.sort.reverse.join(' ')}]"
   end
+
+  def long_passes_display(stats)
+    "[#{stats.pass_stats.longs.sort.reverse.join(' ')}]"
+  end
 end
