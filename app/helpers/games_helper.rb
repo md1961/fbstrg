@@ -51,4 +51,8 @@ module GamesHelper
   def pct_comp_display(stats)
     "%3.1f%%" % stats.pass_stats.pct_comp
   end
+
+  def long_runs_display(stats)
+    "[#{stats.run_stats.longs.sort.reverse.join(' ')}]"
+  end
 end
