@@ -17,8 +17,6 @@
           <td class="numeric score"><%= game.score_visitors %></td>
           <td><%= "#{game.quarter}Q" %></td>
           <td class="numeric"><%= time_left_display(game.time_left) %></td>
-          <td><%= game.next_play %></td>
-          <td><%= game.status %></td>
           <td><%= "#Play's = #{game.plays.count}" %></td>
           <td><%= link_to 'stats', stats_path(game_id: game) %></td>
           <td><%= "#{yards_per_carry_display(stats_home)} vs #{yards_per_carry_display(stats_visitors)}" %></td>
