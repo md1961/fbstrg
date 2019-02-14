@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   root 'games#index'
 
+  resources :teams, only: :index
   resources :games
 
   resources :stats, only: :index
