@@ -24,26 +24,26 @@ module StrategyTool
   # TODO: Add conditions for possible-tie or sudden-death in overtime.
   def time_running_out?(game)
     game.quarter == 4 && (
-      (game.score_diff <= -3 && game.time_left <= seconds_needed_for_touchdown(game)) ||
-      (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game)) ||
-      (game.score_diff <=  0 && game.time_left <= 120 && zone_aggresive?(game))
+         (game.score_diff <= -3 && game.time_left <= seconds_needed_for_touchdown(game)) \
+      || (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game)) \
+      || (game.score_diff <=  0 && game.time_left <= 120 && zone_aggresive?(game))
     )
   end
 
   def needs_to_hurry_before_halftime?(game)
     game.quarter == 2 && (
-      game.time_left <= 120 && threatening_into_end_zone?(game) ||
-      game.time_left <= seconds_needed_for_touchdown(game) && (
-        (zone_aggresive?(game)) ||
-        (game.score_diff <= 7 && !zone_conservative?(game))
+         game.time_left <= 120 && threatening_into_end_zone?(game) \
+      || game.time_left <= seconds_needed_for_touchdown(game) && (
+           (zone_aggresive?(game)) \
+        || (game.score_diff <= 7 && !zone_conservative?(game))
       )
     )
   end
 
   def cannot_down_in_field?(game)
     game.timeout_left == 0 && game.time_left <= 20 && (
-      (game.quarter == 4 && game.score_diff.between?(-3, 0) && game.ball_on >= 50) ||
-      (game.quarter == 2 && game.ball_on >= 40)
+         (game.quarter == 4 && game.score_diff.between?(-3, 0) && game.ball_on >= 50) \
+      || (game.quarter == 2 && game.ball_on >= 40)
     )
   end
 
@@ -72,12 +72,12 @@ module StrategyTool
     return false if game.quarter == 4 && game.score_diff > 0
     return false if game.quarter == 2 && game.time_left <= seconds_needed_for_field_goal(game)
     game.quarter == 4 && (
-      (game.score_diff < 0 &&
-       game.time_left <= seconds_needed_for_field_goal(game) + seconds_needed_to_get_ball_back(game)) ||
-      (game.score_diff < -3 && game.ball_on > 50 &&
-       game.time_left <= seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) ||
-      (game.score_diff < -7 && !zone_conservative?(game) &&
-       game.time_left <= (seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) * 2)
+          (game.score_diff < 0 \
+           && game.time_left <= seconds_needed_for_field_goal(game) + seconds_needed_to_get_ball_back(game)) \
+       || (game.score_diff < -3 && game.ball_on > 50 \
+           && game.time_left <= seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) \
+       || (game.score_diff < -7 && !zone_conservative?(game) \
+           && game.time_left <= (seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) * 2)
     ) ||
     (
       (game.ball_on.between?(50, 100 - 35 - rand(5)) && game.yard_to_go <= 3)
@@ -87,9 +87,8 @@ module StrategyTool
   def kick_FG_now?(game)
     return false if [1, 3].include?(game.quarter) || game.ball_on < 50
     (game.quarter == 2 || game.final_FG_stands?) && (
-      (game.time_left <= 15 && game.timeout_left <= 0) ||
-      (game.time_left <= 10 * game.timeout_left)
-    )
+         (game.time_left <= 15 && game.timeout_left <= 0) \
+      || (game.time_left <= 10 * game.timeout_left))
   end
 
   def needs_offense_timeout?(game)
