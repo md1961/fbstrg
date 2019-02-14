@@ -1,7 +1,8 @@
 module Stats
 
 class Pass
-  attr_reader :attempts, :completions, :yards, :long, :touchdowns, :intercepted, :sacked
+  attr_reader :attempts, :completions, :yards, :long, :touchdowns,
+              :intercepted, :sacked, :longs
 
   def initialize(owner)
     @owner = owner
@@ -12,6 +13,7 @@ class Pass
     @touchdowns = 0
     @intercepted = 0
     @sacked = 0
+    @longs = []
   end
 
   def tally_from(play)
@@ -22,6 +24,7 @@ class Pass
       @yards += yardage
       @long = yardage if yardage > @long
       @touchdowns += 1 if play.scoring&.starts_with?('TOUCHDOWN')
+      @longs << yardage if yardage >= 20
     elsif play.incomplete?
       @attempts += 1
     elsif play.intercepted?
