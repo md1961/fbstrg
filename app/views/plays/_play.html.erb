@@ -4,9 +4,13 @@
    game = play.game
    is_end_of_game = @game.end_of_game? -%>
 
-<% classes = []
+<%
+   classes = []
    classes << 'no_scoring' if play.scoring.blank?
-   classes << 'border_bottom' if gss.quarter == 3 && gss.time_left >= 15 * 60 -%>
+   classes << 'border_bottom_thick' if gss.quarter == 3 && gss.time_left >= 15 * 60
+   classes << 'border_top' if play.possession_changing?
+-%>
+
 <tr class="<%= classes.join(' ') %>">
   <td class="numeric"><%= "##{play.number}" %></td>
   <td><%= "Q#{gss.quarter}" %></td>

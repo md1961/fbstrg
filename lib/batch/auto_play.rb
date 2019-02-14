@@ -1,5 +1,5 @@
 home_team = Team.find_by(abbr: 'MIA')
-visitors  = Team.find_by(abbr: 'NYJ')
+visitors  = Team.find_by(abbr: 'CHI')
 
 print "OK to play #{visitors} at #{home_team}? "
 exit unless gets.chomp == 'y'

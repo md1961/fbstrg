@@ -43,9 +43,15 @@ table.plays_to_choose td {
 
 table#play_by_play {
   font-size: xx-small;
+  border: none 0 white;
 
   td {
+    border: none 0 white;
     padding-left: 5px;
+  }
+
+  tr.border_top {
+    border-top: solid 1px black;
   }
 }
 
