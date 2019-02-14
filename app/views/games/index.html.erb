@@ -6,6 +6,9 @@
     </thead>
     <tbody>
       <% @games.each do |game| -%>
+        <% stats = Stats::Game.new(game)
+           stats_home     = stats.stats_home
+           stats_visitors = stats.stats_visitors -%>
         <tr>
           <td class="numeric"><%= link_to game.id, game %></td>
           <td><%= game.home_team %></td>
@@ -18,6 +21,8 @@
           <td><%= game.status %></td>
           <td><%= "#Play's = #{game.plays.count}" %></td>
           <td><%= link_to 'stats', stats_path(game_id: game) %></td>
+          <td><%= "#{yards_per_carry_display(stats_home)} vs #{yards_per_carry_display(stats_visitors)}" %></td>
+          <td><%= "#{pct_comp_display(stats_home)} vs #{pct_comp_display(stats_visitors)}" %></td>
         </tr>
       <% end -%>
     </tbody>

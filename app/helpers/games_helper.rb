@@ -43,4 +43,12 @@ module GamesHelper
     play_set = game.defensive_play_set
     "#{game.defensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end
+
+  def yards_per_carry_display(stats)
+    "%2.1fy" % stats.run_stats.yards_per_carry
+  end
+
+  def pct_comp_display(stats)
+    "%3.1f%%" % stats.pass_stats.pct_comp
+  end
 end
