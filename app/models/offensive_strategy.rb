@@ -39,7 +39,7 @@ class OffensiveStrategy < ApplicationRecord
       [nil, 'NH']
     elsif needs_defense_timeout?(game)
       [nil, 'TD']
-    elsif kneel_down_to_finish_game?(game)
+    elsif kneel_down_to_finish_game?(game) || kneel_down_to_finish_half?(game)
       OffensivePlay.kneel_down
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
