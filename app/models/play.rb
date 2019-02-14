@@ -149,7 +149,13 @@ class Play < ApplicationRecord
   end
 
   def possession_changing?
-    kick_and_return? || intercepted? || fumble_rec_by_opponent?
+    kick_and_return? || intercepted? || fumble_rec_by_opponent? \
+	end
+
+	def possession_changed?
+		possession_changing? \
+			|| (field_goal? && scoring.blank?) \
+			|| (fourth_down_gambled? && yardage < game_snapshot.yard_to_go)
   end
 
   def no_return_on_kick?
