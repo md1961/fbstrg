@@ -30,6 +30,14 @@ module StrategyTool
     )
   end
 
+	def needs_onside_kickoff?(game)
+		return false unless game.kickoff?
+    game.quarter == 4 && (
+         (game.score_diff < -3 && game.time_left <= seconds_needed_for_touchdown(game)) \
+      || (game.score_diff <  0 && game.time_left <= seconds_needed_for_field_goal(game))
+		)
+	end
+
   def needs_to_hurry_before_halftime?(game)
     game.quarter == 2 && (
          game.time_left <= 120 && threatening_into_end_zone?(game) \

@@ -28,7 +28,7 @@ class OffensiveStrategy < ApplicationRecord
   def choose_play(game)
     @play_set = nil
     if game.kickoff?
-      OffensivePlay.normal_kickoff
+      needs_onside_kickoff?(game) ? OffensivePlay.onside_kickoff : OffensivePlay.normal_kickoff
     elsif game.extra_point?
       OffensivePlay.extra_point
     elsif game.kickoff_after_safety?
