@@ -1,6 +1,20 @@
-home_team = Team.find_by(abbr: 'MIA')
-visitors  = Team.find_by(abbr: 'CHI')
+last_game = Game.order(:updated_at).last
+home_team = last_game.home_team
+visitors  = last_game.visitors
 
+teams = []
+while teams.size < 2
+  team_type, team = teams.empty? ? ['Home Team', home_team] : ['Visitors', visitors]
+  print "Choose #{team_type} by abbr ('' for '#{team.abbr}', 'quit' to quit): "
+  name = gets.chomp.upcase
+  exit if name == 'QUIT'
+  team = Team.where("abbr LIKE ?", "#{name}%").first if name.present?
+  next unless team
+  teams << team
+  puts "'#{team.abbr}' chosen for #{team_type}."
+end
+
+home_team, visitors = teams
 print "OK to play #{visitors} at #{home_team}? "
 exit unless gets.chomp == 'y'
 
