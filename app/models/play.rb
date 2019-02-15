@@ -158,7 +158,7 @@ class Play < ApplicationRecord
   end
 
   def possession_changing?
-    (kick_and_return? && !fumble_rec_by_opponent) || intercepted? \
+    (kick_and_return? && !fumble_rec_by_opponent?) || intercepted? \
       || (!kick_and_return? && fumble_rec_by_opponent?)
 	end
 
