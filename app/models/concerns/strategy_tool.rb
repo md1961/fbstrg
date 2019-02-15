@@ -60,7 +60,7 @@ module StrategyTool
   end
 
   def needs_long_yardage?(game)
-    game.yard_to_go.to_f / (4 - game.down) >= LONG_YARDAGE_PER_DOWN
+    game.yard_to_go.to_f / [(4 - game.down), 1].max >= LONG_YARDAGE_PER_DOWN
   end
 
   def needs_very_short_yardage?(game)
