@@ -131,3 +131,29 @@ Team.create!(
   return_breakaway:  5,
   return_coverage:   5,
 )
+
+Team.create!(
+  name:               'Baltimore',
+  abbr:               'BAL',
+  play_result_chart:  result_chart,
+  offensive_strategy: offensive_strategy,
+  defensive_strategy: defensive_strategy,
+).create_team_trait!(
+  run_yardage:       5,
+  run_breakaway:     5,
+  pass_short:        4,
+  pass_long:         3,
+  pass_breakaway:    2,
+  pass_protect:      2,
+  qb_mobility:       5,
+
+  run_defense:      -2,
+  run_tackling:     -3,
+  pass_rush:        -1,
+  pass_coverage:     3,
+  pass_tackling:     4,
+
+  place_kicking:     3,
+  return_breakaway:  3,
+  return_coverage:   3,
+)
