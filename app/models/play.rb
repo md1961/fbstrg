@@ -189,6 +189,7 @@ class Play < ApplicationRecord
     return if kneel_down?
 
     if field_goal?
+      self.yardage += game.offense.team_trait.place_kicking * rand(4) if yardage >= 20
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
