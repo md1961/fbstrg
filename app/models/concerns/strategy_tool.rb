@@ -85,6 +85,7 @@ module StrategyTool
     )
   end
 
+  # TODO: Consider plays before trying FG.
   def kick_FG_now?(game)
     return false if [1, 3].include?(game.quarter) || game.ball_on < 50
     (game.quarter == 2 || game.final_FG_stands?) && (

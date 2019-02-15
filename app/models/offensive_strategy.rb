@@ -55,12 +55,12 @@ class OffensiveStrategy < ApplicationRecord
 
     def choose_on_4th_down(game)
       ball_on = game.ball_on
-      if ball_on <= 100 - 40
+      if ball_on < 100 - 45
         OffensivePlay.normal_punt
-      elsif ball_on > 100 - 33
+      elsif ball_on > 100 - 35
         OffensivePlay.field_goal
       else
-        pct_for_FG = MathUtil.linear_interporation([40, 0], [33, 100], 100 - ball_on)
+        pct_for_FG = MathUtil.linear_interporation([45, 5], [35, 100], 100 - ball_on)
         rand(1 .. 100) > pct_for_FG ? OffensivePlay.normal_punt : OffensivePlay.field_goal
       end
     end
