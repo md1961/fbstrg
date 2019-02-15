@@ -20,8 +20,8 @@
           <td><%= "#Play's = #{game.plays.count}" %></td>
           <td><%= link_to 'stats', stats_path(game_id: game) %></td>
           <td><%= "#{yards_per_carry_display(stats_home)} vs #{yards_per_carry_display(stats_visitors)}" %></td>
-          <td><%= "#{pct_comp_display(stats_home)} vs #{pct_comp_display(stats_visitors)}" %></td>
           <td><%= "#{long_runs_display(stats_home)} vs #{long_runs_display(stats_visitors)}" %></td>
+          <td><%= "#{pct_comp_display(stats_home)} vs #{pct_comp_display(stats_visitors)}" %></td>
           <td><%= "#{long_passes_display(stats_home)} vs #{long_passes_display(stats_visitors)}" %></td>
         </tr>
       <% end -%>
