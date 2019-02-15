@@ -19,7 +19,11 @@
   <td><%= ball_on_display(gss) %></td>
   <td><%= down_and_yard_display(gss) %></td>
   <td><%= play %></td>
-  <td><%= "#{game.home_team} #{gss.score_home} - #{game.visitors} #{gss.score_visitors}" %></td>
+  <td>
+    <% if play.scoring.present? -%>
+      <%= "#{game.home_team} #{gss.score_home} - #{game.visitors} #{gss.score_visitors}" %>
+    <% end -%>
+  </td>
   <% if is_end_of_game -%>
     <td><span class="toggle_strategy_tool_judgments_display button">[+]</span></td>
   <% end -%>
