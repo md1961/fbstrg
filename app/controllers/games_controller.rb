@@ -8,6 +8,7 @@ class GamesController < ApplicationController
   def show
     offensive_play_id = session[:offensive_play_id]
     @game.offensive_play = OffensivePlay.find(offensive_play_id) if offensive_play_id
+    @play_id_to_show_details = params[:play_id_to_show_details].to_i
   end
 
   def update

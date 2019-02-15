@@ -29,14 +29,18 @@
   <% end -%>
 </tr>
 <% if is_end_of_game -%>
-  <tr hidden>
+  <tr <%= play.id == @play_id_to_show_details ? '' : 'hidden' %>>
     <td colspan="6">
       <%= render partial: 'strategy_tool_judgments', locals: {game: gss} %>
     </td>
     <td>
+      <%= link_to '[KEEP OPEN]', game_path(@game, play_id_to_show_details: play.id) %>
+      <br>
+      <br>
       <table class="score_board">
         <%= render partial: 'score_board', locals: {game: gss} %>
       </table>
+      <br>
       Play id = <%= play.id %><br>
       GameSnapshot id = <%= gss.id %><br>
     </td>
