@@ -13,6 +13,11 @@ module Announcer
       announcement.add("Snap", 1000)
       time = offensive_play.normal? ? 1000 : 2500
       announcement.add(*first_announce(offensive_play, play))
+    elsif offensive_play.onside_kickoff?
+      announcement.add("Onside kick", 2500)
+      rec_by = play.fumble_rec_by_own? ? 'kicking' : 'receiving'
+      announcement.add("Recovered by #{rec_by} team", 2000)
+      return announcement
     elsif offensive_play.kickoff?
       announcement.add("Kickoff", 1500)
     elsif offensive_play.kickoff_after_safety?
