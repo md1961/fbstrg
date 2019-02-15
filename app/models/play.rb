@@ -5,7 +5,8 @@ class Play < ApplicationRecord
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
-                 field_goal: 8, field_goal_blocked: 9, extra_point: 10, kneel_down: 11}
+                 field_goal: 8, field_goal_blocked: 9, extra_point: 10, kneel_down: 11,
+                 onside_kick: 12}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
@@ -17,6 +18,8 @@ class Play < ApplicationRecord
     instance = \
       if offensive_play.kneel_down?
         kneel_down
+      elsif offensive_play.onside_kickoff?
+        onside_kick
       elsif offensive_play.kickoff?
         kickoff
       elsif offensive_play.extra_point?
@@ -98,6 +101,12 @@ class Play < ApplicationRecord
     }
   end
 
+  def self.onside_kick
+    new.tap { |play|
+      play.result = :onside_kick
+    }
+  end
+
   def self.kickoff
     new.tap { |play|
       play.result = :kickoff_and_return
@@ -145,11 +154,12 @@ class Play < ApplicationRecord
   end
 
   def kick_and_return?
-    kickoff_and_return? || punt_and_return?
+    (kickoff_and_return? || punt_and_return?) && !onside_kick?
   end
 
   def possession_changing?
-    kick_and_return? || intercepted? || fumble_rec_by_opponent? \
+    (kick_and_return? && !fumble_rec_by_opponent) || intercepted? \
+      || (!kick_and_return? && fumble_rec_by_opponent?)
 	end
 
 	def possession_changed?
@@ -291,7 +301,11 @@ class Play < ApplicationRecord
 
   def determine_air_yardage(offensive_play)
     @air_yardage = \
-      if offensive_play.kickoff?
+      if onside_kick?
+        self.yardage = rand(8 .. 15)
+        self.fumble = rand(100) < 15 ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        yardage
+      elsif offensive_play.kickoff?
         2.times.map { rand(25 .. 35) }.sum.tap { |air_y|
           self.yardage = air_y - (10 + rand(11) + rand(11))
         }
