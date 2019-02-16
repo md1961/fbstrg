@@ -33,8 +33,9 @@ module StrategyTool
 	def needs_onside_kickoff?(game)
 		return false unless game.kickoff?
     game.quarter == 4 && (
-         (game.score_diff < -3 && game.time_left <= seconds_needed_for_touchdown(game)) \
-      || (game.score_diff <  0 && game.time_left <= seconds_needed_for_field_goal(game))
+         (game.score_diff < -7 && game.time_left <= 3 * 60) \
+      || (game.score_diff < -3 && game.time_left <= 2 * 60) \
+      || (game.score_diff <  0 && game.time_left <= 2 * 60 - game.timeout_left * 10)
 		)
 	end
 
