@@ -7,22 +7,23 @@
     <tbody>
       <% @games.each do |game| -%>
         <% stats = Stats::Game.new(game)
+           stats_visitors = stats.stats_visitors
            stats_home     = stats.stats_home
-           stats_visitors = stats.stats_visitors -%>
+        -%>
         <tr>
           <td class="numeric"><%= link_to game.id, game %></td>
-          <td><%= game.home_team %></td>
-          <td class="numeric score"><%= game.score_home %></td>
           <td><%= game.visitors %></td>
           <td class="numeric score"><%= game.score_visitors %></td>
+          <td><%= game.home_team %></td>
+          <td class="numeric score"><%= game.score_home %></td>
           <td><%= "#{game.quarter}Q" %></td>
           <td class="numeric"><%= time_left_display(game.time_left) %></td>
           <td><%= "#Play's = #{game.plays.count}" %></td>
           <td><%= link_to 'stats', stats_path(game_id: game) %></td>
-          <td><%= "#{yards_per_carry_display(stats_home)} vs #{yards_per_carry_display(stats_visitors)}" %></td>
-          <td><%= "#{long_runs_display(stats_home)} vs #{long_runs_display(stats_visitors)}" %></td>
-          <td><%= "#{pct_comp_display(stats_home)} vs #{pct_comp_display(stats_visitors)}" %></td>
-          <td><%= "#{long_passes_display(stats_home)} vs #{long_passes_display(stats_visitors)}" %></td>
+          <td><%= "#{yards_per_carry_display(stats_visitors)} vs #{yards_per_carry_display(stats_home)}" %></td>
+          <td><%= "#{long_runs_display(stats_visitors)} vs #{long_runs_display(stats_home)}" %></td>
+          <td><%= "#{pct_comp_display(stats_visitors)} vs #{pct_comp_display(stats_home)}" %></td>
+          <td><%= "#{long_passes_display(stats_visitors)} vs #{long_passes_display(stats_home)}" %></td>
         </tr>
       <% end -%>
     </tbody>
