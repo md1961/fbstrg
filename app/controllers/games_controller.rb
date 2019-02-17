@@ -17,7 +17,11 @@ class GamesController < ApplicationController
     if params[:play] == 'to_final_minutes'
       @game.to_final_minutes!
     elsif params[:play] == 'revert'
-      @game.revert!
+      begin
+        @game.revert!
+      rescue => e
+        @game.error_message = e.to_s
+      end
     elsif Game.tampering_game?(params[:play])
       @game.tamper(params[:play])
     elsif @game.end_of_game?
