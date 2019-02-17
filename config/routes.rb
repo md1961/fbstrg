@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resources :teams, only: :index
   resources :games
+  resources :leagues, only: %i[index show]
 
   resources :stats, only: :index
 

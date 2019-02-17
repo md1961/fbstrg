@@ -14,4 +14,8 @@ class League < TeamGroup
       team_ids.unshift(team_ids.pop)
     end
   end
+
+  def to_s
+    "#{year} #{name} #{self.class}"
+  end
 end

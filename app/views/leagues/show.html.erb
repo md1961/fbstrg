@@ -1,0 +1,12 @@
+<h3><%= @league %></h3>
+
+<table>
+  <% @league.schedules.group_by(&:week).each do |week, schedules| -%>
+    <tr>
+      <th><%= "Week #{week}" %></th>
+      <% schedules.each do |schedule| -%>
+        <td><%= schedule.game %></td>
+      <% end -%>
+    </tr>
+  <% end -%>
+</table>
