@@ -1,0 +1,2 @@
+class League < TeamGroup
+end
