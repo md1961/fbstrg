@@ -347,7 +347,7 @@ class Play < ApplicationRecord
   def to_s
     a = []
     a << result_to_s
-    a << fumble_to_s unless no_fumble?
+    a << fumble_to_s unless no_fumble? || onside_kick?
     a << 'OB' if out_of_bounds && scoring.blank?
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
     a << "(#{time_to_take}sec)" if time_to_take
@@ -511,15 +511,22 @@ class Play < ApplicationRecord
     end
 
     def result_to_s
-      if kick_and_return?
+      if onside_kick?
+        team = fumble_rec_by_own? ? 'kicking' : 'receiving'
+        "Onside kickoff #{yardage} yard, recovered by #{team} team"
+      elsif kick_and_return?
         kick = kickoff_and_return? ? 'kickoff' : 'punt'
         "#{air_yardage} yard #{kick}, #{air_yardage - yardage} yard return"
       elsif on_ground?
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
       elsif complete?
-        "Pass #{yardage} yard"
+        run_after = yardage - air_yardage
+        run_after_breakdown = run_after > 0 ? " (#{air_yardage}y air + #{run_after}y run_after)" : ''
+        "Pass #{yardage} yard#{run_after_breakdown}"
       elsif incomplete?
         "Incomplete"
+      elsif intercepted?
+        "Intercepted #{air_yardage} yard, #{air_yardage - yardage} yard return"
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal?
