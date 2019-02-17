@@ -259,6 +259,10 @@ class Game < ApplicationRecord
     update!(ATTRS_FOR_FINAL_MINUTES.merge(attrs))
   end
 
+  def to_s
+    "#{visitors} at #{home_team}"
+  end
+
   private
 
     def last_play_out_of_bounds?
