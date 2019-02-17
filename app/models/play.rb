@@ -334,6 +334,10 @@ class Play < ApplicationRecord
 
   def record(game, game_snapshot)
     self.game = game
+    self.offensive_play     = game.offensive_play
+    self.offensive_play_set = game.offensive_play_set
+    self.defensive_play     = game.defensive_play
+    self.defensive_play_set = game.defensive_play_set
     self.game_snapshot = game_snapshot
     self.team = game_snapshot.offense
     self.number = game.plays.maximum(:number).to_i + 1
