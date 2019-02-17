@@ -499,7 +499,9 @@ class Play < ApplicationRecord
         "Onside kickoff #{yardage} yard, recovered by #{team} team"
       elsif kick_and_return?
         kick = kickoff_and_return? ? 'kickoff' : 'punt'
-        "#{air_yardage} yard #{kick}, #{air_yardage - yardage} yard return"
+        return_y = air_yardage - yardage
+        return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
+        "#{air_yardage} yard #{kick}, #{return_y}"
       elsif on_ground?
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
       elsif complete?
