@@ -507,7 +507,10 @@ class Play < ApplicationRecord
     end
 
     def result_to_s
-      if on_ground?
+      if kick_and_return?
+        kick = kickoff_and_return? ? 'kickoff' : 'punt'
+        "#{air_yardage} yard #{kick}, #{air_yardage - yardage} yard return"
+      elsif on_ground?
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
       elsif complete?
         "Pass #{yardage} yard"
