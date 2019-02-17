@@ -201,9 +201,11 @@ class Play < ApplicationRecord
 
   def change_due_to(game)
     return if kneel_down?
+    # TODO: Use Play#offensive_play for TeamTraitManager.new().
+    @ttm = TeamTraitManager.new(game, game.offensive_play)
 
     if field_goal?
-      self.yardage += game.offense.team_trait.place_kicking * rand(4) if yardage >= 20
+      self.yardage += @ttm.place_kicking_factor * rand(4) if yardage >= 20
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
@@ -247,7 +249,7 @@ class Play < ApplicationRecord
 
     if complete? || incomplete?
       change_pass_by_team_traits(game)
-      if rand(0.0 .. 100.0) < self.class.pct_sack(game)
+      if rand(0.0 .. 100.0) < pct_sack(game)
         self.result = :sacked
         self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
         self.out_of_bounds = false
@@ -383,14 +385,11 @@ class Play < ApplicationRecord
       num_defenders = max_throw_yard >= 20 ? num_DBs : num_LBs
     end
 
-    def self.pct_sack(game)
+    def pct_sack(game)
       plus = 0.0
       plus = 4.0 if game.no_huddle
-
-      protect_factor = game.offense.team_trait.pass_protect - game.defense.team_trait.pass_rush
-      plus -= protect_factor
-
-      [pct_sack_base(game.offensive_play, game.defensive_play) + plus, 0.1].max
+      plus -= @ttm.pass_protect_factor
+      [self.class.pct_sack_base(game.offensive_play, game.defensive_play) + plus, 0.1].max
     end
 
     def self.pct_sack_base(offensive_play, defensive_play)
@@ -431,16 +430,14 @@ class Play < ApplicationRecord
     def pct_breakaway(game)
       pct = pct_breakaway_base(game.offensive_play, game.defensive_play)
 
-      offensive_trait = game.offense.team_trait
-      defensive_trait = game.defense.team_trait
       if on_ground?
-        pct_add = (offensive_trait.run_breakaway - defensive_trait.run_tackling) * 0.1
+        pct_add = @ttm.run_breakaway_factor * 0.1
         [pct + pct_add, 0.1].max
       elsif complete?
-        pct_add = (offensive_trait.pass_breakaway - defensive_trait.pass_tackling) * 0.5
+        pct_add = @ttm.pass_breakaway_factor * 0.5
         [pct + pct_add, 1.0].max
       elsif kick_and_return?
-        pct_add = (offensive_trait.return_breakaway - defensive_trait.return_coverage) * 0.1
+        pct_add = @ttm.return_breakaway_factor * 0.1
         [pct + pct_add, 0.1].max
       else
         pct
@@ -478,30 +475,16 @@ class Play < ApplicationRecord
 
     # TODO: Take offensive_play and defensive_play into account for change_run_yardage_by_team_traits().
     def change_run_yardage_by_team_traits(game)
-      offensive_trait = game.offense.team_trait
-      defensive_trait = game.defense.team_trait
-
-      factor = (offensive_trait.run_yardage - defensive_trait.run_defense + 10) * 2 + 1  # 1 .. 41
+      factor = @ttm.run_yardage_factor * 2 + 1  # 1 .. 41
       self.yardage += MathUtil.pick_from_decreasing_distribution( 1,  5) if rand * 100 < factor
       self.yardage += MathUtil.pick_from_decreasing_distribution(10, 20) if rand * 100 < factor / 10.0
     end
 
     def change_pass_by_team_traits(game)
-      offensive_trait = game.offense.team_trait
-      defensive_trait = game.defense.team_trait
-
-      offensive_play = game.offensive_play
-      is_short = offensive_play.short_pass? || (offensive_play.medium_pass? && rand(2).zero?)
-      off_pass_factor = is_short ? offensive_trait.pass_short : offensive_trait.pass_long
-      if incomplete?
-        complete_factor = off_pass_factor - defensive_trait.pass_coverage
-        multiplier = offensive_play.short_pass? ? 5.0 : offensive_play.medium_pass? ? 4.0 : 3.0
-        self.result = :complete if rand * 100 < complete_factor * multiplier
-      end
+      self.result = :complete if incomplete? && rand * 100 < @ttm.pass_complete_factor
       if complete?
-        def_gain_factor = rand(2).zero? ? defensive_trait.pass_coverage : defensive_trait.pass_tackling
         fluctuation_factor = rand(-2 .. 2)
-        gain_factor = off_pass_factor - def_gain_factor + fluctuation_factor
+        gain_factor = @ttm.pass_yardage_factor + fluctuation_factor
         self.yardage += (yardage * (gain_factor / 10.0) * rand).round
       end
     end
