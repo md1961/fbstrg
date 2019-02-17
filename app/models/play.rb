@@ -1,6 +1,10 @@
 class Play < ApplicationRecord
   belongs_to :game, optional: true
   belongs_to :team, optional: true
+  belongs_to :offensive_play    , optional: true
+  belongs_to :offensive_play_set, optional: true
+  belongs_to :defensive_play    , optional: true
+  belongs_to :defensive_play_set, optional: true
   has_one :game_snapshot, dependent: :destroy
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
