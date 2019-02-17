@@ -13,6 +13,11 @@ class CreatePlays < ActiveRecord::Migration[4.2]
       t.string  :penalty_name
       t.integer :penalty_yardage, null: false, default: 0
       t.boolean :auto_firstdown , null: false, default: false
+      t.integer :air_yardage    , null: false, default: 0
+      t.references :offensive_play    , index: true, foreign_key: true
+      t.references :offensive_play_set, index: true, foreign_key: true
+      t.references :defensive_play    , index: true, foreign_key: true
+      t.references :defensive_play_set, index: true, foreign_key: true
 
       t.timestamps null: false
     end

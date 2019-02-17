@@ -151,9 +151,18 @@ ActiveRecord::Schema.define(version: 20190216224656) do
     t.string "penalty_name"
     t.integer "penalty_yardage", default: 0, null: false
     t.boolean "auto_firstdown", default: false, null: false
+    t.integer "air_yardage", default: 0, null: false
+    t.integer "offensive_play_id"
+    t.integer "offensive_play_set_id"
+    t.integer "defensive_play_id"
+    t.integer "defensive_play_set_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["defensive_play_id"], name: "index_plays_on_defensive_play_id"
+    t.index ["defensive_play_set_id"], name: "index_plays_on_defensive_play_set_id"
     t.index ["game_id"], name: "index_plays_on_game_id"
+    t.index ["offensive_play_id"], name: "index_plays_on_offensive_play_id"
+    t.index ["offensive_play_set_id"], name: "index_plays_on_offensive_play_set_id"
     t.index ["team_id"], name: "index_plays_on_team_id"
   end
 
@@ -206,9 +215,9 @@ ActiveRecord::Schema.define(version: 20190216224656) do
     t.integer "play_result_chart_id"
     t.integer "offensive_strategy_id"
     t.integer "defensive_strategy_id"
+    t.integer "team_group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "team_group_id"
     t.index ["defensive_strategy_id"], name: "index_teams_on_defensive_strategy_id"
     t.index ["offensive_strategy_id"], name: "index_teams_on_offensive_strategy_id"
     t.index ["play_result_chart_id"], name: "index_teams_on_play_result_chart_id"
