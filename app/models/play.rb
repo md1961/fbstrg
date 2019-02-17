@@ -14,7 +14,7 @@ class Play < ApplicationRecord
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
 
-  attr_accessor :scoring, :time_to_take, :air_yardage, :after_safety
+  attr_accessor :scoring, :time_to_take, :after_safety
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
@@ -304,7 +304,7 @@ class Play < ApplicationRecord
   end
 
   def determine_air_yardage(offensive_play)
-    @air_yardage = \
+    self.air_yardage = \
       if onside_kick?
         self.yardage = rand(8 .. 15)
         self.fumble = rand(100) < 15 ? :fumble_rec_by_own : :fumble_rec_by_opponent
