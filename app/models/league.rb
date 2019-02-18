@@ -2,6 +2,8 @@ class League < TeamGroup
   has_many :schedules, -> { order(:week, :number) },
                        foreign_key: 'team_group_id', dependent: :destroy
 
+  before_save :set_abbr
+
   def next_schedule
     return nil if schedules.empty?
     schedules.detect { |schedule| !schedule.game.end_of_game? }
@@ -27,4 +29,11 @@ class League < TeamGroup
   def to_s
     "#{year} #{name} #{self.class}"
   end
+
+  private
+
+    def set_abbr
+      return if abbr
+      self.abbr = (name.split + [self.class.name]).map(&:first).join
+    end
 end
