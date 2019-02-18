@@ -2,10 +2,12 @@
   <caption><%= team %></caption>
   <% @schedules_by_week.each do |week, schedules| -%>
     <% schedule = schedules.detect { |s| s.for?(team) }
-       game_display = schedule&.game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '') -%>
+       game = schedule&.game
+       game_display = game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '') -%>
     <tr>
       <td class="numeric"><%= week %></td>
       <td><%= game_display || '(bye)' %></td>
+      <td><%= game_result_display(game, team) %></td>
     </tr>
   <% end -%>
 </table>
