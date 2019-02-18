@@ -6,6 +6,14 @@ class Schedule < ApplicationRecord
     game.for?(team)
   end
 
+  def league
+    group = team_group
+    while !group.is_a?(League)
+      group = group.parent
+    end
+    group
+  end
+
   def to_s
     "#{team_group} week #{week}: #{game}"
   end
