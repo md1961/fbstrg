@@ -2,7 +2,8 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update]
 
   def index
-    @games = Game.all.find_all { |g| g.schedule.nil? }
+    league = League.find_by(id: params[:league_id])
+    @games = Game.all.find_all { |g| g.schedule&.league == league }
   end
 
   def show

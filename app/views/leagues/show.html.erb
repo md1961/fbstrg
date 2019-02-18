@@ -6,4 +6,8 @@
       <%= render partial: 'team_schedule', locals: {team: team} %>
     <% end -%>
   </div>
+
+  <div>
+    <%= link_to 'Games', games_path(league_id: @league) %>
+  </div>
 </div>
