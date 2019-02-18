@@ -32,6 +32,11 @@
     <span class="link">
       <%= link_to "games", games_path(league_id: @game.league) %>
     </span>
+    <% if @game.league -%>
+      <span class="link">
+        <%= link_to "league", @game.league %>
+      </span>
+    <% end -%>
     <div class="error"><%= @game.error_message %></div>
   <% end -%>
 </div>
