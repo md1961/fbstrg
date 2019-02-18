@@ -1,4 +1,6 @@
 class Schedule < ApplicationRecord
+  include Comparable
+
   belongs_to :team_group
   belongs_to :game
 
@@ -12,6 +14,10 @@ class Schedule < ApplicationRecord
       group = group.parent
     end
     group
+  end
+
+  def <=>(other)
+    [week, number] <=> [other.week, other.number]
   end
 
   def to_s
