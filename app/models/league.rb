@@ -2,7 +2,7 @@ class League < TeamGroup
   has_many :schedules, -> { order(:week, :number) },
                        foreign_key: 'team_group_id', dependent: :destroy
 
-  def next_game
+  def next_schedule
     return nil if schedules.empty?
     schedules.detect { |schedule| !schedule.game.end_of_game? }
   end
