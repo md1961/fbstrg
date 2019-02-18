@@ -1,6 +1,7 @@
 [
+  League,
+  Game,
   Team,
-  Game
 ].each do |model|
   STDOUT.puts "Destroying all #{model}..."
   model.destroy_all
@@ -157,3 +158,6 @@ Team.create!(
   return_breakaway:  3,
   return_coverage:   3,
 )
+
+teams = Team.where.not(abbr: %w[H V])
+League.create!(name: 'National Football', year: 1961, teams: teams)
