@@ -41,6 +41,10 @@ class Game < ApplicationRecord
     home_team == team || visitors == team
   end
 
+  def league
+    schedule&.league
+  end
+
   def prompt
     "#{status}#{no_huddle ? '(no huddle)' : ''}"
   end
