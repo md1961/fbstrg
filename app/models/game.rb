@@ -37,6 +37,10 @@ class Game < ApplicationRecord
     end_of_quarter? || end_of_half? || end_of_game?
   end
 
+  def for?(team)
+    home_team == team || visitors == team
+  end
+
   def prompt
     "#{status}#{no_huddle ? '(no huddle)' : ''}"
   end
