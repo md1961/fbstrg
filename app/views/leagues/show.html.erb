@@ -1,12 +1,9 @@
-<h3><%= @league %></h3>
+<div class="leagues_show">
+  <div><%= @league %></div>
 
-<table>
-  <% @league.schedules.group_by(&:week).each do |week, schedules| -%>
-    <tr>
-      <th><%= "Week #{week}" %></th>
-      <% schedules.each do |schedule| -%>
-        <td><%= schedule.game %></td>
-      <% end -%>
-    </tr>
-  <% end -%>
-</table>
+  <div class="team_schedules">
+    <% @league.teams.each do |team| -%>
+      <%= render partial: 'team_schedule', locals: {team: team} %>
+    <% end -%>
+  </div>
+</div>

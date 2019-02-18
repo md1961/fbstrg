@@ -1,0 +1,11 @@
+<table class="team_schedule">
+  <caption><%= team %></caption>
+  <% @schedules_by_week.each do |week, schedules| -%>
+    <% schedule = schedules.detect { |s| s.for?(team) }
+       game_display = schedule&.game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '') -%>
+    <tr>
+      <td class="numeric"><%= week %></td>
+      <td><%= game_display || '(bye)' %></td>
+    </tr>
+  <% end -%>
+</table>
