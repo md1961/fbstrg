@@ -275,7 +275,7 @@ class Play < ApplicationRecord
 
     change_run_yardage_by_team_traits(game) if on_ground?
 
-    if on_ground? || complete? || intercepted?
+    if on_ground? || complete? || intercepted? || kickoff_and_return?
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
       elsif (on_ground? || complete?) && game.offensive_play_set&.hurrying? && game.ball_on < 95
