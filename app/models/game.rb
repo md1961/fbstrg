@@ -45,6 +45,14 @@ class Game < ApplicationRecord
     schedule&.league
   end
 
+  def result_and_scores_for(team)
+    return [] unless final? && for?(team)
+    score_own, score_opp = score_home, score_visitors
+    score_own, score_opp = score_opp, score_own if team == visitors
+    r = %w[L T W][(score_own <=> score_opp) + 1]
+    [r, score_own, score_opp]
+  end
+
   def prompt
     "#{status}#{no_huddle ? '(no huddle)' : ''}"
   end

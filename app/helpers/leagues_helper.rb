@@ -1,10 +1,8 @@
 module LeaguesHelper
 
   def game_result_display(game, team)
-    return [] unless game&.final? && game&.for?(team)
-    score_own, score_opp = game.score_home, game.score_visitors
-    score_own, score_opp = score_opp, score_own if team == game.visitors
-    r = %w[L T W][(score_own <=> score_opp) + 1]
-    [r, "#{score_own} - #{score_opp}"]
+    rs = game&.result_and_scores_for(team)
+    return [] if !rs || rs.empty?
+    [rs[0], "#{rs[1]} - #{rs[2]}"]
   end
 end
