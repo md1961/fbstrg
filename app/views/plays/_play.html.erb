@@ -2,7 +2,7 @@
    gss = play.game_snapshot
    return unless gss
    game = play.game
-   is_end_of_game = @game.end_of_game? -%>
+   is_final = @game.final? -%>
 
 <%
    classes = []
@@ -24,11 +24,11 @@
       <%= "#{game.visitors} #{gss.score_visitors} - #{game.home_team} #{gss.score_home}" %>
     <% end -%>
   </td>
-  <% if is_end_of_game -%>
+  <% if is_final -%>
     <td><span class="toggle_strategy_tool_judgments_display button">[+]</span></td>
   <% end -%>
 </tr>
-<% if is_end_of_game -%>
+<% if is_final -%>
   <tr <%= play.id == @play_id_to_show_details ? '' : 'hidden' %>>
     <td colspan="6">
       <%= render partial: 'strategy_tool_judgments', locals: {game: gss} %>

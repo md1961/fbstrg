@@ -6,7 +6,7 @@ class League < TeamGroup
 
   def next_schedule
     return nil if schedules.empty?
-    schedules.detect { |schedule| !schedule.game.end_of_game? }
+    schedules.detect { |schedule| !schedule.game.final? }
   end
 
   def make_schedules

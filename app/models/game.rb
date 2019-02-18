@@ -34,7 +34,7 @@ class Game < ApplicationRecord
   end
 
   def clock_runs_out?
-    end_of_quarter? || end_of_half? || end_of_game?
+    end_of_quarter? || end_of_half? || final?
   end
 
   def for?(team)
@@ -397,7 +397,7 @@ class Game < ApplicationRecord
       self.offensive_play = nil
       self.offensive_play_set = nil
       if quarter >= 4 && score_diff != 0
-        end_of_game!
+        final!
       elsif quarter == 2
         end_of_half!
       else

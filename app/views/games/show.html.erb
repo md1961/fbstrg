@@ -41,7 +41,7 @@
   <% end -%>
 </div>
 
-<% unless @game.end_of_game? -%>
+<% unless @game.final? -%>
   <div id="strategy_tool_judgments">
     <br>
     <div style="margin-bottom: 5px;">
@@ -84,8 +84,8 @@
 <span id="toggle_plays_display" class="button">[+]</span>
 <span id="toggle_scorings" class="button">[Scorings]</span>
 
-<table id="play_by_play" class="table_base" <%= 'hidden' unless @game.end_of_game? %>>
+<table id="play_by_play" class="table_base" <%= 'hidden' unless @game.final? %>>
   <% plays = @game.plays.includes(:game_snapshot).order(number: :desc)
-     PlayUtil.write_scorings(plays) if @game.end_of_game? -%>
+     PlayUtil.write_scorings(plays) if @game.final? -%>
   <%= render plays %>
 </table>

@@ -3,8 +3,8 @@ module GamesHelper
   def down_and_yard_display(game)
     if game.end_of_half?
       'END OF HALF'
-    elsif game.end_of_game?
-      'END OF GAME'
+    elsif game.final?
+      'FINAL'
     elsif game.kickoff?
       'KICKOFF'
     elsif game.extra_point?
@@ -22,7 +22,7 @@ module GamesHelper
 
   def ball_on_display(game)
     ball_on = game.ball_on
-    if game.end_of_half? || game.end_of_game?
+    if game.end_of_half? || game.final?
       nil
     elsif ball_on == 50
       '--- 50'

@@ -26,7 +26,7 @@ class GamesController < ApplicationController
       end
     elsif Game.tampering_game?(params[:play])
       @game.tamper(params[:play])
-    elsif @game.end_of_game?
+    elsif @game.final?
       # No action.
     elsif @game.end_of_quarter? || @game.end_of_half?
       if session[:next_quarter]

@@ -41,7 +41,7 @@ else
 end
 
 session = {}
-while !game.end_of_game?
+while !game.final?
   game.no_huddle = session[:no_huddle]
   if game.end_of_quarter? || game.end_of_half?
     game.advance_to_next_quarter
