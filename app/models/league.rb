@@ -27,7 +27,7 @@ class League < TeamGroup
   end
 
   def to_s
-    "#{year} #{name} #{self.class}"
+    "#{year} #{abbr}"
   end
 
   private
