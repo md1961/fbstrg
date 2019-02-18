@@ -30,7 +30,7 @@
       <%= link_to "stats", stats_path(game_id: @game) %>
     </span>
     <span class="link">
-      <%= link_to "games", games_path %>
+      <%= link_to "games", games_path(league_id: @game.league) %>
     </span>
     <div class="error"><%= @game.error_message %></div>
   <% end -%>
