@@ -21,7 +21,7 @@
   <td><%= play %></td>
   <td>
     <% if play.scoring.present? -%>
-      <%= "#{game.home_team} #{gss.score_home} - #{game.visitors} #{gss.score_visitors}" %>
+      <%= "#{game.visitors} #{gss.score_visitors} - #{game.home_team} #{gss.score_home}" %>
     <% end -%>
   </td>
   <% if is_end_of_game -%>
