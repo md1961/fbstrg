@@ -498,7 +498,7 @@ class Play < ApplicationRecord
         "Onside kickoff #{yardage} yard, recovered by #{team} team"
       elsif kick_and_return?
         kick = kickoff_and_return? ? 'kickoff' : 'punt'
-        return_y = air_yardage - yardage
+        return_y = [air_yardage - yardage, 100 - (game_snapshot.ball_on + air_yardage)].min
         return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
         "#{air_yardage} yard #{kick}, #{return_y}"
       elsif on_ground?
@@ -510,7 +510,8 @@ class Play < ApplicationRecord
       elsif incomplete?
         "Incomplete"
       elsif intercepted?
-        "Intercepted #{air_yardage} yard, #{air_yardage - yardage} yard return"
+        return_y = [air_yardage - yardage, 100 - (game_snapshot.ball_on + air_yardage)].min
+        "Intercepted #{air_yardage} yard, #{return_y} yard return"
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal?
