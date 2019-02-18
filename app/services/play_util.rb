@@ -24,7 +24,7 @@ module PlayUtil
 
     def write_score(score, play)
       gss = play.game_snapshot
-      if score >= 3
+      if score >= 3 && !play.possession_changing?
         gss.home_has_ball ? gss.score_home += score : gss.score_visitors += score
       else
         gss.home_has_ball ? gss.score_visitors += score : gss.score_home += score
