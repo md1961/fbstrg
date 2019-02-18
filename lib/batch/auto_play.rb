@@ -1,24 +1,44 @@
-last_game = Game.order(:updated_at).last
-home_team = last_game.home_team
-visitors  = last_game.visitors
+if ARGV.size > 1
+  STDOUT.puts "Too many arguments."
+  exit
+elsif ARGV.first&.ends_with?('league')
+  ARGV.shift
+  if League.count.zero?
+    STDOUT.puts "No League found."
+    exit
+  end
+  league = League.order(:year).detect { |l| l.next_schedule }
+  unless league
+    STDOUT.puts "No League has next game to play."
+    exit
+  end
+  schedule = league.next_schedule
+  print "OK to play #{schedule}? "
+  exit unless gets.chomp == 'y'
+  game = schedule.game
+else
+  last_game = Game.order(:updated_at).last
+  home_team = last_game.home_team
+  visitors  = last_game.visitors
 
-teams = []
-while teams.size < 2
-  team_type, team = teams.empty? ? ['Home Team', home_team] : ['Visitors', visitors]
-  print "Choose #{team_type} by abbr ('' for '#{team.abbr}', 'quit' to quit): "
-  name = gets.chomp.upcase
-  exit if name == 'QUIT'
-  team = Team.where("abbr LIKE ?", "#{name}%").first if name.present?
-  next unless team
-  teams << team
-  puts "'#{team.abbr}' chosen for #{team_type}."
+  teams = []
+  while teams.size < 2
+    team_type, team = teams.empty? ? ['Home Team', home_team] : ['Visitors', visitors]
+    print "Choose #{team_type} by abbr ('' for '#{team.abbr}', 'quit' to quit): "
+    name = gets.chomp.upcase
+    exit if name == 'QUIT'
+    team = Team.where("abbr LIKE ?", "#{name}%").first if name.present?
+    next unless team
+    teams << team
+    puts "'#{team.abbr}' chosen for #{team_type}."
+  end
+
+  home_team, visitors = teams
+  print "OK to play #{visitors} at #{home_team}? "
+  exit unless gets.chomp == 'y'
+
+  game = Game.create!(home_team: home_team, visitors: visitors)
 end
-
-home_team, visitors = teams
-print "OK to play #{visitors} at #{home_team}? "
-exit unless gets.chomp == 'y'
-
-game = Game.create!(home_team: home_team, visitors: visitors)
 
 session = {}
 while !game.end_of_game?
