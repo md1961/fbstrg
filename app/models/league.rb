@@ -13,6 +13,10 @@ class League < TeamGroup
     }
   end
 
+  def total_team_stats
+    h_team_stats.values
+  end
+
   def next_schedule
     return nil if schedules.empty?
     schedules.detect { |schedule| !schedule.game.final? }
@@ -43,6 +47,19 @@ class League < TeamGroup
 
     def games_finished
       @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
+    end
+
+    def h_team_stats
+      @h_team_stats ||= make_h_team_stats
+    end
+
+    def make_h_team_stats
+      h_init = teams.map { |team| [team.id, Stats::Team.new(team)] }.to_h
+      games_finished.each_with_object(h_init) { |game, h|
+        game_stats = Stats::Game.new(game)
+        h[game.home_team.id].add(game_stats.stats_home    )
+        h[game.visitors .id].add(game_stats.stats_visitors)
+      }
     end
 
     def set_abbr
