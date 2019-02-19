@@ -496,11 +496,14 @@ class Play < ApplicationRecord
       if onside_kick?
         team = fumble_rec_by_own? ? 'kicking' : 'receiving'
         "Onside kickoff #{yardage} yard, recovered by #{team} team"
-      elsif kick_and_return?
-        kick = kickoff_and_return? ? 'kickoff' : 'punt'
-        return_y = [air_yardage - yardage, 100 - (game_snapshot.ball_on + air_yardage)].min
+      elsif kick_and_return? || intercepted?
+        kick, int = '', ''
+        kick = kickoff_and_return? ? ' kickoff' : ' punt' if kick_and_return?
+        int = 'Intercepted ' if intercepted?
+        return_y = air_yardage - yardage
+        return_y = [return_y, 100 - (game_snapshot.ball_on + air_yardage)].min if scoring
         return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
-        "#{air_yardage} yard #{kick}, #{return_y}"
+        "#{int}#{air_yardage} yard#{kick}, #{return_y}"
       elsif on_ground?
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
       elsif complete?
@@ -509,9 +512,6 @@ class Play < ApplicationRecord
         "Pass #{yardage} yard#{run_after_breakdown}"
       elsif incomplete?
         "Incomplete"
-      elsif intercepted?
-        return_y = [air_yardage - yardage, 100 - (game_snapshot.ball_on + air_yardage)].min
-        "Intercepted #{air_yardage} yard, #{return_y} yard return"
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal?
