@@ -5,7 +5,10 @@ class GameSnapshot < ApplicationRecord
   belongs_to :play, optional: true
   delegate :game, to: :play
 
-  delegate :home_team, :visitors, to: :game
+  delegate :home_team, :visitors, :defense_human?, to: :game
+  delegate :offensive_play, :offensive_play_set, :defensive_play, :defensive_play_set, to: :play
+
+  attr_accessor :previous_spot, :result, :announcement
 
   def self.take_snapshot_of(game)
     attrs = game.attributes
