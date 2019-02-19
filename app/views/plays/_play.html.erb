@@ -26,6 +26,8 @@
   </td>
   <% if is_final -%>
     <td><span class="toggle_strategy_tool_judgments_display button">[+]</span></td>
+    <td><%= play.offensive_play %></td>
+    <td class="centered"><%= play.defensive_play&.name %></td>
   <% end -%>
 </tr>
 <% if is_final -%>
