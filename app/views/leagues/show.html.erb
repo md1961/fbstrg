@@ -8,6 +8,71 @@
     <% end -%>
   </div>
 
+  <table>
+    <thead>
+      <tr>
+        <th>
+        <th>Att</th>
+        <th>Yards</th>
+        <th>Avg</th>
+        <th>Long</th>
+        <th>TD</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @league.total_team_stats.sort_by { |s| -s.run_stats.yards }.each do |team_stats| -%>
+        <% run_stats = team_stats.run_stats -%>
+        <tr>
+          <td><%= team_stats.team %></td>
+          <td class="numeric"><%= run_stats.attempts %></td>
+          <td class="numeric"><%= run_stats.yards %></td>
+          <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
+          <td class="numeric"><%= run_stats.long %></td>
+          <td class="numeric"><%= run_stats.touchdowns %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+
+  <br>
+  <table>
+    <thead>
+      <tr>
+        <th>
+        <th>Att</th>
+        <th>Comp</th>
+        <th>%Comp</th>
+        <th>Yards</th>
+        <th>Y/Att</th>
+        <th>Y/Comp</th>
+        <th>Long</th>
+        <th>TD</th>
+        <th>Int</th>
+        <th>Sack</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @league.total_team_stats.sort_by { |s| -s.pass_stats.rating }.each do |team_stats| -%>
+        <% pass_stats = team_stats.pass_stats -%>
+        <tr>
+          <td><%= team_stats.team %></td>
+          <td class="numeric"><%= pass_stats.attempts %></td>
+          <td class="numeric"><%= pass_stats.completions %></td>
+          <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
+          <td class="numeric"><%= pass_stats.yards %></td>
+          <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
+          <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
+          <td class="numeric"><%= pass_stats.long %></td>
+          <td class="numeric"><%= pass_stats.touchdowns %></td>
+          <td class="numeric"><%= pass_stats.intercepted %></td>
+          <td class="numeric"><%= pass_stats.sacked %></td>
+          <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+
   <div class="links">
     <%= link_to 'Games', games_path(league_id: @league) %>
     <%= link_to 'Last Game', @game_played_last %>
