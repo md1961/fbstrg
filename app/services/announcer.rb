@@ -4,6 +4,7 @@ module Announcer
   def announce(play, game = nil)
     if game.nil?
       game = play.game_snapshot
+      game.offensive_play = play.offensive_play
       game.previous_spot = game.ball_on
       def game.ball_on
         previous_spot + play.yardage

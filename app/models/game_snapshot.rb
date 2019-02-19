@@ -6,9 +6,9 @@ class GameSnapshot < ApplicationRecord
   delegate :game, to: :play
 
   delegate :home_team, :visitors, :defense_human?, to: :game
-  delegate :offensive_play, :offensive_play_set, :defensive_play, :defensive_play_set, to: :play
 
-  attr_accessor :previous_spot, :result, :announcement
+  attr_accessor :result, :offensive_play, :previous_spot, :announcement
+  attr_reader :offensive_play_set, :defensive_play, :defensive_play_set
 
   def self.take_snapshot_of(game)
     attrs = game.attributes
@@ -40,5 +40,12 @@ class GameSnapshot < ApplicationRecord
     self.score_home     = game.score_home
     self.score_visitors = game.score_visitors
     save!
+  end
+
+  def set_plays_and_play_sets_from_result
+    @offensive_play     = result.offensive_play
+    @offensive_play_set = result.offensive_play_set
+    @defensive_play     = result.defensive_play
+    @defensive_play_set = result.defensive_play_set
   end
 end
