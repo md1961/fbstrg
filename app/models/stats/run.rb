@@ -26,6 +26,14 @@ class Run
   def yards_per_carry
     yards.to_f / attempts
   end
+
+  def add(other)
+    @attempts += other.attempts
+    @yards += other.yards
+    @long = other.long if other.long > long
+    @touchdowns += other.touchdowns
+    @longs.concat(other.longs)
+  end
 end
 
 end

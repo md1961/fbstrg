@@ -13,6 +13,12 @@ class Team
     @pass_stats.tally_from(play)
     @run_stats .tally_from(play)
   end
+
+  def add(other)
+    raise "Teams don't match ('#{team.abbr}' vs '#{other.team.abbr}')" unless team == other.team
+    @pass_stats.add(other.pass_stats)
+    @run_stats.add(other.run_stats)
+  end
 end
 
 end

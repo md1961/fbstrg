@@ -54,6 +54,17 @@ class Pass
     d = 2.375 - (intercepted.to_f / attempts * 25)
     (a + b + c + d) / 6 * 100
   end
+
+  def add(other)
+    @attempts += other.attempts
+    @completions += other.completions
+    @yards += other.yards
+    @long = other.long if other.long > long
+    @touchdowns += other.touchdowns
+    @intercepted += other.intercepted
+    @sacked += other.sacked
+    @longs.concat(other.longs)
+  end
 end
 
 end
