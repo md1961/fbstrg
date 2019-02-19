@@ -20,72 +20,74 @@
   </tr>
 </table>
 
-<div id="form_command" <%= 'hidden' if announcement && !announcement.empty? %>>
-  <br>
-  <%= form_tag @game, method: :patch do %>
-    <%= @game.prompt %>
-    <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
-    <%= submit_tag :proceed %>
-    <span class="link">
-      <%= link_to "stats", stats_path(game_id: @game) %>
-    </span>
-    <span class="link">
-      <%= link_to "games", games_path(league_id: @game.league) %>
-    </span>
-    <% if @game.league -%>
-      <span class="link">
-        <%= link_to "league", @game.league %>
-      </span>
-    <% end -%>
-    <div class="error"><%= @game.error_message %></div>
-  <% end -%>
-</div>
-
-<% unless @game.final? -%>
-  <div id="strategy_tool_judgments">
+<% unless @replay -%>
+  <div id="form_command" <%= 'hidden' if announcement && !announcement.empty? %>>
     <br>
-    <div style="margin-bottom: 5px;">
-      <%= "speed = #{@speed_of_announce || 1}" %>
-    </div>
-    <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
+    <%= form_tag @game, method: :patch do %>
+      <%= @game.prompt %>
+      <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
+      <%= submit_tag :proceed %>
+      <span class="link">
+        <%= link_to "stats", stats_path(game_id: @game) %>
+      </span>
+      <span class="link">
+        <%= link_to "games", games_path(league_id: @game.league) %>
+      </span>
+      <% if @game.league -%>
+        <span class="link">
+          <%= link_to "league", @game.league %>
+        </span>
+      <% end -%>
+      <div class="error"><%= @game.error_message %></div>
+    <% end -%>
   </div>
 
-  <br>
-  <% if @game.choose_offense? -%>
-    <table class="plays_to_choose">
-      <% OffensivePlay.all.each do |offensive_play| -%>
-        <tr class="<%= offensive_play.number % 4 == 0 ? 'border_bottom' : '' %>">
-          <td class="numeric"><%= offensive_play.number %></td>
-          <td><%= offensive_play.name %></td>
+  <% unless @game.final? -%>
+    <div id="strategy_tool_judgments">
+      <br>
+      <div style="margin-bottom: 5px;">
+        <%= "speed = #{@speed_of_announce || 1}" %>
+      </div>
+      <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
+    </div>
+
+    <br>
+    <% if @game.choose_offense? -%>
+      <table class="plays_to_choose">
+        <% OffensivePlay.all.each do |offensive_play| -%>
+          <tr class="<%= offensive_play.number % 4 == 0 ? 'border_bottom' : '' %>">
+            <td class="numeric"><%= offensive_play.number %></td>
+            <td><%= offensive_play.name %></td>
+          </tr>
+        <% end -%>
+      </table>
+    <% elsif @game.choose_defense? -%>
+      <table class="plays_to_choose">
+        <tr class="border_bottom">
+          <td>
+          <td>
+          <td>Against Run</td>
+          <td>Against Pass</td>
         </tr>
-      <% end -%>
-    </table>
-  <% elsif @game.choose_defense? -%>
-    <table class="plays_to_choose">
-      <tr class="border_bottom">
-        <td>
-        <td>
-        <td>Against Run</td>
-        <td>Against Pass</td>
-      </tr>
-      <% DefensivePlay.all.each do |defensive_play| -%>
-        <tr class="<%= %>">
-          <td><%= defensive_play.name %></td>
-          <td><%= defensive_play.formation %></td>
-          <td><%= defensive_play.against_run %></td>
-          <td><%= defensive_play.against_pass %></td>
-        </tr>
-      <% end -%>
-    </table>
+        <% DefensivePlay.all.each do |defensive_play| -%>
+          <tr class="<%= %>">
+            <td><%= defensive_play.name %></td>
+            <td><%= defensive_play.formation %></td>
+            <td><%= defensive_play.against_run %></td>
+            <td><%= defensive_play.against_pass %></td>
+          </tr>
+        <% end -%>
+      </table>
+    <% end -%>
   <% end -%>
+
+  <br>
+  <span id="toggle_plays_display" class="button">[+]</span>
+  <span id="toggle_scorings" class="button">[Scorings]</span>
+
+  <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.final? %>>
+    <% plays = @game.plays.includes(:game_snapshot).order(number: :desc)
+       PlayUtil.write_scorings(plays) if @game.final? -%>
+    <%= render plays %>
+  </table>
 <% end -%>
-
-<br>
-<span id="toggle_plays_display" class="button">[+]</span>
-<span id="toggle_scorings" class="button">[Scorings]</span>
-
-<table id="play_by_play" class="table_base" <%= 'hidden' unless @game.final? %>>
-  <% plays = @game.plays.includes(:game_snapshot).order(number: :desc)
-     PlayUtil.write_scorings(plays) if @game.final? -%>
-  <%= render plays %>
-</table>
