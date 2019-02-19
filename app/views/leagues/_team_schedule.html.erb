@@ -1,5 +1,5 @@
 <table class="team_schedule">
-  <caption><%= team %></caption>
+  <caption><%= "#{team} (#{team_result_display_for(team, @league)})" %></caption>
   <% @schedules_by_week.each do |week, schedules| -%>
     <% schedule = schedules.detect { |s| s.for?(team) }
        game = schedule&.game
