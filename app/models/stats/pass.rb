@@ -40,11 +40,19 @@ class Pass
   end
 
   def yards_per_attempt
-    yards / attempts
+    yards.to_f / attempts
   end
 
   def yards_per_completion
-    yards / completions
+    yards.to_f / completions
+  end
+
+  def rating
+    a = (pct_comp / 100 - 0.3) * 5
+    b = (yards_per_attempt - 3) * 0.25
+    c = (touchdowns.to_f / attempts) * 20
+    d = 2.375 - (intercepted.to_f / attempts * 25)
+    (a + b + c + d) / 6 * 100
   end
 end
 
