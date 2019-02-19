@@ -5,9 +5,9 @@ class League < TeamGroup
   before_save :set_abbr
 
   def game_results_for(team)
-    schedules.includes(:game).find_all { |s|
-      s.for?(team)
-    }.map(&:game).find_all(&:final?).each_with_object([0] * 3) { |game, results|
+    games_finished.find_all { |g|
+      g.for?(team)
+    }.each_with_object([0] * 3) { |game, results|
       index = %w[W L T].index(game.result_and_scores_for(team).first)
       results[index] += 1
     }
@@ -40,6 +40,10 @@ class League < TeamGroup
   end
 
   private
+
+    def games_finished
+      @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
+    end
 
     def set_abbr
       return if abbr
