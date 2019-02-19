@@ -4,6 +4,15 @@ class League < TeamGroup
 
   before_save :set_abbr
 
+  def game_results_for(team)
+    schedules.includes(:game).find_all { |s|
+      s.for?(team)
+    }.map(&:game).find_all(&:final?).each_with_object([0] * 3) { |game, results|
+      index = %w[W L T].index(game.result_and_scores_for(team).first)
+      results[index] += 1
+    }
+  end
+
   def next_schedule
     return nil if schedules.empty?
     schedules.detect { |schedule| !schedule.game.final? }
