@@ -38,6 +38,7 @@
         <th>TD</th>
         <th>Int</th>
         <th>Sack</th>
+        <th>Rating</th>
       </tr>
     </thead>
     <tbody>
@@ -52,6 +53,7 @@
         <td class="numeric"><%= pass_stats.touchdowns %></td>
         <td class="numeric"><%= pass_stats.intercepted %></td>
         <td class="numeric"><%= pass_stats.sacked %></td>
+        <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
       </tr>
     </tbody>
   </table>
