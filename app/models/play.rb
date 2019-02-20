@@ -162,6 +162,10 @@ class Play < ApplicationRecord
     (kickoff_and_return? || punt_and_return?) && !onside_kick?
   end
 
+  def kick_blocked?
+    field_goal_blocked? || punt_blocked?
+  end
+
   def possession_changing?
     (kick_and_return? && !fumble_rec_by_opponent?) || intercepted? \
       || (!kick_and_return? && fumble_rec_by_opponent?)
