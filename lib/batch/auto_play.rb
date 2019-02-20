@@ -13,9 +13,12 @@ elsif ARGV.first&.ends_with?('league')
     exit
   end
   schedule = league.next_schedule
-  print "OK to play #{schedule}? "
-  exit unless gets.chomp == 'y'
   game = schedule.game
+  optional_strs = {}
+  optional_strs['h'] = " (#{ApplicationController.helpers.team_result_display_for(game.home_team)})"
+  optional_strs['v'] = " (#{ApplicationController.helpers.team_result_display_for(game.visitors )})"
+  print "OK to play #{schedule.to_s(optional_strs)} ? "
+  exit unless gets.chomp == 'y'
 else
   last_game = Game.order(:updated_at).last
   home_team = last_game.home_team
