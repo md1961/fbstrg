@@ -10,11 +10,12 @@ class Play < ApplicationRecord
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
                  field_goal_try: 8, field_goal_blocked: 9, extra_point_try: 10, kneel_down: 11,
-                 onside_kick: 12}
+                 onside_kick: 12, two_point_conversion: 13}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
+  enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4, two_point: 5}
 
-  attr_accessor :scoring, :time_to_take, :after_safety
+  attr_accessor :time_to_take, :after_safety
 
   RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
 
@@ -168,7 +169,7 @@ class Play < ApplicationRecord
 
 	def possession_changed?
 		possession_changing? \
-			|| (field_goal_try? && scoring.blank?) \
+			|| (field_goal_try? && no_scoring?) \
 			|| (fourth_down_gambled? && yardage < game_snapshot.yard_to_go)
   end
 
@@ -178,6 +179,15 @@ class Play < ApplicationRecord
 
   def fourth_down_gambled?
     game_snapshot&.down == 4 && (on_ground? || pass? || sacked?)
+  end
+
+  def point_scored
+    {touchdown: 6, field_goal: 3, safety: 2, extra_point: 1, two_point: 2}[scoring.to_sym]
+  end
+
+  def next_play
+    return nil unless game
+    game.plays.where("number > ?", number).order(:number).first
   end
 
   def determine_fumble_recovery
@@ -349,11 +359,14 @@ class Play < ApplicationRecord
     a = []
     a << result_to_s
     a << fumble_to_s unless no_fumble? || onside_kick?
-    a << 'OB' if out_of_bounds && scoring.blank?
+    a << 'OB' if out_of_bounds && no_scoring?
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
     a << "(#{time_to_take}sec)" if time_to_take
     a << "(GAMBLE)" if fourth_down_gambled?
-    a << scoring if scoring.present?
+    unless no_scoring?
+      a << scoring.upcase.gsub('_', ' ')
+      a << "(XP #{next_play.no_scoring? ? 'NO ': ''}GOOD)" if touchdown? && next_play
+    end
     a.join(' ')
   end
 
@@ -501,7 +514,7 @@ class Play < ApplicationRecord
         kick = kickoff_and_return? ? ' kickoff' : ' punt' if kick_and_return?
         int = 'Intercepted ' if intercepted?
         return_y = air_yardage - yardage
-        return_y = [return_y, 100 - (game_snapshot.ball_on + air_yardage)].min if scoring
+        return_y = [return_y, 100 - (game_snapshot.ball_on + air_yardage)].min unless no_scoring?
         return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
         "#{int}#{air_yardage} yard#{kick}, #{return_y}"
       elsif on_ground?
@@ -515,7 +528,7 @@ class Play < ApplicationRecord
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal_try?
-        "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (scoring.present? ? "" : " field goal NO GOOD")
+        "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (no_scoring? ? " field goal NO GOOD" : "")
       elsif kneel_down?
         "QB kneel down"
       else

@@ -30,6 +30,15 @@ class GameSnapshot < ApplicationRecord
     result_chart.result(offensive_play, defensive_play)
   end
 
+  def add_points(value, for_offense = true)
+    return unless value
+    if (home_has_ball && for_offense) || (!home_has_ball && !for_offense)
+      self.score_home += value
+    else
+      self.score_visitors += value
+    end
+  end
+
   def attributes_for_game
     attributes.dup.tap { |attrs|
       attrs.delete('id')

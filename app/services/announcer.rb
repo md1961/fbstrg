@@ -45,7 +45,8 @@ module Announcer
       else
         time = (100 - run_from + 7 + 10) * 50 - 500
         announcement.add("Kick is up, and it's", time)
-        announcement.add("Kick is up, and it's #{play.scoring}", 2000)
+        result = play.no_scoring? ? 'NO GOOD' : 'GOOD'
+        announcement.add("Kick is up, and it's #{result}", 2000)
       end
     elsif play.sacked?
       time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
@@ -56,9 +57,9 @@ module Announcer
         text = play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         announcement.add(text, 2000)
       else
-        text = "SACKED" + (play.scoring == 'SAFETY' ? " IN ZONE" : "")
+        text = "SACKED" + (play.safety? ? " IN ZONE" : "")
         announcement.add(text, 1000)
-        if play.scoring == 'SAFETY'
+        if play.safety?
           announcement.add("SAFETY", 1000)
         else
           announcement.add("Down #{at_yard_line(game.ball_on)}", 2000)
@@ -113,7 +114,7 @@ module Announcer
         if play.fumble?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
-        elsif play.scoring.blank?
+        elsif play.no_scoring?
           verb = play.no_return_on_kick? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
             if play.no_return_on_kick? && run_from <= 0
@@ -131,8 +132,8 @@ module Announcer
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
-          announcement.add("Into zone", 500) if play.scoring.downcase == 'touchdown' && !is_in_zone
-          play.scoring
+          announcement.add("Into zone", 500) if play.touchdown? && !is_in_zone
+          play.scoring.upcase
         end
       announcement.add(text, 2000)
     end

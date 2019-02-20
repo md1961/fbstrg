@@ -18,7 +18,7 @@ class Run
       yardage = play.yardage
       @yards += yardage
       @long = yardage if yardage > @long
-      @touchdowns += 1 if play.scoring&.starts_with?('TOUCHDOWN')
+      @touchdowns += 1 if play.touchdown?
       @longs << yardage if yardage >= 15
     end
   end

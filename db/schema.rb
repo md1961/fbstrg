@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190216224656) do
+ActiveRecord::Schema.define(version: 20190220221101) do
 
   create_table "defensive_play_set_choices", force: :cascade do |t|
     t.integer "defensive_play_set_id"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 20190216224656) do
     t.integer "defensive_play_set_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "scoring", limit: 1, default: 0, null: false
     t.index ["defensive_play_id"], name: "index_plays_on_defensive_play_id"
     t.index ["defensive_play_set_id"], name: "index_plays_on_defensive_play_set_id"
     t.index ["game_id"], name: "index_plays_on_game_id"
