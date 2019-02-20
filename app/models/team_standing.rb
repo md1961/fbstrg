@@ -5,7 +5,7 @@ class TeamStanding
 
   def initialize(team)
     @team = team
-    @won, @lost, @tied = team.won_lost_tied
+    @won, @lost, @tied = team.won_lost_tied_pf_pa
   end
 
   def games

@@ -4,12 +4,15 @@ class League < TeamGroup
 
   before_save :set_abbr
 
-  def won_lost_tied_for(team)
+  def won_lost_tied_pf_pa_for(team)
     games_finished.find_all { |g|
       g.for?(team)
-    }.each_with_object([0] * 3) { |game, results|
-      index = %w[W L T].index(game.result_and_scores_for(team).first)
+    }.each_with_object([0] * 5) { |game, results|
+      result, score_own, score_opp = game.result_and_scores_for(team)
+      index = %w[W L T].index(result)
       results[index] += 1
+      results[3] += score_own
+      results[4] += score_opp
     }
   end
 
