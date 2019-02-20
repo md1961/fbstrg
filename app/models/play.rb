@@ -172,10 +172,11 @@ class Play < ApplicationRecord
       || (kick_blocked? && fumble_rec_by_opponent?)
   end
 
-	def possession_changed?
-		possession_changing? \
-			|| (field_goal_try? && no_scoring?) \
-			|| (fourth_down_gambled? && yardage < game_snapshot.yard_to_go)
+  def possession_changed?
+    possession_changing? \
+      || (field_goal_try? && no_scoring?) \
+      || (fourth_down_gambled? && yardage < game_snapshot.yard_to_go) \
+      || (kick_blocked? && game_snapshot&.down == 4 && yardage < game_snapshot&.yard_to_go) \
   end
 
   def no_return_on_kick?
