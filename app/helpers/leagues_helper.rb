@@ -1,7 +1,7 @@
 module LeaguesHelper
 
-  def team_result_display_for(team, league)
-    results = league.game_results_for(team)
+  def team_result_display_for(team)
+    results = team.league.game_results_for(team)
     results.pop if results.last.zero?
     results.join('-')
   end
