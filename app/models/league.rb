@@ -4,7 +4,7 @@ class League < TeamGroup
 
   before_save :set_abbr
 
-  def game_results_for(team)
+  def won_lost_tied_for(team)
     games_finished.find_all { |g|
       g.for?(team)
     }.each_with_object([0] * 3) { |game, results|
