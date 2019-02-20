@@ -63,6 +63,18 @@ class GamesController < ApplicationController
     render :show
   end
 
+  def replay
+    play = Play.find(params[:play_id])
+    @game_snapshot_prev = play.game_snapshot
+    next_play = play.game.plays.where("number > ?", play.number).order(:number).first
+    @game = next_play.game_snapshot
+    @game.result = play
+    @game.set_plays_and_play_sets_from_result
+    @game.announcement = Announcer.announce(play)
+    @replay = true
+    render :show
+  end
+
   def new
     redirect_to Game.create!
   end

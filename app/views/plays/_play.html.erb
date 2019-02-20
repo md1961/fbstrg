@@ -45,6 +45,9 @@
       <br>
       Play id = <%= play.id %><br>
       GameSnapshot id = <%= gss.id %><br>
+      <br>
+      <br>
+      <%= link_to '[Replay]', replay_games_path(play_id: play.id) %>
     </td>
   </td>
 <% end -%>
