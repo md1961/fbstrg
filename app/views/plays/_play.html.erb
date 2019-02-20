@@ -28,6 +28,13 @@
     <td><span class="toggle_strategy_tool_judgments_display button">[+]</span></td>
     <td><%= play.offensive_play %></td>
     <td class="centered"><%= play.defensive_play&.name %></td>
+    <% if play.offensive_play&.normal? -%>
+      <% gss.result = play
+         gss.set_plays_and_play_sets_from_result -%>
+      <td class="centered"><%= gss.original_result %></td>
+    <% else -%>
+      <td>
+    <% end -%>
   <% end -%>
 </tr>
 <% if is_final -%>
