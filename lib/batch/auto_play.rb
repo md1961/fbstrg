@@ -46,6 +46,7 @@ else
   game = Game.create!(home_team: home_team, visitors: visitors)
 end
 
+game.huddle! if game.playing?
 session = {}
 while !game.final?
   game.no_huddle = session[:no_huddle]
