@@ -13,6 +13,10 @@ class League < TeamGroup
     }
   end
 
+  def standings
+    teams.map { |team| TeamStanding.new(team) }.sort
+  end
+
   def total_team_stats
     h_team_stats.values
   end
