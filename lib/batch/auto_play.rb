@@ -1,15 +1,15 @@
 if ARGV.size > 1
-  STDOUT.puts "Too many arguments."
+  STDERR.puts "Too many arguments."
   exit
-elsif ARGV.first&.ends_with?('league')
+elsif ARGV.first == '--league'
   ARGV.shift
   if League.count.zero?
-    STDOUT.puts "No League found."
+    STDERR.puts "No League found."
     exit
   end
   league = League.order(:year).detect { |l| l.next_schedule }
   unless league
-    STDOUT.puts "No League has next game to play."
+    STDERR.puts "No League has next game to play."
     exit
   end
   schedule = league.next_schedule
@@ -19,6 +19,9 @@ elsif ARGV.first&.ends_with?('league')
   optional_strs['v'] = " (#{ApplicationController.helpers.team_result_display_for(game.visitors )})"
   print "OK to play #{schedule.to_s(optional_strs)} ? "
   exit unless gets.chomp == 'y'
+elsif !ARGV.empty?
+  STDERR.puts "Illegal option '#{ARGV.first}'"
+  exit
 else
   last_game = Game.order(:updated_at).last
   home_team = last_game.home_team
