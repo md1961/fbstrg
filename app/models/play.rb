@@ -181,6 +181,15 @@ class Play < ApplicationRecord
     game_snapshot&.down == 4 && (on_ground? || pass? || sacked?)
   end
 
+  def point_scored
+    {touchdown: 6, field_goal: 3, safety: 2, extra_point: 1, two_point: 2}[scoring.to_sym]
+  end
+
+  def next_play
+    return nil unless game
+    game.plays.where("number > ?", number).order(:number).first
+  end
+
   def determine_fumble_recovery
     pct_rec_by_own = \
       if complete?
