@@ -193,7 +193,7 @@ class Play < ApplicationRecord
     if yardage - air_yardage >= 10
       min_y = [10, air_yardage].max
       max_y = yardage
-      min_y, max_y = max_y, min_x if min_y > max_y
+      min_y, max_y = max_y, min_y if min_y > max_y
       self.yardage = rand(min_y .. max_y)
     end
     self.out_of_bounds = false
