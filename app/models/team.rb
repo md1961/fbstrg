@@ -10,6 +10,10 @@ class Team < ApplicationRecord
     team_group
   end
 
+  def won_lost_tied
+    league.won_lost_tied_for(self)
+  end
+
   def to_s
     name
   end
