@@ -176,7 +176,7 @@ class Game < ApplicationRecord
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
-    if @result.field_goal_try? || @result.extra_point?
+    if @result.field_goal_try? || @result.extra_point_try?
       try_field_goal(@result)
     else
       yardage_play(@result)

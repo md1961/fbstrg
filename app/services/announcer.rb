@@ -36,7 +36,7 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     run_yardage_after = 0
     is_in_zone = false
-    if play.field_goal_try? || play.extra_point? || play.field_goal_blocked? || play.punt_blocked?
+    if play.field_goal_try? || play.extra_point_try? || play.field_goal_blocked? || play.punt_blocked?
       announcement.add("Snap", 1000)
       if play.field_goal_blocked? || play.punt_blocked?
         announcement.add("BLOCKED", 1500)

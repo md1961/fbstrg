@@ -2,7 +2,7 @@ module Clocker
   module_function
 
   def time_to_take(play, game)
-    play.time_to_take = 0 if play.extra_point?
+    play.time_to_take = 0 if play.extra_point_try?
     game.clock_stopped = play.incomplete? || play.intercepted? || play.fumble_rec_by_opponent? \
                       || play.field_goal_try? || play.kick_and_return? || play.onside_kick? \
                       || play.penalty? || play.scoring.present? \
