@@ -9,7 +9,7 @@ class Play < ApplicationRecord
 
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
-                 field_goal: 8, field_goal_blocked: 9, extra_point: 10, kneel_down: 11,
+                 field_goal_try: 8, field_goal_blocked: 9, extra_point: 10, kneel_down: 11,
                  onside_kick: 12}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
@@ -31,7 +31,7 @@ class Play < ApplicationRecord
       elsif offensive_play.punt?
         punt
       elsif offensive_play.field_goal?
-        field_goal
+        field_goal_try
       elsif offensive_play.kickoff_after_safety?
         punt(after_safety: true)
       else
@@ -124,15 +124,15 @@ class Play < ApplicationRecord
     }
   end
 
-  def self.field_goal
+  def self.field_goal_try
     new.tap { |play|
-      play.result = :field_goal
+      play.result = :field_goal_try
       play.yardage = rand(0 .. 100)
     }
   end
 
   def self.extra_point
-    field_goal.tap { |play|
+    field_goal_try.tap { |play|
       play.result = :extra_point
     }
   end
@@ -168,7 +168,7 @@ class Play < ApplicationRecord
 
 	def possession_changed?
 		possession_changing? \
-			|| (field_goal? && scoring.blank?) \
+			|| (field_goal_try? && scoring.blank?) \
 			|| (fourth_down_gambled? && yardage < game_snapshot.yard_to_go)
   end
 
@@ -204,7 +204,7 @@ class Play < ApplicationRecord
     # TODO: Use Play#offensive_play for TeamTraitManager.new().
     @ttm = TeamTraitManager.new(game, game.offensive_play)
 
-    if field_goal?
+    if field_goal_try?
       self.yardage += @ttm.place_kicking_factor * rand(4) if yardage >= 20
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
@@ -514,7 +514,7 @@ class Play < ApplicationRecord
         "Incomplete"
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
-      elsif field_goal?
+      elsif field_goal_try?
         "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (scoring.present? ? "" : " field goal NO GOOD")
       elsif kneel_down?
         "QB kneel down"

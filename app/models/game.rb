@@ -176,7 +176,7 @@ class Game < ApplicationRecord
     self.next_play = :scrimmage
     self.status = :huddle
     @result.change_due_to(self)
-    if @result.field_goal? || @result.extra_point?
+    if @result.field_goal_try? || @result.extra_point?
       try_field_goal(@result)
     else
       yardage_play(@result)
@@ -304,9 +304,9 @@ class Game < ApplicationRecord
     def try_field_goal(play)
       result = 'NO GOOD'
       if play.yardage >= 100 - ball_on
-        score(play.field_goal? ? 3 : 1)
+        score(play.field_goal_try? ? 3 : 1)
         result = 'GOOD'
-      elsif play.field_goal?
+      elsif play.field_goal_try?
         self.ball_on = ball_on - 7
         toggle_possesion
         self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
