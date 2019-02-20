@@ -276,8 +276,10 @@ class Game < ApplicationRecord
     update!(ATTRS_FOR_FINAL_MINUTES.merge(attrs))
   end
 
-  def to_s
-    "#{visitors} at #{home_team}"
+  def to_s(optional_strs = {})
+    str_v = optional_strs.find { |k, _| k.downcase.starts_with?('v') }&.last
+    str_h = optional_strs.find { |k, _| k.downcase.starts_with?('h') }&.last
+    "#{visitors}#{str_v} at #{home_team}#{str_h}"
   end
 
   private
