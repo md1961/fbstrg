@@ -364,7 +364,7 @@ class Play < ApplicationRecord
     a << "(#{time_to_take}sec)" if time_to_take
     a << "(GAMBLE)" if fourth_down_gambled?
     unless no_scoring?
-      a << scoring.upcase
+      a << scoring.upcase.gsub('_', ' ')
       a << "(XP #{next_play.no_scoring? ? 'NO ': ''}GOOD)" if touchdown? && next_play
     end
     a.join(' ')
