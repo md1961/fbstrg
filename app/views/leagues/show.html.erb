@@ -15,15 +15,19 @@
       <th>W</th>
       <th>L</th>
       <th>T</th>
+      <th>PF</th>
+      <th>PA</th>
     </thead>
     <tbody>
       <% @league.standings.each do |standing| -%>
         <tr>
           <td><%= standing.team %></td>
-          <td class="numeric"><%= standing.games %></td>
-          <td class="numeric"><%= standing.won   %></td>
-          <td class="numeric"><%= standing.lost  %></td>
-          <td class="numeric"><%= standing.tied  %></td>
+          <td class="games  numeric"><%= standing.games %></td>
+          <td class="games  numeric"><%= standing.won   %></td>
+          <td class="games  numeric"><%= standing.lost  %></td>
+          <td class="games  numeric"><%= standing.tied  %></td>
+          <td class="points numeric"><%= standing.pf    %></td>
+          <td class="points numeric"><%= standing.pa    %></td>
         </tr>
       <% end -%>
     </tbody>
