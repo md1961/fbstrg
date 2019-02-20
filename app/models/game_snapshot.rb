@@ -24,6 +24,12 @@ class GameSnapshot < ApplicationRecord
     score_home + score_visitors
   end
 
+  def original_result
+    return nil if !offensive_play || !defensive_play
+    result_chart = offense.play_result_chart
+    result_chart.result(offensive_play, defensive_play)
+  end
+
   def attributes_for_game
     attributes.dup.tap { |attrs|
       attrs.delete('id')
