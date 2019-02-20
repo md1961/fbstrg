@@ -298,14 +298,14 @@ class Game < ApplicationRecord
       firstdown
       self.ball_on = 98
       self.next_play = :extra_point
-      @result.scoring = 'TOUCHDOWN'
+      @result.scoring = :touchdown
     end
 
     def try_field_goal(play)
-      result = 'NO GOOD'
+      scoring = :no_scoring
       if play.yardage >= 100 - ball_on
-        score(play.field_goal_try? ? 3 : 1)
-        result = 'GOOD'
+        scoring, point = play.field_goal_try? ? [:field_goal, 3] : [:extra_point, 1]
+        score(point)
       elsif play.field_goal_try?
         self.ball_on = ball_on - 7
         toggle_possesion
@@ -314,12 +314,12 @@ class Game < ApplicationRecord
         self.ball_on = KICKOFF_YARDLINE
         self.next_play = :kickoff
       end
-      @result.scoring = result
+      @result.scoring = scoring
     end
 
     def safety
       score(2, false)
-      @result.scoring = 'SAFETY'
+      @result.scoring = :safety
     end
 
     def score(value, for_offense = true)

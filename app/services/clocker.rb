@@ -5,7 +5,7 @@ module Clocker
     play.time_to_take = 0 if play.extra_point_try?
     game.clock_stopped = play.incomplete? || play.intercepted? || play.fumble_rec_by_opponent? \
                       || play.field_goal_try? || play.kick_and_return? || play.onside_kick? \
-                      || play.penalty? || play.scoring.present? \
+                      || play.penalty? || !play.no_scoring? \
                       || (play.out_of_bounds? && clock_stops_when_out_of_bounds?(game))
     play.time_to_take
   end

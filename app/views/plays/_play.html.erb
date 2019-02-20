@@ -6,7 +6,7 @@
 
 <%
    classes = []
-   classes << 'no_scoring' if play.scoring.blank?
+   classes << 'no_scoring' if play.no_scoring?
    classes << 'border_bottom_thick' if gss.quarter == 3 && gss.time_left >= 15 * 60
    classes << 'border_top' if play.possession_changed?
 -%>
@@ -20,7 +20,7 @@
   <td><%= down_and_yard_display(gss) %></td>
   <td><%= play %></td>
   <td>
-    <% if play.scoring.present? -%>
+    <% unless play.no_scoring? -%>
       <%= "#{game.visitors} #{gss.score_visitors} - #{game.home_team} #{gss.score_home}" %>
     <% end -%>
   </td>

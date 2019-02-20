@@ -14,7 +14,6 @@ class Game
 
     def tally
       plays = @game.plays.includes(:game_snapshot)
-      PlayUtil.write_scorings(plays)
       plays.each do |play|
         stat = play.game_snapshot.home_has_ball ? @stats_home : @stats_visitors
         stat.tally_from(play)
