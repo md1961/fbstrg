@@ -1,9 +1,15 @@
 .leagues_show {
 
+  table {
+    margin-top: 15px;
+  }
+
+  th {
+    font-weight: normal;
+  }
+
   .team_schedules {
     display: flex;
-    margin-top: 15px;
-    margin-bottom: 15px;
 
     table.team_schedule {
       margin-right: 15px;
@@ -15,6 +21,13 @@
 
     td.next_game {
       font-weight: bold;
+    }
+  }
+
+  table.standings {
+
+    td.numeric {
+      width: 15px;
     }
   }
 

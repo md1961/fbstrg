@@ -8,6 +8,27 @@
     <% end -%>
   </div>
 
+  <table class="standings">
+    <thead>
+      <th>
+      <th>G</th>
+      <th>W</th>
+      <th>L</th>
+      <th>T</th>
+    </thead>
+    <tbody>
+      <% @league.standings.each do |standing| -%>
+        <tr>
+          <td><%= standing.team %></td>
+          <td class="numeric"><%= standing.games %></td>
+          <td class="numeric"><%= standing.won   %></td>
+          <td class="numeric"><%= standing.lost  %></td>
+          <td class="numeric"><%= standing.tied  %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+
   <table>
     <thead>
       <tr>
@@ -34,7 +55,6 @@
     </tbody>
   </table>
 
-  <br>
   <table>
     <thead>
       <tr>
