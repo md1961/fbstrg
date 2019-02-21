@@ -270,11 +270,11 @@ class Play < ApplicationRecord
 
     if complete? || incomplete?
       change_pass_by_team_traits(game)
-      if rand(0.0 .. 100.0) < pct_sack(game)
+      if rand * 100 < pct_sack(game)
         self.result = :sacked
         self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
         self.out_of_bounds = false
-      elsif rand(0.0 .. 100.0) < self.class.pct_intercept(game)
+      elsif rand * 100 < pct_intercept(game)
         self.result = :intercepted
         op = game.offensive_play
         # TODO: Adjust interception return yardage determination.
@@ -282,7 +282,7 @@ class Play < ApplicationRecord
         self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero?
         self.out_of_bounds = false
       elsif game.no_huddle && complete?
-        self.result = :incomplete if rand(0.0 .. 100.0) < 5.0
+        self.result = :incomplete if rand * 100 < 5.0
         self.out_of_bounds = false
       end
     end
@@ -390,10 +390,11 @@ class Play < ApplicationRecord
       30 + rand(21)
     end
 
-    def self.pct_intercept(game)
+    def pct_intercept(game)
       plus = 0.0
       plus = 2.0 if game.no_huddle
-      pct_intercept_base(game.offensive_play, game.defensive_play) + plus
+      base = self.class.pct_intercept_base(game.offensive_play, game.defensive_play)
+      (base + plus) * @ttm.pass_interception_factor
     end
 
     def self.pct_intercept_base(offensive_play, defensive_play)
