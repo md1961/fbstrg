@@ -9,7 +9,7 @@ class OffensiveStrategy < ApplicationRecord
     elsif close_to_goal_line?(game)
       OffensivePlaySet.goal_line
     elsif offense_running_out_of_time?(game)
-      OffensivePlaySet.aggresive
+      OffensivePlaySet.hurry_up
     elsif defense_running_out_of_time?(game)
       OffensivePlaySet.ball_control
     elsif needs_long_yardage?(game)
