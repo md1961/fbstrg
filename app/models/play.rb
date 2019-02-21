@@ -524,7 +524,7 @@ class Play < ApplicationRecord
       timeout_visi_curr = gss_curr.timeout_visitors
       timeout_home_prev = gss_prev.timeout_home
       timeout_visi_prev = gss_prev.timeout_visitors
-      return nil if timeout_home_curr + timeout_visi_curr == timeout_home_prev + timeout_visi_prev
+      return nil if timeout_home_curr + timeout_visi_curr >= timeout_home_prev + timeout_visi_prev
       team, timeout_left = timeout_home_curr < timeout_home_prev ? [gss_curr.home_team, timeout_home_curr] \
                                                                  : [gss_curr.visitors , timeout_visi_curr]
       [team.abbr, 3 - timeout_left]
