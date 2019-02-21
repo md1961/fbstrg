@@ -368,6 +368,9 @@ class Play < ApplicationRecord
 
   def to_s
     a = []
+    if tn = timeout_team_and_number
+      a << "(#{tn[0]} TO ##{tn[1]})"
+    end
     a << result_to_s
     a << fumble_to_s unless no_fumble? || onside_kick?
     a << 'OB' if out_of_bounds && no_scoring?
@@ -510,6 +513,20 @@ class Play < ApplicationRecord
         gain_factor = @ttm.pass_yardage_factor + fluctuation_factor
         self.yardage += (yardage * (gain_factor / 10.0) * rand).round
       end
+    end
+
+    def timeout_team_and_number
+      return nil unless prev_play
+      gss_curr = game_snapshot
+      gss_prev = prev_play.game_snapshot
+      timeout_home_curr = gss_curr.timeout_home
+      timeout_visi_curr = gss_curr.timeout_visitors
+      timeout_home_prev = gss_prev.timeout_home
+      timeout_visi_prev = gss_prev.timeout_visitors
+      return nil if timeout_home_curr + timeout_visi_curr == timeout_home_prev + timeout_visi_prev
+      team, timeout_left = timeout_home_curr < timeout_home_prev ? [gss_curr.home_team, timeout_home_curr] \
+                                                                 : [gss_curr.visitors , timeout_visi_curr]
+      [team.abbr, 3 - timeout_left]
     end
 
     def fumble_to_s
