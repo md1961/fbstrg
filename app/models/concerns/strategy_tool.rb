@@ -151,7 +151,7 @@ module StrategyTool
   end
 
   def kneel_down_to_finish_game?(game)
-    can_finish = game.time_left <= 40 * (5 - game.down - (game.clock_stopped? ? 1 : 0)) - 39 * game.timeout_left(false)
+    can_finish = game.time_left < 35 * (5 - game.down - (game.clock_stopped? ? 1 : 0)) - 34 * game.timeout_left(false)
     game.quarter == 4 && (
          (game.score_diff >  0 && game.ball_on >  2 && can_finish) \
       || (game.score_diff == 0 && game.ball_on < 40 && can_finish)
