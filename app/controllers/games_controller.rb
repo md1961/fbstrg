@@ -4,7 +4,7 @@ class GamesController < ApplicationController
   def index
     league = League.find_by(id: params[:league_id])
     @games = Game.all.find_all { |g| g.schedule&.league == league }
-    @games.sort_by! { |g| g.schedule }
+    @games.sort_by! { |g| g.schedule || g.created_at }
   end
 
   def show
