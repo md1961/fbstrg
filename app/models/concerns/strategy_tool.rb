@@ -23,10 +23,16 @@ module StrategyTool
 
   # TODO: Add conditions for possible-tie or sudden-death in overtime.
   def time_running_out?(game)
+    secs_for_TD = seconds_needed_for_touchdown(game)
+    secs_for_FG = seconds_needed_for_field_goal(game)
+    secs_for_stop = seconds_needed_to_get_ball_back(game)
     game.quarter == 4 && (
-         (game.score_diff <= -3 && game.time_left <= seconds_needed_for_touchdown(game)) \
-      || (game.score_diff <=  0 && game.time_left <= seconds_needed_for_field_goal(game)) \
-      || (game.score_diff <=  0 && game.time_left <= 120 && zone_aggresive?(game))
+         (game.score_diff <= -3 && game.time_left <= secs_for_TD) \
+      || (game.score_diff <=  0 && game.time_left <= secs_for_FG) \
+      || (game.score_diff <=  0 && game.time_left <= 120 && zone_aggresive?(game)) \
+      || (game.score_diff <= -7 && game.time_left <= secs_for_TD + secs_for_FG + secs_for_FG) \
+      || (game.score_diff <= -10 && game.time_left <= secs_for_TD * 2 + secs_for_FG) \
+      || (game.score_diff <= -14)
     )
   end
 
