@@ -196,6 +196,11 @@ class Play < ApplicationRecord
     game.plays.where("number > ?", number).order(:number).first
   end
 
+  def prev_play
+    return nil unless game
+    game.plays.where("number < ?", number).order(:number).last
+  end
+
   def determine_fumble_recovery
     pct_rec_by_own = \
       if complete?
