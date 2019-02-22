@@ -543,7 +543,7 @@ class Play < ApplicationRecord
         kick = kickoff_and_return? ? ' kickoff' : ' punt' if kick_and_return?
         int = 'Intercepted ' if intercepted?
         return_y = air_yardage - yardage
-        return_y = [return_y, 100 - (game_snapshot.ball_on + air_yardage)].min unless no_scoring?
+        return_y = [return_y, game_snapshot.ball_on + air_yardage].min unless no_scoring?
         return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
         "#{int}#{air_yardage} yard#{kick}, #{return_y}"
       elsif on_ground?
