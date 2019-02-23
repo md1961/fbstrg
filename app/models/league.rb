@@ -4,6 +4,19 @@ class League < TeamGroup
 
   before_save :set_abbr
 
+  def self.create_next
+    last_league = League.order(:updated_at).last
+    create!(
+      name: last_league.name,
+      year: last_league.year + 1,
+      teams: last_league.teams.map { |team|
+        team.dup.tap { |new_team|
+          new_team.team_trait = team.team_trait.dup
+        }
+      }
+    )
+  end
+
   def won_lost_tied_pf_pa_for(team)
     games_finished.find_all { |g|
       g.for?(team)
