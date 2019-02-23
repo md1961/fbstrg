@@ -48,6 +48,7 @@ class Pass
   end
 
   def rating
+    return 0.0 if attempts.zero?
     a = (pct_comp / 100 - 0.3) * 5
     b = (yards_per_attempt - 3) * 0.25
     c = (touchdowns.to_f / attempts) * 20
