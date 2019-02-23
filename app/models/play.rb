@@ -201,7 +201,7 @@ class Play < ApplicationRecord
     game.plays.where("number < ?", number).order(:number).last
   end
 
-  def determine_fumble_recovery
+  def determine_fumble_recovery(game = nil)
     pct_rec_by_own = \
       if complete?
         33
@@ -211,11 +211,20 @@ class Play < ApplicationRecord
         50
       end
     self.fumble = rand(100) < pct_rec_by_own ? :fumble_rec_by_own : :fumble_rec_by_opponent
-    if yardage - air_yardage >= 10
-      min_y = [10, air_yardage].max
-      max_y = yardage
-      min_y, max_y = max_y, min_y if min_y > max_y
-      self.yardage = rand(min_y .. max_y)
+    if game
+      if on_ground? || complete?
+        min_y = on_ground? ? [-2, yardage].min : air_yardage
+        self.yardage = rand(min_y .. yardage) || min_y
+        self.fumble = :no_fumble if game.ball_on + yardage >= 100
+      elsif kick_and_return?
+        return_y = air_yardage - yardage
+        return_y = rand(5 .. return_y) if return_y >= 5
+        self.yardage = air_yardage - return_y
+        if -yardage >= game.ball_on
+          self.fumble = :no_fumble  # touchdown
+          self.yardage = -game.ball_on
+        end
+      end
     end
     self.out_of_bounds = false
   end
@@ -260,8 +269,9 @@ class Play < ApplicationRecord
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
       end
-      if rand * 100 < pct_fumble(game)
-        determine_fumble_recovery
+      return_y = air_yardage - yardage
+      if return_y >= 5 && rand * 100 < pct_fumble(game)
+        determine_fumble_recovery(game)
       end
       return
     end
@@ -309,7 +319,7 @@ class Play < ApplicationRecord
     end
 
     if (on_ground? || complete?) && rand * 100 < pct_fumble(game)
-      determine_fumble_recovery
+      determine_fumble_recovery(game)
     end
   end
 
