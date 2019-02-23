@@ -10,6 +10,10 @@ class Team < ApplicationRecord
     team_group
   end
 
+  def year
+    league&.year
+  end
+
   def won_lost_tied_pf_pa
     league.won_lost_tied_pf_pa_for(self)
   end
