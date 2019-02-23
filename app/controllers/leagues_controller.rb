@@ -1,7 +1,7 @@
 class LeaguesController < ApplicationController
 
   def index
-    redirect_to League.first
+    redirect_to League.order(:updated_at).last
   end
 
   def show
