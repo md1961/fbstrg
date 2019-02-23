@@ -33,7 +33,7 @@
     </tbody>
   </table>
 
-  <table>
+  <table class="stats">
     <thead>
       <tr>
         <th>
@@ -50,7 +50,7 @@
         <tr>
           <td><%= team_stats.team %></td>
           <td class="numeric"><%= run_stats.attempts %></td>
-          <td class="numeric"><%= run_stats.yards %></td>
+          <td class="numeric"><%= run_stats.yards.to_s(:delimited) %></td>
           <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
           <td class="numeric"><%= run_stats.long %></td>
           <td class="numeric"><%= run_stats.touchdowns %></td>
@@ -59,7 +59,7 @@
     </tbody>
   </table>
 
-  <table>
+  <table class="stats">
     <thead>
       <tr>
         <th>
@@ -84,7 +84,7 @@
           <td class="numeric"><%= pass_stats.attempts %></td>
           <td class="numeric"><%= pass_stats.completions %></td>
           <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
-          <td class="numeric"><%= pass_stats.yards %></td>
+          <td class="numeric"><%= pass_stats.yards.to_s(:delimited) %></td>
           <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
           <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
           <td class="numeric"><%= pass_stats.long %></td>
