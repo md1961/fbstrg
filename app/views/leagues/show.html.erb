@@ -1,10 +1,9 @@
 <div class="leagues_show">
   <div><%= @league %></div>
 
-  <% next_schedule = @league.next_schedule -%>
   <div class="team_schedules">
     <% @league.teams.each do |team| -%>
-      <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+      <%= render partial: 'team_schedule', locals: {team: team} %>
     <% end -%>
   </div>
 

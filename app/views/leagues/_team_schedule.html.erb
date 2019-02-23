@@ -6,7 +6,7 @@
        game_display = game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '')
        result_displays = game_result_display(game, team) -%>
     <tr>
-      <td class="numeric <%= schedule == next_schedule ? 'next_game' : '' %>">
+      <td class="numeric <%= schedule&.next? ? 'next_game' : '' %>">
         <%= link_to_if game&.final?, week, game %>
       </td>
       <td class="opponent"><%= game_display || '(bye)' %></td>

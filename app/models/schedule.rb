@@ -8,6 +8,10 @@ class Schedule < ApplicationRecord
     game.for?(team)
   end
 
+  def next?
+    self == league&.next_schedule
+  end
+
   def league
     group = team_group
     while !group.is_a?(League)
@@ -17,6 +21,7 @@ class Schedule < ApplicationRecord
   end
 
   def <=>(other)
+    return nil unless other
     [week, number] <=> [other.week, other.number]
   end
 
