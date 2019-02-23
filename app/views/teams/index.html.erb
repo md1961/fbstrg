@@ -1,10 +1,16 @@
 <div class="teams_index">
   <table class="table_base">
     <thead>
-      <tr class="border_bottom_thick">
-        <th class="border_right_thick">
+      <tr class="">
+        <th class="border_bottom_none border_right_thick">
         <% @teams.each do |team| -%>
           <th><%= team.abbr %></th>
+        <% end -%>
+      </tr>
+      <tr class="border_bottom_thick">
+        <th class="border_top_none border_right_thick">
+        <% @teams.each do |team| -%>
+          <th><%= team.year %></th>
         <% end -%>
       </tr>
     </thead>
