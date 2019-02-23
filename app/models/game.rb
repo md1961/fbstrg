@@ -348,7 +348,7 @@ class Game < ApplicationRecord
         play.save!
         touchdown
       elsif ball_on <= 0
-        if play.intercepted? || play.kick_and_return?
+        if play.kick_and_return? || play.intercepted? || play.fumble_rec_by_opponent?
           touchback
         else
           play.yardage += -ball_on
