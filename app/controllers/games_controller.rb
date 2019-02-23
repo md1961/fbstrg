@@ -67,7 +67,7 @@ class GamesController < ApplicationController
     play = Play.find(params[:play_id])
     @game_snapshot_prev = play.game_snapshot
     next_play = play.game.plays.where("number > ?", play.number).order(:number).first
-    @game = next_play.game_snapshot
+    @game = next_play&.game_snapshot || GameSnapshot.take_snapshot_of(play.game).tap { |gss| gss.play = play }
     @game.result = play
     @game.set_plays_and_play_sets_from_result
     @game.announcement = Announcer.announce(play)
