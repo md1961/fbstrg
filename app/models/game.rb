@@ -404,8 +404,6 @@ class Game < ApplicationRecord
 
     def finish_quarter
       self.clock_stopped = true
-      self.offensive_play = nil
-      self.offensive_play_set = nil
       if quarter >= 4 && score_diff != 0
         final!
       elsif quarter == 2
