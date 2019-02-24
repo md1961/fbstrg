@@ -1,7 +1,9 @@
 class TeamsController < ApplicationController
 
   def index
-    @teams = Team.where.not(abbr: %w[H V])
+    league = League.find_by(id: params[:league_id])
+    teams = league&.teams || Team.all
+    @teams = teams.where.not(abbr: %w[H V])
   end
 
   private
