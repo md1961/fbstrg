@@ -121,7 +121,8 @@ module StrategyTool
   def needs_offense_timeout?(game)
     return false if game.clock_stopped || game.timeout_left <= 0
     return false if [1, 3].include?(game.quarter) || game.time_left >= 60 * 2
-    return false if game.score_diff > 0
+    return false if game.quarter == 4 && game.score_diff > 0
+    return false if game.quarter == 2 && !zone_aggresive?(game)
     return false if game.time_left >= 40 && game.down == 4 && !tries_fourth_down_gamble?(game)
     if game.time_left >= 40 * 2
       return game.timeout_left >= 3
