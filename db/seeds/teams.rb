@@ -1,3 +1,6 @@
+STDERR.puts "Prohibited"
+exit
+
 [
   League,
   Game,

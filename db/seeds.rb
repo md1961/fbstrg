@@ -1,4 +1,5 @@
-FILENAMES = %w[plays teams]
+#FILENAMES = %w[plays teams]
+FILENAMES = %w[]
 
 paths = FILENAMES.map { |filename| File.join('db', 'seeds', "#{filename}.rb") }
 paths.each do |path|
