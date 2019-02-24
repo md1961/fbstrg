@@ -10,9 +10,14 @@
 
   .team_schedules {
     display: flex;
+    flex-wrap: wrap;
 
     table.team_schedule {
       margin-right: 15px;
+    }
+
+    td {
+      white-space: nowrap;
     }
 
     span.number {
