@@ -7,7 +7,7 @@
        result_displays = game_result_display(game, team) -%>
     <tr>
       <td class="numeric <%= schedule&.next? ? 'next_game' : '' %>">
-        <%= link_to_if game&.final?, week, game %>
+        <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
       </td>
       <td class="opponent"><%= game_display || '(bye)' %></td>
       <td class="centered"><%= result_displays[0] %></td>

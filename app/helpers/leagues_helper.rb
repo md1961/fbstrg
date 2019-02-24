@@ -11,4 +11,12 @@ module LeaguesHelper
     return [] if !rs || rs.empty?
     [rs[0], "#{rs[1]} - #{rs[2]}"]
   end
+
+  def schedule_index_display(schedule, week)
+    return week unless schedule
+    content_tag :span do
+      concat schedule.week
+      concat content_tag :span, "-#{schedule.number}", class: 'number'
+    end
+  end
 end
