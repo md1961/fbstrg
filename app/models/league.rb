@@ -45,11 +45,19 @@ class League < TeamGroup
   def make_schedules
     return if teams.empty?
     team_ids = teams.map(&:id).sort_by { rand }
-    raise "Not implemented yet for even number of Team's" if team_ids.size.even?
+    team_surplus = team_ids.size.odd? ? nil : Team.find(team_ids.pop)
     team_ids.size.times do |week|
-      (team_ids.size / 2).times do |i|
+      (team_ids.size / 2 + 1).times do |i|
         h = Team.find(team_ids[i])
         v = Team.find(team_ids[-(i + 1)])
+        if h == v
+          if !team_surplus
+            next
+          else
+            v = team_surplus
+          end
+        end
+        h, v = v, h if week.even?
         game = Game.new(home_team: h, visitors: v)
         schedules.build(week: week + 1, number: i + 1, game: game)
         game = Game.new(home_team: v, visitors: h)
