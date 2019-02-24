@@ -33,14 +33,14 @@ class OffensiveStrategy < ApplicationRecord
       OffensivePlay.extra_point
     elsif game.kickoff_after_safety?
       OffensivePlay.kickoff_after_safety
-    elsif needs_offense_timeout?(game)
-      [nil, 'TO']
-    elsif needs_no_huddle?(game)
-      [nil, 'NH']
     elsif needs_defense_timeout?(game)
       [nil, 'TD']
     elsif kneel_down_to_finish_game?(game) || kneel_down_to_finish_half?(game)
       OffensivePlay.kneel_down
+    elsif needs_offense_timeout?(game)
+      [nil, 'TO']
+    elsif needs_no_huddle?(game)
+      [nil, 'NH']
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
     elsif game.down == 4 && !tries_fourth_down_gamble?(game)
