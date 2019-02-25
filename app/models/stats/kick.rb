@@ -40,6 +40,14 @@ class Kick
     distances_made.max
   end
 
+  def attempts_from(range)
+    (@distances_made + @distances_missed).find_all { |d| range.include?(d) }.size
+  end
+
+  def fgs_made_from(range)
+    @distances_made.find_all { |d| range.include?(d) }.size
+  end
+
   def pct_xp
     xps_made.to_f / xps_attempted * 100
   end
