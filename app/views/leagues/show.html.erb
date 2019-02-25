@@ -2,7 +2,7 @@
   <div><%= @league %></div>
 
   <div class="team_schedules">
-    <% @league.teams.each do |team| -%>
+    <% @league.standings.map(&:team).each do |team| -%>
       <%= render partial: 'team_schedule', locals: {team: team} %>
     <% end -%>
   </div>
