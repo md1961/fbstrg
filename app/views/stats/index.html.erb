@@ -1,4 +1,10 @@
 <div class="stats_index">
   <%= render partial: 'team', locals: {team_stats: @stats.stats_visitors} %>
   <%= render partial: 'team', locals: {team_stats: @stats.stats_home    } %>
+
+  <div class="links">
+    <% if @league -%>
+      <%= link_to 'League', @league %>
+    <% end -%>
+  </div>
 </div>
