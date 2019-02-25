@@ -19,4 +19,8 @@ module LeaguesHelper
       concat content_tag :span, "-#{schedule.number}", class: 'number'
     end
   end
+
+  def fgs_made_att_display(range, kick_stats)
+    "#{kick_stats.fgs_made_from(range)}-#{kick_stats.attempts_from(range)}"
+  end
 end

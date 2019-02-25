@@ -45,7 +45,12 @@
     }
   }
 
+  .stats_tables {
+    display: flex;
+  }
+
   table.stats {
+    margin-right: 20px;
 
     td {
       padding: 0 5px;

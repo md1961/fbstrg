@@ -32,99 +32,111 @@
     </tbody>
   </table>
 
-  <table class="stats">
-    <thead>
-      <tr>
-        <th>
-        <th>Att</th>
-        <th>Yards</th>
-        <th>Avg</th>
-        <th>Long</th>
-        <th>TD</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @league.total_team_stats.sort_by { |s| -s.run_stats.yards }.each do |team_stats| -%>
-        <% run_stats = team_stats.run_stats -%>
+  <div class="stats_tables">
+    <table class="stats">
+      <thead>
         <tr>
-          <td><%= team_stats.team %></td>
-          <td class="numeric"><%= run_stats.attempts %></td>
-          <td class="numeric"><%= run_stats.yards.to_s(:delimited) %></td>
-          <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
-          <td class="numeric"><%= run_stats.long %></td>
-          <td class="numeric"><%= run_stats.touchdowns %></td>
+          <th>
+          <th>Att</th>
+          <th>Yards</th>
+          <th>Avg</th>
+          <th>Long</th>
+          <th>TD</th>
         </tr>
-      <% end -%>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @league.total_team_stats.sort_by { |s| -s.run_stats.yards }.each do |team_stats| -%>
+          <% run_stats = team_stats.run_stats -%>
+          <tr>
+            <td><%= team_stats.team %></td>
+            <td class="numeric"><%= run_stats.attempts %></td>
+            <td class="numeric"><%= run_stats.yards.to_s(:delimited) %></td>
+            <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
+            <td class="numeric"><%= run_stats.long %></td>
+            <td class="numeric"><%= run_stats.touchdowns %></td>
+          </tr>
+        <% end -%>
+      </tbody>
+    </table>
 
-  <table class="stats">
-    <thead>
-      <tr>
-        <th>
-        <th>Att</th>
-        <th>Cmp</th>
-        <th>%Cmp</th>
-        <th>Yards</th>
-        <th>Y/Att</th>
-        <th>Y/Cmp</th>
-        <th>Long</th>
-        <th>TD</th>
-        <th>Int</th>
-        <th>Sack</th>
-        <th>Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @league.total_team_stats.sort_by { |s| -s.pass_stats.rating }.each do |team_stats| -%>
-        <% pass_stats = team_stats.pass_stats -%>
+    <table class="stats">
+      <thead>
         <tr>
-          <td><%= team_stats.team %></td>
-          <td class="numeric"><%= pass_stats.attempts %></td>
-          <td class="numeric"><%= pass_stats.completions %></td>
-          <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
-          <td class="numeric"><%= pass_stats.yards.to_s(:delimited) %></td>
-          <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
-          <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
-          <td class="numeric"><%= pass_stats.long %></td>
-          <td class="numeric"><%= pass_stats.touchdowns %></td>
-          <td class="numeric"><%= pass_stats.intercepted %></td>
-          <td class="numeric"><%= pass_stats.sacked %></td>
-          <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
+          <th>
+          <th>Att</th>
+          <th>Cmp</th>
+          <th>%Cmp</th>
+          <th>Yards</th>
+          <th>Y/Att</th>
+          <th>Y/Cmp</th>
+          <th>Long</th>
+          <th>TD</th>
+          <th>Int</th>
+          <th>Sack</th>
+          <th>Rating</th>
         </tr>
-      <% end -%>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @league.total_team_stats.sort_by { |s| -s.pass_stats.rating }.each do |team_stats| -%>
+          <% pass_stats = team_stats.pass_stats -%>
+          <tr>
+            <td><%= team_stats.team %></td>
+            <td class="numeric"><%= pass_stats.attempts %></td>
+            <td class="numeric"><%= pass_stats.completions %></td>
+            <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
+            <td class="numeric"><%= pass_stats.yards.to_s(:delimited) %></td>
+            <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
+            <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
+            <td class="numeric"><%= pass_stats.long %></td>
+            <td class="numeric"><%= pass_stats.touchdowns %></td>
+            <td class="numeric"><%= pass_stats.intercepted %></td>
+            <td class="numeric"><%= pass_stats.sacked %></td>
+            <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
+          </tr>
+        <% end -%>
+      </tbody>
+    </table>
 
-  <table class="stats">
-    <thead>
-      <tr>
-        <th>
-        <th>Att</th>
-        <th>FGM</th>
-        <th>%FG</th>
-        <th>Long</th>
-        <th>XPA</th>
-        <th>XPM</th>
-        <th>%XP</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @league.total_team_stats.sort_by { |s| -s.kick_stats.fgs_made }.each do |team_stats| -%>
-        <% kick_stats = team_stats.kick_stats -%>
+    <table class="stats">
+      <thead>
         <tr>
-          <td><%= team_stats.team %></td>
-          <td class="numeric"><%= kick_stats.attempts %></td>
-          <td class="numeric"><%= kick_stats.fgs_made %></td>
-          <td class="numeric"><%= "%3.1f" % kick_stats.pct_fg %></td>
-          <td class="numeric"><%= kick_stats.long %></td>
-          <td class="numeric"><%= kick_stats.xps_attempted %></td>
-          <td class="numeric"><%= kick_stats.xps_made %></td>
-          <td class="numeric"><%= "%3.1f" % kick_stats.pct_xp %></td>
+          <th>
+          <th>Att</th>
+          <th>FGM</th>
+          <th>%FG</th>
+          <th>Long</th>
+          <th>1-19</th>
+          <th>20-29</th>
+          <th>30-39</th>
+          <th>40-49</th>
+          <th>50+</th>
+          <th>XPA</th>
+          <th>XPM</th>
+          <th>%XP</th>
         </tr>
-      <% end -%>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @league.total_team_stats.sort_by { |s| -s.kick_stats.fgs_made }.each do |team_stats| -%>
+          <% kick_stats = team_stats.kick_stats -%>
+          <tr>
+            <td><%= team_stats.team %></td>
+            <td class="numeric"><%= kick_stats.attempts %></td>
+            <td class="numeric"><%= kick_stats.fgs_made %></td>
+            <td class="numeric"><%= "%3.1f" % kick_stats.pct_fg %></td>
+            <td class="numeric"><%= kick_stats.long %></td>
+            <td class="numeric"><%= fgs_made_att_display( 1..19, kick_stats) %></td>
+            <td class="numeric"><%= fgs_made_att_display(20..29, kick_stats) %></td>
+            <td class="numeric"><%= fgs_made_att_display(30..39, kick_stats) %></td>
+            <td class="numeric"><%= fgs_made_att_display(40..49, kick_stats) %></td>
+            <td class="numeric"><%= fgs_made_att_display(50..99, kick_stats) %></td>
+            <td class="numeric"><%= kick_stats.xps_attempted %></td>
+            <td class="numeric"><%= kick_stats.xps_made %></td>
+            <td class="numeric"><%= "%3.1f" % kick_stats.pct_xp %></td>
+          </tr>
+        <% end -%>
+      </tbody>
+    </table>
+  </div>
 
   <div class="links">
     <%= link_to 'Games', games_path(league_id: @league) %>
