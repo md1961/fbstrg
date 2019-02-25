@@ -89,4 +89,10 @@
     <% plays = @game.plays.includes(:game_snapshot).order(number: :desc) -%>
     <%= render plays %>
   </table>
+
+  <div class="stats" <%= 'hidden' unless @game.final? %>>
+    <% stats = Stats::Game.new(@game) -%>
+    <%= render partial: 'stats/team', locals: {team_stats: stats.stats_visitors} %>
+    <%= render partial: 'stats/team', locals: {team_stats: stats.stats_home    } %>
+  </div>
 <% end -%>
