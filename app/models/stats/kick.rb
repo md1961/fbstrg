@@ -1,26 +1,29 @@
 module Stats
 
 class Kick
-  attr_reader :attempts, :distances_made, :distances_missed, :xps_attempted, :xps_made
+  attr_reader :attempts, :distances_made, :distances_missed, :distances_blocked,
+              :xps_attempted, :xps_made
 
   def initialize(owner)
     @owner = owner
     @attempts = 0
     @distances_made = []
     @distances_missed = []
+    @distances_blocked = []
     @xps_attempted = 0
     @xps_made = 0
   end
 
   def tally_from(play)
-    return unless play.field_goal_try? || play.extra_point_try?
-    if play.field_goal_try?
+    return unless play.field_goal_try? || play.field_goal_blocked? || play.extra_point_try?
+    if play.field_goal_try? || play.field_goal_blocked?
       @attempts += 1
       distance = 100 - play.game_snapshot.ball_on + 10 + 7
       if play.field_goal?
         @distances_made << distance
       else
         @distances_missed << distance
+        @distances_blocked << distance if play.field_goal_blocked?
       end
     else
       @xps_attempted += 1
@@ -40,6 +43,10 @@ class Kick
     distances_made.max
   end
 
+  def fgs_blocked
+    distances_blocked.size
+  end
+
   def attempts_from(range)
     (@distances_made + @distances_missed).find_all { |d| range.include?(d) }.size
   end
@@ -56,6 +63,7 @@ class Kick
     @attempts += other.attempts
     @distances_made.concat(other.distances_made)
     @distances_missed.concat(other.distances_missed)
+    @distances_blocked.concat(other.distances_blocked)
     @xps_attempted += other.xps_attempted
     @xps_made += other.xps_made
   end

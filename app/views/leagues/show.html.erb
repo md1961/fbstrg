@@ -105,6 +105,7 @@
           <th>FGM</th>
           <th>%FG</th>
           <th>Long</th>
+          <th>BLK</th>
           <th>1-19</th>
           <th>20-29</th>
           <th>30-39</th>
@@ -124,6 +125,7 @@
             <td class="numeric"><%= kick_stats.fgs_made %></td>
             <td class="numeric"><%= "%3.1f" % kick_stats.pct_fg %></td>
             <td class="numeric"><%= kick_stats.long %></td>
+            <td class="numeric"><%= kick_stats.fgs_blocked %></td>
             <td class="numeric"><%= fgs_made_att_display( 1..19, kick_stats) %></td>
             <td class="numeric"><%= fgs_made_att_display(20..29, kick_stats) %></td>
             <td class="numeric"><%= fgs_made_att_display(30..39, kick_stats) %></td>
