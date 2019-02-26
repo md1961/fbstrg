@@ -8,10 +8,6 @@ class Schedule < ApplicationRecord
     game.for?(team)
   end
 
-  def next?
-    self == league&.next_schedule
-  end
-
   def league
     group = team_group
     while !group.is_a?(League)
