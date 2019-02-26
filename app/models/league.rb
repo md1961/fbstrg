@@ -29,6 +29,10 @@ class League < TeamGroup
     }
   end
 
+  def games_finished
+    @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
+  end
+
   def standings
     teams.map { |team| TeamStanding.new(team) }.sort
   end
@@ -72,10 +76,6 @@ class League < TeamGroup
   end
 
   private
-
-    def games_finished
-      @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
-    end
 
     def h_team_stats
       @h_team_stats ||= make_h_team_stats
