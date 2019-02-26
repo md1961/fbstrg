@@ -292,7 +292,7 @@ class Play < ApplicationRecord
         self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero?
         self.out_of_bounds = false
       elsif game.no_huddle && complete?
-        self.result = :incomplete if rand * 100 < 5.0
+        self.result = :incomplete if rand * 100 < 5.0 - @ttm.qb_read_factor * 0.5
         self.out_of_bounds = false
       end
     end
@@ -402,7 +402,7 @@ class Play < ApplicationRecord
 
     def pct_intercept(game)
       plus = 0.0
-      plus = 2.0 if game.no_huddle
+      plus = 2.0 - @ttm.qb_read_factor * 0.2 if game.no_huddle
       base = self.class.pct_intercept_base(game.offensive_play, game.defensive_play)
       (base + plus) * @ttm.pass_interception_factor
     end
@@ -424,7 +424,7 @@ class Play < ApplicationRecord
 
     def pct_sack(game)
       plus = 0.0
-      plus = 4.0 if game.no_huddle
+      plus = 4.0 - @ttm.qb_read_factor * 0.4 if game.no_huddle
       plus -= @ttm.pass_protect_factor
       [self.class.pct_sack_base(game.offensive_play, game.defensive_play) + plus, 0.1].max
     end
