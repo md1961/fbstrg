@@ -24,8 +24,8 @@ class Announcement
     @statements.last&.text
   end
 
-  def total_time
-    @statements.map(&:time).sum
+  def total_time_in_sec
+    (@statements.map(&:time).sum / 1000.0).ceil - 1
   end
 
   def to_s(speed: nil)

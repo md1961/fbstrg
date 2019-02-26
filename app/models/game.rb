@@ -182,7 +182,7 @@ class Game < ApplicationRecord
       yardage_play(@result)
     end
     @announcement = Announcer.announce(@result, self)
-    @result.time_to_take = (@announcement.total_time / 1000.0).ceil - 1
+    @result.time_to_take = @announcement.total_time_in_sec
     advance_clock(Clocker.time_to_take(@result, self))
 
     @result.record(self, game_snapshot)
