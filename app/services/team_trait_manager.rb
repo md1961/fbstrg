@@ -47,6 +47,10 @@ class TeamTraitManager
     [f * -0.1 + 1.0, 0.1].max
   end
 
+  def qb_read_factor
+    @offense_trait.qb_read + home_factor
+  end
+
   private
 
     def home_factor
