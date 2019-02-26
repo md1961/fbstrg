@@ -8,5 +8,6 @@ class LeaguesController < ApplicationController
     @league = League.find(params[:id])
     @schedules_by_week = @league.schedules.includes(:game).group_by(&:week)
     @game_played_last = @league.games_finished.sort_by(&:updated_at).last
+    @shows_stats = params[:shows_stats] == 'true'
   end
 end

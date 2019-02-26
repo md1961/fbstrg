@@ -23,4 +23,10 @@ module LeaguesHelper
   def fgs_made_att_display(range, kick_stats)
     "#{kick_stats.fgs_made_from(range)}-#{kick_stats.attempts_from(range)}"
   end
+
+  def link_to_toggle_stats
+    label, params = @shows_stats ? ['Hide Stats', {}] \
+                                 : ['Show Stats', {shows_stats: true}]
+    link_to label, league_path(@league, params)
+  end
 end
