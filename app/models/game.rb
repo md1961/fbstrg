@@ -38,7 +38,7 @@ class Game < ApplicationRecord
   end
 
   def for?(team)
-    home_team == team || visitors == team
+    [home_team_id, visitors_id].include?(team.id)
   end
 
   def league
