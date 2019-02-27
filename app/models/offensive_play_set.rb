@@ -44,6 +44,11 @@ class OffensivePlaySet < ApplicationRecord
           choice.offensive_play.razzle_dazzle?
         }.weight = 0
       end
+      if game.ball_on <= 15 || game.no_huddle
+        offensive_play_set_choices.find { |choice|
+          choice.offensive_play.reverse?
+        }.weight = 0
+      end
       if game.yard_to_go > 1
         offensive_play_set_choices.find { |choice|
           choice.offensive_play.quarterback_keep?
