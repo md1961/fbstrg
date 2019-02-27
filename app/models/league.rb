@@ -42,7 +42,6 @@ class League < TeamGroup
   end
 
   def next_schedule
-    return nil if schedules.empty?
     schedules.detect { |schedule| !schedule.game.final? }
   end
 
