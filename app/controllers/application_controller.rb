@@ -18,4 +18,13 @@ class ApplicationController < ActionController::Base
       end
       @speed_of_announce = session[:speed_of_announce]
     end
+
+  private
+
+    def trait_names
+      @__trait_names ||= TeamTrait.first.attributes.keys.reject { |name|
+        %w[id team_id created_at updated_at].include?(name)
+      }
+    end
+    helper_method :trait_names
 end

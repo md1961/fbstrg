@@ -1,0 +1,32 @@
+<table class="table_base">
+  <thead>
+    <tr class="">
+      <th class="border_bottom_none border_right_thick">
+      <% teams.each do |team| -%>
+        <th><%= team.abbr %></th>
+      <% end -%>
+    </tr>
+    <tr class="border_bottom_thick">
+      <th class="border_top_none border_right_thick">
+      <% teams.each do |team| -%>
+        <th><%= team.year %></th>
+      <% end -%>
+    </tr>
+  </thead>
+  <tbody>
+    <% trait_names.each do |trait_name| -%>
+      <% td_class = ''
+         td_class = 'border_top_thick' if %w[run_defense place_kicking].include?(trait_name) -%>
+      <tr>
+        <td class="border_right_thick <%= td_class %>">
+          <%= trait_name %>
+        </td>
+        <% teams.each do |team| -%>
+          <td class="numeric <%= td_class %>">
+            <%= team.team_trait.send(trait_name) %>
+          </td>
+        <% end -%>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
