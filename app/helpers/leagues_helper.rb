@@ -29,4 +29,13 @@ module LeaguesHelper
                                  : ['Show Stats', {shows_stats: true}]
     link_to label, league_path(@league, params)
   end
+
+  def schedule_with_team_result(schedule)
+    return nil unless schedule
+    game = schedule.game
+    optional_strs = {}
+    optional_strs['h'] = " (#{team_result_display_for(game.home_team)})"
+    optional_strs['v'] = " (#{team_result_display_for(game.visitors )})"
+    schedule.to_s(optional_strs)
+  end
 end

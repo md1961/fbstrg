@@ -22,6 +22,6 @@ class Schedule < ApplicationRecord
   end
 
   def to_s(optional_strs = {})
-    "#{team_group} week #{week}: #{game.to_s(optional_strs)}"
+    "week #{week} ##{number}: #{game.to_s(optional_strs)}"
   end
 end

@@ -13,12 +13,9 @@ elsif ARGV.first == '--league'
     exit
   end
   schedule = league.next_schedule
-  game = schedule.game
-  optional_strs = {}
-  optional_strs['h'] = " (#{ApplicationController.helpers.team_result_display_for(game.home_team)})"
-  optional_strs['v'] = " (#{ApplicationController.helpers.team_result_display_for(game.visitors )})"
-  print "OK to play #{schedule.to_s(optional_strs)} ? "
+  print "OK to play #{league} #{ApplicationController.helpers.schedule_with_team_result(schedule)} ? "
   exit unless gets.chomp == 'y'
+  game = schedule.game
 elsif !ARGV.empty?
   STDERR.puts "Illegal option '#{ARGV.first}'"
   exit

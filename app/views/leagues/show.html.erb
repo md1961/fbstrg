@@ -1,7 +1,13 @@
 <div class="leagues_show">
-  <div><%= @league %></div>
-
   <% next_schedule = @league.next_schedule -%>
+
+  <div class="page_title">
+    <%= @league %>
+    <span class="next_game">
+      <%= "Next => #{schedule_with_team_result(next_schedule)}" %>
+    </span>
+  </div>
+
   <div class="team_schedules">
     <% @league.standings.map(&:team).each do |team| -%>
       <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
