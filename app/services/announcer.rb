@@ -78,6 +78,7 @@ module Announcer
         time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
+        time = [play.air_yardage / 10.0 * 800, 1000].max
         announcement.add("Throws", time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
