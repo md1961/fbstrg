@@ -23,6 +23,8 @@ class Play < ApplicationRecord
     instance = \
       if offensive_play.kneel_down?
         kneel_down
+      elsif offensive_play.spike_ball?
+        spike_ball
       elsif offensive_play.onside_kickoff?
         onside_kick
       elsif offensive_play.kickoff?
@@ -103,6 +105,12 @@ class Play < ApplicationRecord
     new.tap { |play|
       play.result = :kneel_down
       play.yardage = -2
+    }
+  end
+
+  def self.spike_ball
+    new.tap { |play|
+      play.result = :incomplete
     }
   end
 
