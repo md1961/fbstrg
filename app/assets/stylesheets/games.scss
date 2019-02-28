@@ -11,6 +11,10 @@ div.error {
   color: red;
 }
 
+tr.border_top td {
+  border-top: solid 1px black;
+}
+
 tr.border_bottom td {
   border-bottom: solid 1px black;
 }
@@ -55,6 +59,10 @@ table#play_by_play {
   }
 }
 
+#judgments_and_plays {
+  display: flex;
+}
+
 div.strategy_tool_judgments {
   font-size: x-small;
 
@@ -70,6 +78,15 @@ div.strategy_tool_judgments {
   td.value {
     text-align: right;
     padding-left: 10px;
+  }
+}
+
+table.plays_to_choose {
+  margin-top: 20px;
+  margin-left: 20px;
+
+  td {
+    padding: 0 2px;
   }
 }
 

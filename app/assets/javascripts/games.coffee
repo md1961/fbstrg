@@ -22,7 +22,7 @@ $ ->
           $('#score_board_prev').hide()
           $('#score_board').show()
           $('#form_command').show()
-          $('#strategy_tool_judgments').show()
+          $('#judgments_and_plays').show()
         else
           $('#announce_board').html(text)
         resolve()
@@ -35,7 +35,7 @@ $ ->
     if announcements.length == 0
       announcements = [['__END__', 0]]
     else
-      $('#strategy_tool_judgments').hide()
+      $('#judgments_and_plays').hide()
 
   arrayAnnounces = $.map(announcements, (elem, _) ->
     () ->
