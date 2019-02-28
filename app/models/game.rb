@@ -25,6 +25,14 @@ class Game < ApplicationRecord
     false#!offense_human?
   end
 
+  def offense_human_assisted?
+    offense.human_assisted?
+  end
+
+  def defense_human_assisted?
+    defense.human_assisted?
+  end
+
   def choose_offense?
     huddle? && offense_human?
   end
