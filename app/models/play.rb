@@ -256,6 +256,8 @@ class Play < ApplicationRecord
         self.result = :complete
         self.yardage = air_yardage
         self.yardage += rand(20) if rand(4).zero?
+      elsif rand * 100 < 75
+        self.result = :intercepted
       end
     elsif field_goal_try?
       self.yardage += @ttm.place_kicking_factor * rand(4) if yardage >= 20
