@@ -25,6 +25,8 @@ class Play < ApplicationRecord
         kneel_down
       elsif offensive_play.spike_ball?
         spike_ball
+      elsif offensive_play.hail_mary?
+        hail_mary
       elsif offensive_play.onside_kickoff?
         onside_kick
       elsif offensive_play.kickoff?
@@ -109,6 +111,12 @@ class Play < ApplicationRecord
   end
 
   def self.spike_ball
+    new.tap { |play|
+      play.result = :incomplete
+    }
+  end
+
+  def self.hail_mary
     new.tap { |play|
       play.result = :incomplete
     }
@@ -242,7 +250,14 @@ class Play < ApplicationRecord
     # TODO: Use Play#offensive_play for TeamTraitManager.new().
     @ttm = TeamTraitManager.new(game, game.offensive_play)
 
-    if field_goal_try?
+    if game.offensive_play.hail_mary?
+      pct_comp = 2.0 + @ttm.pass_complete_factor / 5.0
+      if rand * 100 < pct_comp
+        self.result = :complete
+        self.yardage = air_yardage
+        self.yardage += rand(20) if rand(4).zero?
+      end
+    elsif field_goal_try?
       self.yardage += @ttm.place_kicking_factor * rand(4) if yardage >= 20
       length = 100 - game.ball_on + 7 + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
@@ -345,7 +360,9 @@ class Play < ApplicationRecord
 
   def determine_air_yardage(offensive_play)
     self.air_yardage = \
-      if onside_kick?
+      if offensive_play.hail_mary?
+        rand(offensive_play.throw_yard_range)
+      elsif onside_kick?
         self.yardage = rand(8 .. 15)
         self.fumble = rand(100) < 15 ? :fumble_rec_by_own : :fumble_rec_by_opponent
         yardage
