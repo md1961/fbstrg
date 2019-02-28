@@ -50,6 +50,7 @@ OFFENSIVE_PLAYS = [
   [402, 'Two Point Conversion'],
   [501, 'Spike Ball'],
   [502, 'Kneel Down'],
+  [601, 'Hail Mary'      , 45, 55],
 ]
 STDOUT.puts "Creating OffensivePlay..."
 OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
