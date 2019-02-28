@@ -21,7 +21,7 @@ module Announcer
       announcement.add("Spike the ball", 2000)
       return announcement
     end
-    if offensive_play.normal? || (offensive_play.punt? && !play.punt_blocked?)
+    if offensive_play.normal? || offensive_play.hail_mary? || (offensive_play.punt? && !play.punt_blocked?)
       announcement.add("Snap", 1000)
       time = offensive_play.normal? ? 1000 : 2500
       announcement.add(*first_announce(offensive_play, play))
@@ -79,7 +79,7 @@ module Announcer
         end
       if play.pass?
         time = [play.air_yardage / 10.0 * 1200, 1000].max
-        announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero?
+        announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero? && !offensive_play.hail_mary?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
         announcement.add("Throws", time)
@@ -167,7 +167,7 @@ module Announcer
         when 5, 6
           time = 2000 if offensive_play.sweep?
           "Pitch"
-        when 7, 10 .. 20
+        when 7, 10 .. 20, 601
           time = 1500
           "Back to throw"
         when 9
