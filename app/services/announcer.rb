@@ -17,6 +17,9 @@ module Announcer
     if offensive_play.kneel_down?
       announcement.add("Kneel down", 2000)
       return announcement
+    elsif offensive_play.spike_ball?
+      announcement.add("Spike the ball", 2000)
+      return announcement
     end
     if offensive_play.normal? || (offensive_play.punt? && !play.punt_blocked?)
       announcement.add("Snap", 1000)
