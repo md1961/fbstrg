@@ -41,6 +41,14 @@ class Game < ApplicationRecord
     playing? && defense_human?
   end
 
+  def allows_offensive_play_choice?
+    huddle? && (offense_human? || offense_human_assisted?)
+  end
+
+  def allows_defensive_play_choice?
+    playing? && (defense_human? || defense_human_assisted?)
+  end
+
   def clock_runs_out?
     end_of_quarter? || end_of_half? || final?
   end
