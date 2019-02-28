@@ -59,6 +59,11 @@ class OffensivePlay < ApplicationRecord
     max_throw_yard && max_throw_yard > 20
   end
 
+  def throw_yard_range
+    return nil unless min_throw_yard && max_throw_yard
+    min_throw_yard .. max_throw_yard
+  end
+
   def kickoff?
     name.ends_with?('Kickoff')
   end
