@@ -34,7 +34,7 @@ module GamesHelper
   end
 
   def offensive_play_display(game)
-    return 'X' * 10 if game.defense_human? && game.playing?
+    return 'X' * 10 if game.allows_defensive_play_choice?
     play_set = game.offensive_play_set
     "#{game.offensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end
