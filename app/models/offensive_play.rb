@@ -20,8 +20,9 @@ class OffensivePlay < ApplicationRecord
     end
   end
 
-  scope :normal_plays, -> { where("number < 100") }
-  scope :pass_plays  , -> { where.not(max_throw_yard: nil) }
+  scope :normal_plays    , -> { where("number <  100") }
+  scope :non_normal_plays, -> { where("number >= 100") }
+  scope :pass_plays      , -> { where.not(max_throw_yard: nil) }
 
   def run?
     number <= 8
