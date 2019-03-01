@@ -62,9 +62,11 @@ class GamesController < ApplicationController
         @game.no_huddle = false
         session[:no_huddle] = false
       end
-      game_snapshot_prev = @game.game_snapshots.order(:play_id).last
-      @game_snapshot_prev = game_snapshot_prev&.dup
-      game_snapshot_prev.update_scores_by(@game)
+      if @game.result.is_a?(Play)
+        game_snapshot_prev = @game.game_snapshots.order(:play_id).last
+        @game_snapshot_prev = game_snapshot_prev&.dup
+      end
+      #game_snapshot_prev.update_scores_by(@game)
     end
     render :show
   end
