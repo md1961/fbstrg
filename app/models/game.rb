@@ -122,9 +122,9 @@ class Game < ApplicationRecord
   def determine_defensive_play
     return if defense_human?
     defensive_strategy = defense.defensive_strategy
-    @defensive_play_set = defensive_strategy.play_set
-    @defensive_play = defensive_strategy.choose_play(self)
-    # The above is a return value.
+    @defensive_play = defensive_strategy.choose_play(self).tap {
+      @defensive_play_set = defensive_strategy.play_set
+    }
   end
 
   private
