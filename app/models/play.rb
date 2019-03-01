@@ -545,11 +545,15 @@ class Play < ApplicationRecord
     end
 
     def change_pass_by_team_traits(game)
-      self.result = :complete if incomplete? && rand * 100 < @ttm.pass_complete_factor
+      if incomplete? && rand * 100 < @ttm.pass_complete_factor
+        self.result = :complete
+        self.yardage = air_yardage
+      end
       if complete?
         fluctuation_factor = rand(-2 .. 2)
         gain_factor = @ttm.pass_yardage_factor + fluctuation_factor
         self.yardage += (yardage * (gain_factor / 10.0) * rand).round
+        self.air_yardage = yardage if yardage < air_yardage
       end
     end
 
