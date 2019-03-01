@@ -34,12 +34,14 @@ module GamesHelper
   end
 
   def offensive_play_display(game)
-    return 'X' * 10 if game.allows_defensive_play_choice?
+    return 'X' * 10 if game.hides_offensive_play?
     play_set = game.offensive_play_set
     "#{game.offensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end
 
   def defensive_play_display(game)
+    return nil if game.huddle? || !game.offensive_play&.normal?
+    return 'X' * 10 if game.hides_defensive_play?
     play_set = game.defensive_play_set
     "#{game.defensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end

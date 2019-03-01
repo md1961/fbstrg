@@ -53,7 +53,7 @@
       </div>
 
       <br>
-      <% if @game.allows_offensive_play_choice? -%>
+      <% if @game.huddle? && @game.allows_offensive_play_choice? -%>
         <% [OffensivePlay.normal_plays, OffensivePlay.non_normal_plays].each do |plays| -%>
           <table class="plays_to_choose">
             <% plays.each do |offensive_play| -%>
@@ -67,7 +67,7 @@
             <% end -%>
           </table>
         <% end -%>
-      <% elsif @game.allows_defensive_play_choice? -%>
+      <% elsif @game.playing? && @game.allows_defensive_play_choice? -%>
         <table class="plays_to_choose">
           <tr class="border_bottom">
             <td>

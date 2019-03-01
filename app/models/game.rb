@@ -42,11 +42,19 @@ class Game < ApplicationRecord
   end
 
   def allows_offensive_play_choice?
-    huddle? && (offense_human? || offense_human_assisted?)
+    offense_human? || offense_human_assisted?
   end
 
   def allows_defensive_play_choice?
-    playing? && (defense_human? || defense_human_assisted?)
+    defense_human? || defense_human_assisted?
+  end
+
+  def hides_offensive_play?
+    allows_defensive_play_choice? && offensive_play&.normal? && !result
+  end
+
+  def hides_defensive_play?
+    allows_offensive_play_choice? && !result
   end
 
   def clock_runs_out?
