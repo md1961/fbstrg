@@ -46,7 +46,8 @@ module Announcer
         team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
         announcement.add("Recovered by #{team} #{at_yard_line(game.ball_on)}", 2000)
       else
-        time = (100 - run_from + 7 + 10) * 50 - 500
+        announcement.add("Kick is up", 1000)
+        time = (100 - run_from + 7 + 10) * 50 - 200
         announcement.add("Kick is up, and it's", time)
         result = play.no_scoring? ? 'NO GOOD' : 'GOOD'
         announcement.add("Kick is up, and it's #{result}", 2000)
