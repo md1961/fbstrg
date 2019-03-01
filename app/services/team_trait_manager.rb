@@ -24,7 +24,7 @@ class TeamTraitManager
   end
 
   def return_breakaway_factor
-    @offense_trait.return_breakaway - @defense_trait.return_coverage + home_factor
+    @defense_trait.return_breakaway - @offense_trait.return_coverage + home_factor(false)
   end
 
   def run_yardage_factor
