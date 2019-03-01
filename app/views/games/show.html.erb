@@ -56,7 +56,7 @@
       <% if @game.huddle? && @game.allows_offensive_play_choice? -%>
         <% [OffensivePlay.normal_plays, OffensivePlay.non_normal_plays].each do |plays| -%>
           <table class="plays_to_choose">
-            <% plays.each do |offensive_play| -%>
+            <% plays.order(:number).each do |offensive_play| -%>
               <% clazz = ''
                  clazz = 'border_bottom' if offensive_play.number % 4 == 0
                  clazz = 'border_top'    if offensive_play.number % 100 == 1 -%>
