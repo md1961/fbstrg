@@ -51,7 +51,7 @@ class GamesController < ApplicationController
       @game.offensive_play_set = OffensivePlaySet.find_by(id: session[:offensive_play_set_id])
       @game.defensive_play     = DefensivePlay   .find_by(id: session[:defensive_play_id])
       @game.defensive_play_set = DefensivePlaySet.find_by(id: session[:defensive_play_set_id])
-      if params[:play] == 'cancel' || !@game.offensive_play
+      if %w[cancel <].include?(params[:play]) || !@game.offensive_play
         @game.cancel_offensive_play
         render :show and return
       end
