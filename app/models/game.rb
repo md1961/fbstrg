@@ -8,9 +8,9 @@ class Game < ApplicationRecord
   has_many :game_snapshots, through: :plays
   has_one :schedule
 
-  attr_reader   :defensive_play, :result, :defensive_play_set,
-                :previous_spot, :announcement
+  attr_reader   :result, :previous_spot, :announcement
   attr_accessor :offensive_play, :offensive_play_set,
+                :defensive_play, :defensive_play_set,
                 :no_huddle, :error_message
 
   KICKOFF_YARDLINE = 35
@@ -19,10 +19,10 @@ class Game < ApplicationRecord
 
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
-    false#!home_has_ball
+    false
   end
   def defense_human?
-    false#!offense_human?
+    false
   end
 
   def offense_human_assisted?
@@ -110,6 +110,14 @@ class Game < ApplicationRecord
     @offensive_play
   end
 
+  def determine_defensive_play
+    return if defense_human?
+    defensive_strategy = defense.defensive_strategy
+    @defensive_play_set = defensive_strategy.play_set
+    @defensive_play = defensive_strategy.choose_play(self)
+    # The above is a return value.
+  end
+
   private
 
     def timeout_taken?(play_input)
@@ -144,27 +152,22 @@ class Game < ApplicationRecord
       save!
     end
 
-    def play_result_from_chart(defensive_play = nil)
-      if defensive_play
-        @defensive_play = defensive_play
-        @defensive_play_set = nil
-      else
-        defensive_strategy = defense.defensive_strategy
-        @defensive_play = defensive_strategy.choose_play(self)
-        @defensive_play_set = defensive_strategy.play_set
-      end
+    def play_result_from_chart
       result_chart = offense.play_result_chart
       result_chart.result(@offensive_play, @defensive_play)
     end
 
     def get_play(value)
-      if defense_human?
-        defensive_play = DefensivePlay.find_by(name: value.upcase)
-        raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'" unless defensive_play
+      defensive_play = DefensivePlay.find_by(name: value&.upcase)
+      if defense_human? && !defensive_play
+        raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
+      elsif defensive_play
+        @defensive_play = defensive_play
+        @defensive_play_set = nil
       end
       result = \
-        if offensive_play&.normal? && (defense_human? || value.blank?)
-          play_result_from_chart(defensive_play)
+        if offensive_play&.normal? && (defense_human? || defense_human_assisted? || value.blank?)
+          play_result_from_chart
         else
           value
         end
