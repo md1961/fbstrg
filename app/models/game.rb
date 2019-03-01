@@ -57,6 +57,14 @@ class Game < ApplicationRecord
     allows_offensive_play_choice? && !result
   end
 
+  def shows_offensive_plays_to_choose?
+    huddle? && allows_offensive_play_choice?
+  end
+
+  def shows_defensive_plays_to_choose?
+    playing? && allows_defensive_play_choice?
+  end
+
   def clock_runs_out?
     end_of_quarter? || end_of_half? || final?
   end
