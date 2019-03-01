@@ -40,7 +40,7 @@ module GamesHelper
   end
 
   def defensive_play_display(game)
-    return nil if game.huddle? || !game.offensive_play&.normal?
+    return nil if (game.huddle? || !game.offensive_play&.normal?) && !game.result
     return 'X' * 10 if game.hides_defensive_play?
     play_set = game.defensive_play_set
     "#{game.defensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
