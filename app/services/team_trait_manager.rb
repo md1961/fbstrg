@@ -4,6 +4,7 @@ class TeamTraitManager
     @offense_trait = game.offense.team_trait
     @defense_trait = game.defense.team_trait
     @offensive_play = offensive_play
+    @home_has_ball = game.home_has_ball
   end
 
   def place_kicking_factor
@@ -53,7 +54,9 @@ class TeamTraitManager
 
   private
 
-    def home_factor
+    def home_factor(for_offense = true)
+      return 0 if  @home_has_ball && !for_offense
+      return 0 if !@home_has_ball &&  for_offense
       rand(10).zero? ? 1 : 0
     end
 
