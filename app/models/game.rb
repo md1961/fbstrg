@@ -185,10 +185,11 @@ class Game < ApplicationRecord
       result = \
         if offensive_play&.normal? && (defense_human? || defense_human_assisted? || value.blank?)
           play_result_from_chart
-        elsif !value.start_with?('=')
-          raise Exceptions::IllegalResultStringError, "Specify result string with '=' at head"
-        else
-          value[1..-1]
+        elsif value
+          if value.start_with?('=')
+            raise Exceptions::IllegalResultStringError, "Specify result string with '=' at head"
+          end
+          value[1 .. -1]
         end
       Play.parse(result, offensive_play)
     end
