@@ -423,7 +423,7 @@ class Play < ApplicationRecord
     a << "#{penalty}#{penalty_yardage} #{auto_firstdown? ? 'AF' : ''}" unless no_penalty?
     a << "(#{time_to_take}sec)" if time_to_take
     a << "(GAMBLE)" if fourth_down_gambled?
-    unless no_scoring?
+    if !no_scoring? && !extra_point?
       a << scoring.upcase.gsub('_', ' ')
       a << "(XP #{next_play.no_scoring? ? 'NO ': ''}GOOD)" if touchdown? && next_play
     end
@@ -608,6 +608,8 @@ class Play < ApplicationRecord
         "QB sacked #{-yardage} yard loss"
       elsif field_goal_try?
         "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (no_scoring? ? " field goal NO GOOD" : "")
+      elsif extra_point_try?
+        "Extra point is #{extra_point? ? '' : 'no '}good"
       elsif kneel_down?
         "QB kneel down"
       else
