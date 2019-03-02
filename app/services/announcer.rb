@@ -83,11 +83,12 @@ module Announcer
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero? && !offensive_play.hail_mary?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
-        announcement.add("Throws", time)
+        text = offensive_play.screen_pass? ? "Screen pass" : "Throws"
+        announcement.add(text, time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
         is_in_zone = true if run_from >= 100
-      elsif play.no_return_on_kick?
+      elsif play.no_return?
         announcement.add("Into zone", 1000) if run_from <= 0
       else # kick_and_return?
         announcement.add("From #{at_yard_line(run_from, true)}", 1000)
@@ -104,9 +105,9 @@ module Announcer
       is_long_gain = false
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
-        if (play.on_ground? && play.yardage >= 10) ||
-           (play.pass? && run_yardage_after > 5) ||
-           (play.kick_and_return? && !play.no_return_on_kick?)
+        if    (play.on_ground? && play.yardage >= 10) \
+           || (play.pass? && !play.intercepted? && run_yardage_after > 5) \
+           || ((play.kick_and_return? || play.intercepted?) && !play.no_return?)
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
           end_on = play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
           long_gain_statements(start_on, end_on).each do |text, time|
@@ -120,12 +121,12 @@ module Announcer
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
-          verb = play.no_return_on_kick? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
+          verb = play.no_return? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
-            if play.no_return_on_kick? && run_from <= 0
+            if play.no_return? && run_from <= 0
               "Touchback"
             else
-              verb = "Ball dead" if play.no_return_on_kick? && run_from < 10
+              verb = "Ball dead" if play.no_return? && run_from < 10
               "#{verb} #{at_yard_line(game.ball_on)}"
             end
           elsif play.yardage < 0

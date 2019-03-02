@@ -195,8 +195,8 @@ class Play < ApplicationRecord
       || (kick_blocked? && game_snapshot&.down == 4 && yardage < game_snapshot&.yard_to_go) \
   end
 
-  def no_return_on_kick?
-    kick_and_return? && yardage == air_yardage
+  def no_return?
+    (kick_and_return? || intercepted?) && yardage == air_yardage
   end
 
   def fourth_down_gambled?
@@ -314,18 +314,27 @@ class Play < ApplicationRecord
         op = game.offensive_play
         # TODO: Adjust interception return yardage determination.
         self.yardage = air_yardage
-        self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero?
         self.out_of_bounds = false
+        self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero?
       elsif game.no_huddle && complete?
         self.result = :incomplete if rand * 100 < 5.0 - @ttm.qb_read_factor * 0.5
         self.out_of_bounds = false
       end
     end
 
-    if intercepted? && game.ball_on + yardage >= 110
-      self.result = :incomplete
-      self.yardage = 0
-      return
+    if intercepted?
+      return_from = game.ball_on + air_yardage
+      if return_from >= 110
+        self.result = :incomplete
+        self.yardage = 0
+        return
+      elsif return_from >= 100
+        depth = return_from - 100
+        if game.score_diff <= 0 || return_from >= 105 || rand(depth + 1) > 0
+          self.yardage = air_yardage
+          return
+        end
+      end
     end
 
     change_run_yardage_by_team_traits(game) if on_ground?
