@@ -54,8 +54,8 @@ class GamesController < ApplicationController
       if %w[cancel <].include?(params[:play]) || !@game.offensive_play
         @game.cancel_offensive_play
         render :show and return
-      elsif params[:play] =~ /\A< ([^ ]+)\z/ && @game.offense_human_assisted?
-        session[:offensive_play_id] = @game.determine_offensive_play($1)&.id
+      elsif params[:play] =~ /\A\d{1,3}\z/ && @game.offense_human_assisted?
+        session[:offensive_play_id] = @game.determine_offensive_play(params[:play])&.id
         render :show and return
       end
       @game.play(params[:play])
