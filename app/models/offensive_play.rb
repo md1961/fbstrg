@@ -33,7 +33,7 @@ class OffensivePlay < ApplicationRecord
   end
 
   def inside_10?
-    number <= 12
+    number <= 15
   end
 
   def inside_20?
