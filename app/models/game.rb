@@ -58,7 +58,7 @@ class Game < ApplicationRecord
   end
 
   def shows_offensive_plays_to_choose?
-    huddle? && allows_offensive_play_choice?
+    (huddle? || playing?) && allows_offensive_play_choice?
   end
 
   def shows_defensive_plays_to_choose?
