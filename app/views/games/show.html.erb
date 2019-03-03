@@ -42,7 +42,7 @@
     <% end -%>
   </div>
 
-  <% unless @game.final? -%>
+  <% unless @game.played_over? -%>
     <div id="judgments_and_plays">
       <div id="strategy_tool_judgments">
         <br>
@@ -92,12 +92,12 @@
   <span id="toggle_plays_display" class="button">[+]</span>
   <span id="toggle_scorings" class="button">[Scorings]</span>
 
-  <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.final? %>>
+  <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.played_over? %>>
     <% plays = @game.plays.includes(:game_snapshot).order(number: :desc) -%>
     <%= render plays %>
   </table>
 
-  <div class="stats" <%= 'hidden' unless @game.final? %>>
+  <div class="stats" <%= 'hidden' unless @game.played_over? %>>
     <% stats = Stats::Game.new(@game) -%>
     <%= render partial: 'stats/team', locals: {team_stats: stats.stats_visitors} %>
     <%= render partial: 'stats/team', locals: {team_stats: stats.stats_home    } %>
