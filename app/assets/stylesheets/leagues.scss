@@ -61,12 +61,14 @@
 
   div.stats_tables {
     display: flex;
+    flex-wrap: wrap;
   }
 
   table.stats {
     margin-right: 20px;
 
     td {
+      white-space: nowrap;
       padding: 0 5px;
     }
   }
