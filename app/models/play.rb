@@ -270,6 +270,7 @@ class Play < ApplicationRecord
       end
       return
     elsif punt_and_return?
+      # TODO: Increase punt block percentage from end zone.
       if rand * 100 < 1.0 && !after_safety
         self.result = :punt_blocked
         self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
@@ -382,6 +383,7 @@ class Play < ApplicationRecord
           self.yardage = air_y - (10 + rand(11) + rand(11))
         }
       elsif offensive_play.punt? || offensive_play.kickoff_after_safety?
+        # TODO: Decrease punt air_yardage from end zone.
         3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
           pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 60.0], air_y)
           is_returnable = rand * 100 < pct_returnable
