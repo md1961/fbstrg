@@ -8,7 +8,7 @@
    classes = []
    classes << 'no_scoring' if play.no_scoring?
    classes << 'border_bottom_thick' if gss.quarter == 3 && gss.time_left >= 15 * 60
-   classes << 'border_top' if play.possession_changed?
+   classes << 'border_top' if !play.no_scoring? || play.possession_changed?
 -%>
 
 <tr class="<%= classes.join(' ') %>">

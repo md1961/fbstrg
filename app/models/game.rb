@@ -99,6 +99,7 @@ class Game < ApplicationRecord
     next_play
   end
 
+  # FIXME: Func to cancel timeout and no huddle when human_assisted?.
   def determine_offensive_play(play_input)
     return if timeout_taken?(play_input) || with_no_huddle?(play_input)
     @offensive_play_set = nil
