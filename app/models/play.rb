@@ -312,11 +312,11 @@ class Play < ApplicationRecord
         self.out_of_bounds = false
       elsif rand * 100 < pct_intercept(game)
         self.result = :intercepted
-        op = game.offensive_play
-        # TODO: Adjust interception return yardage determination.
+        # TODO: Adjust interception return yardage determination according to offensive_play.
         self.yardage = air_yardage
         self.out_of_bounds = false
-        self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero?
+        no_need_to_return = game.quarter == 4 && game.score_diff < 0 && game.timeout_left <= 20
+        self.yardage -= (rand(31) - rand(31)).abs if rand(1).zero? && !no_need_to_return
       elsif game.no_huddle && complete?
         self.result = :incomplete if rand * 100 < 5.0 - @ttm.qb_read_factor * 0.5
         self.out_of_bounds = false
