@@ -8,7 +8,7 @@ class Game < ApplicationRecord
   has_many :game_snapshots, through: :plays
   has_one :schedule
 
-  attr_reader   :result, :previous_spot, :announcement
+  attr_reader   :result, :previous_spot, :announcement, :goes_into_huddle
   attr_accessor :offensive_play, :offensive_play_set,
                 :defensive_play, :defensive_play_set,
                 :no_huddle, :error_message
@@ -99,9 +99,12 @@ class Game < ApplicationRecord
     next_play
   end
 
-  # FIXME: Func to cancel timeout and no huddle when human_assisted?.
   def determine_offensive_play(play_input)
     return if timeout_taken?(play_input) || with_no_huddle?(play_input)
+    if play_input == '>' && offense_human_assisted?
+      @goes_into_huddle = true
+      play_input = 'scrimmage'
+    end
     @offensive_play_set = nil
     play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
     if offense_human? || OffensivePlay.find_by(number: play_input.to_i)
