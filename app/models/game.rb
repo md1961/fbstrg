@@ -104,12 +104,13 @@ class Game < ApplicationRecord
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       self.error_message = "Illegal offensive play '#{play_input}'" unless play
       if play&.let_clock_run?
-        if clock_stopped || time_left > 40
+        if !clock_stopped && (time_left <= 40 || ([2, 4].include?(quarter) && time_left > 120 && time_left <= 160))
+          advance_clock(40, in_play: false)
+          save!
+          return
+        else
           play = nil
           self.error_message = "Cannot let clock run out"
-        else
-          finish_quarter
-          return
         end
       end
       @offensive_play = play
