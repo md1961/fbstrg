@@ -31,7 +31,7 @@ module Announcer
       announcement.add("Recovered by #{rec_by} team", 2000)
       return announcement
     elsif offensive_play.kickoff?
-      announcement.add("Kickoff", 1500)
+      announcement.add("Kickoff", 2500)
     elsif offensive_play.kickoff_after_safety?
       announcement.add(*first_announce(offensive_play, play))
     end
