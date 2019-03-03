@@ -120,7 +120,10 @@ module StrategyTool
       || (game.time_left <= 10 * game.timeout_left))
   end
 
-  # TODO: Add tries_hail_mary?().
+  def tries_hail_mary?(game)
+    game.quarter == 4 && game.ball_on.between?(40, 60) && game.score_diff < -3 && game.timeout_left < 10 \
+      || game.quarter == 2 && game.ball_on.between?(50, 60) && game.score_diff <= 14 && game.timeout_left < 10
+  end
 
   def needs_offense_timeout?(game)
     return false if game.clock_stopped || game.timeout_left <= 0
