@@ -56,9 +56,15 @@ while !game.final?
       session[:offensive_play_set_id] = game.offensive_play_set&.id
       session[:no_huddle] = game.no_huddle
     end
+    game.determine_defensive_play.tap do |play|
+      session[:defensive_play_id]     = play&.id
+      session[:defensive_play_set_id] = game.defensive_play_set&.id
+    end
   else
     game.offensive_play     = OffensivePlay   .find_by(id: session[:offensive_play_id])
     game.offensive_play_set = OffensivePlaySet.find_by(id: session[:offensive_play_set_id])
+    game.defensive_play     = DefensivePlay   .find_by(id: session[:defensive_play_id])
+    game.defensive_play_set = DefensivePlaySet.find_by(id: session[:defensive_play_set_id])
     game.play(game.next_play)
     if game.error_message.present?
       puts game.error_message
