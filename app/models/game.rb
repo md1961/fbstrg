@@ -17,6 +17,10 @@ class Game < ApplicationRecord
   TOUCHBACK_YARDLINE = 20
   KICKOFF_YARDLINE_AFTER_SAFETY = 20
 
+  def played_over?
+    final? && result.blank?
+  end
+
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
     false
