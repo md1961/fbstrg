@@ -43,6 +43,8 @@ class OffensiveStrategy < ApplicationRecord
       [nil, 'NH']
     elsif kick_FG_now?(game)
       OffensivePlay.field_goal
+    elsif tries_hail_mary?(game)
+      OffensivePlay.hail_mary
     elsif game.down == 4 && !tries_fourth_down_gamble?(game)
       choose_on_4th_down(game)
     else
