@@ -47,7 +47,6 @@ class Play < ApplicationRecord
     }
   end
 
-  # TODO: Split into methods.
   def self.parse_result(str, offensive_play)
     m = str.match(RE_STR_RESULT)
     raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
@@ -199,6 +198,10 @@ class Play < ApplicationRecord
     (kick_and_return? || intercepted?) && yardage == air_yardage
   end
 
+  def blocked_kick_return?
+    kick_blocked? && yardage < air_yardage
+  end
+
   def fourth_down_gambled?
     game_snapshot&.down == 4 && (on_ground? || pass? || sacked?)
   end
@@ -266,7 +269,8 @@ class Play < ApplicationRecord
       if rand * 100 < pct_blocked
         self.result = :field_goal_blocked
         self.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
-        self.yardage = -7 - rand(10)
+        self.air_yardage = -7 - rand(10)
+        self.yardage = air_yardage
       end
       return
     elsif punt_and_return?
@@ -278,11 +282,15 @@ class Play < ApplicationRecord
         self.yardage -= yards_reduced
       end
       pct_blocked = 1.0 + yards_back_reduced * 0.2
-      if rand * 100 < pct_blocked  && !after_safety
+      if rand * 100 < pct_blocked && !after_safety
         self.result = :punt_blocked
-        self.yardage = -yards_back - rand(-2 .. 5)
-        dead_on = game.ball_on + yardage
-        self.fumble = dead_on <= -10 || rand(3).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        self.air_yardage = -yards_back - rand(-2 .. 5)
+        self.yardage = air_yardage
+        lands_on = game.ball_on + air_yardage
+        self.fumble = lands_on <= -10 || rand(3).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        if fumble_rec_by_opponent? && lands_on > 0 && rand(5).zero?
+          self.yardage -= rand(10 .. 100)
+        end
       else
         land_on = game.ball_on + air_yardage
         if land_on >= 100

@@ -42,16 +42,23 @@ module Announcer
     if play.field_goal_try? || play.extra_point_try? || play.field_goal_blocked? || play.punt_blocked?
       announcement.add("Snap", 1000)
       if play.field_goal_blocked? || play.punt_blocked?
-        announcement.add("BLOCKED", 1500)
-        dead_on = run_from + play.yardage
-        if dead_on <= -10
+        announcement.add("BLOCKED!", 1500)
+        lands_on = run_from + play.air_yardage
+        if lands_on <= -10
           announcement.add("Ball gets out of end zone", 1000)
           announcement.add("SAFETY", 1000)
         else
           team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
-          where, time = dead_on <= 0 ? ["in zone", 1000] : [at_yard_line(game.ball_on), 2000]
-          announcement.add("Recovered by #{team} #{where}", time)
-          announcement.add(play.fumble_rec_by_opponent? ? "TOUCHDOWN" : "SAFETY", 1000) if dead_on <= 0
+          if play.blocked_kick_return?
+            run_from += play.air_yardage
+            run_from = 100 - run_from
+            run_yardage_after = play.air_yardage - play.yardage
+            announcement.add("Picked up by #{team} #{at_yard_line(run_from)}", 1000)
+          else
+            where, time = lands_on <= 0 ? ["in zone", 1000] : [at_yard_line(game.ball_on), 2000]
+            announcement.add("Recovered by #{team} #{where}", time)
+            announcement.add(play.fumble_rec_by_opponent? ? "TOUCHDOWN" : "SAFETY", 1000) if lands_on <= 0
+          end
         end
       else
         announcement.add("Kick is up", 1000)
@@ -103,7 +110,7 @@ module Announcer
       end
     end
 
-    if play.on_ground? || play.complete? || play.intercepted? || play.kick_and_return?
+    if play.on_ground? || play.complete? || play.intercepted? || play.kick_and_return? || play.blocked_kick_return?
       if offensive_play.draw?
         time = play.yardage < 0 ? 500 : 1000
         announcement.add("Hand off", time)
@@ -111,13 +118,15 @@ module Announcer
         announcement.add("Reverse", 2000)
       end
       is_long_gain = false
-      if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?)
+      if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?) || play.blocked_kick_return?
         announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
         if    (play.on_ground? && play.yardage >= 10) \
            || (play.pass? && !play.intercepted? && run_yardage_after > 5) \
-           || ((play.kick_and_return? || play.intercepted?) && !play.no_return?)
+           || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \
+           || play.blocked_kick_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
-          end_on = play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
+          end_on = play.blocked_kick_return? ? run_from + run_yardage_after \
+                 : play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
           long_gain_statements(start_on, end_on).each do |text, time|
             announcement.add(text, time)
           end
@@ -125,13 +134,13 @@ module Announcer
         end
       end
       text = \
-        if play.fumble?
+        if play.fumble? && !play.blocked_kick_return?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
           verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
                                       : play.out_of_bounds? ? "Out of bounds" : "Stopped"
-          if play.possession_changing?
+          if play.possession_changing? || play.blocked_kick_return?
             if play.no_return? && run_from <= 0
               "Touchback"
             else
