@@ -238,10 +238,11 @@ class Game < ApplicationRecord
       yardage_play(@result)
     end
     @announcement = Announcer.announce(@result, self)
-    @result.time_to_take = @announcement.total_time_in_sec
-    advance_clock(Clocker.time_to_take(@result, self))
 
+    @result.time_to_take = @announcement.total_time_in_sec
     @result.record(self, game_snapshot)
+
+    advance_clock(Clocker.time_to_take(@result, self))
   end
 
   def advance_to_next_quarter
