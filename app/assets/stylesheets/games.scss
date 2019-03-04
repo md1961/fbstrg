@@ -31,8 +31,17 @@ tr.border_bottom td {
 }
 
 table.score_board {
+
   td.elapsing {
     color: red;
+  }
+
+  td.score_by_quarter {
+    width: 15px;
+  }
+
+  td.score_final {
+    width: 25px;
   }
 }
 
