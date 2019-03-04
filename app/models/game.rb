@@ -89,6 +89,14 @@ class Game < ApplicationRecord
     [r, score_own, score_opp]
   end
 
+  def score_visitors_by_quarter
+    scores_by_quarter_for(home_team: false)
+  end
+
+  def score_home_by_quarter
+    scores_by_quarter_for(home_team: true)
+  end
+
   def prompt
     "#{status}#{no_huddle ? '(no huddle)' : ''}"
   end
@@ -468,5 +476,24 @@ class Game < ApplicationRecord
       else
         end_of_quarter!
       end
+    end
+
+    def scores_by_quarter_for(home_team: true)
+      h_scores = h_scores_by_quarter[home_team ? 1 : 0]
+      (1 .. quarter).map { |q| h_scores[q] }
+    end
+
+    def h_scores_by_quarter
+      @scores_by_quarter ||= plays.where("scoring > 0").includes(:game_snapshot).each_with_object(
+        [
+          Hash.new { |h, k| h[k] = 0 },
+          Hash.new { |h, k| h[k] = 0 }
+        ]
+      ) { |play, hs|
+        gss = play.game_snapshot
+        team_index = gss.offense == gss.visitors ? 0 : 1
+        team_index = 1 - team_index if play.safety? || play.possession_changed?
+        hs[team_index][gss.quarter] += play.point_scored
+      }
     end
 end
