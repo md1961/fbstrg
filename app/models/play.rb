@@ -270,10 +270,17 @@ class Play < ApplicationRecord
       end
       return
     elsif punt_and_return?
-      # TODO: Increase punt block percentage from end zone.
-      if rand * 100 < 1.0 && !after_safety
+      yards_back = yards_back_for_punt(game)
+      yards_back_reduced = NORMAL_YARDS_BACK_FOR_PUNT - yards_back
+      if yards_back_reduced > 0
+        yards_reduced = yards_back_reduced * rand(1 .. 3)
+        self.air_yardage -= yards_reduced
+        self.yardage -= yards_reduced
+      end
+      pct_blocked = 1.0 + yards_back_reduced * 0.2
+      if rand * 100 < pct_blocked  && !after_safety
         self.result = :punt_blocked
-        self.yardage = -[13, game.ball_on + 8].min - rand(-2 .. 5)
+        self.yardage = -yards_back - rand(-2 .. 5)
         dead_on = game.ball_on + yardage
         self.fumble = dead_on <= -10 || rand(3).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
       else
@@ -384,7 +391,6 @@ class Play < ApplicationRecord
           self.yardage = air_y - (10 + rand(11) + rand(11))
         }
       elsif offensive_play.punt? || offensive_play.kickoff_after_safety?
-        # TODO: Decrease punt air_yardage from end zone.
         3.times.map { rand(10 .. 20) }.sum.tap { |air_y|
           pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 60.0], air_y)
           is_returnable = rand * 100 < pct_returnable
@@ -437,6 +443,12 @@ class Play < ApplicationRecord
 
     def self.long_yardage
       30 + rand(21)
+    end
+
+    NORMAL_YARDS_BACK_FOR_PUNT = 13
+
+    def yards_back_for_punt(game)
+      [NORMAL_YARDS_BACK_FOR_PUNT, game.ball_on + 8].min
     end
 
     def pct_intercept(game)
