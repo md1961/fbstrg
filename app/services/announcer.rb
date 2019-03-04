@@ -45,11 +45,13 @@ module Announcer
         announcement.add("BLOCKED", 1500)
         dead_on = run_from + play.yardage
         if dead_on <= -10
-          announcement.add("Ball gets out of end zone", 2000)
+          announcement.add("Ball gets out of end zone", 1000)
+          announcement.add("SAFETY", 1000)
         else
           team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
-          where = dead_on <= 0 ? "in zone" : at_yard_line(game.ball_on)
-          announcement.add("Recovered by #{team} #{where}", 2000)
+          where, time = dead_on <= 0 ? ["in zone", 1000] : [at_yard_line(game.ball_on), 2000]
+          announcement.add("Recovered by #{team} #{where}", time)
+          announcement.add(play.fumble_rec_by_opponent? ? "TOUCHDOWN" : "SAFETY", 1000) if dead_on <= 0
         end
       else
         announcement.add("Kick is up", 1000)
