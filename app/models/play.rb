@@ -268,9 +268,12 @@ class Play < ApplicationRecord
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
         self.result = :field_goal_blocked
-        self.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         self.air_yardage = -7 - rand(10)
         self.yardage = air_yardage
+        self.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
+        if fumble_rec_by_opponent? && rand(5).zero?
+          self.yardage -= rand(10 .. 100)
+        end
       end
       return
     elsif punt_and_return?
