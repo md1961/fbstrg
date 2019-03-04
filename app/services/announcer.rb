@@ -22,7 +22,8 @@ module Announcer
       return announcement
     end
     if offensive_play.normal? || offensive_play.hail_mary? || (offensive_play.punt? && !play.punt_blocked?)
-      announcement.add("Snap", 1000)
+      time = offensive_play.punt? ? 2000 : 1000
+      announcement.add("Snap", time)
       time = offensive_play.normal? ? 1000 : 2500
       announcement.add(*first_announce(offensive_play, play))
     elsif offensive_play.onside_kickoff?
@@ -39,9 +40,12 @@ module Announcer
     run_from = game.previous_spot || game.game_snapshots.order(:play_id).last&.ball_on
     run_yardage_after = 0
     is_in_zone = false
-    if play.field_goal_try? || play.extra_point_try? || play.field_goal_blocked? || play.punt_blocked?
-      announcement.add("Snap", 1000)
-      if play.field_goal_blocked? || play.punt_blocked?
+    if play.field_goal_try? || play.extra_point_try? || play.kick_blocked?
+      time = play.punt_blocked? ? 2000 : 1500
+      announcement.add("Snap", time)
+      if play.kick_blocked?
+        text = play.field_goal_blocked? ? "Kick is" : "Punt"
+        announcement.add(text, 500)
         announcement.add("BLOCKED!", 1500)
         lands_on = run_from + play.air_yardage
         if lands_on <= -10
@@ -53,7 +57,7 @@ module Announcer
             run_from += play.air_yardage
             run_from = 100 - run_from
             run_yardage_after = play.air_yardage - play.yardage
-            announcement.add("Picked up by #{team} #{at_yard_line(run_from)}", 1000)
+            announcement.add("Picked up by #{team} #{at_yard_line(run_from)}", 1500)
           else
             where, time = lands_on <= 0 ? ["in zone", 1000] : [at_yard_line(game.ball_on), 2000]
             announcement.add("Recovered by #{team} #{where}", time)
