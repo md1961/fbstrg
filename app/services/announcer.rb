@@ -43,8 +43,14 @@ module Announcer
       announcement.add("Snap", 1000)
       if play.field_goal_blocked? || play.punt_blocked?
         announcement.add("BLOCKED", 1500)
-        team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
-        announcement.add("Recovered by #{team} #{at_yard_line(game.ball_on)}", 2000)
+        dead_on = run_from + play.yardage
+        if dead_on <= -10
+          announcement.add("Ball gets out of end zone", 2000)
+        else
+          team = play.fumble_rec_by_own? ? "own" : "OPPONENT"
+          where = dead_on <= 0 ? "in zone" : at_yard_line(game.ball_on)
+          announcement.add("Recovered by #{team} #{where}", 2000)
+        end
       else
         announcement.add("Kick is up", 1000)
         time = (100 - run_from + 7 + 10) * 50 - 200

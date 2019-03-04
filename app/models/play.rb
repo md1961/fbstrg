@@ -273,8 +273,9 @@ class Play < ApplicationRecord
       # TODO: Increase punt block percentage from end zone.
       if rand * 100 < 1.0 && !after_safety
         self.result = :punt_blocked
-        self.fumble = rand(6).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
-        self.yardage = -13 - rand(5)
+        self.yardage = -[13, game.ball_on + 8].min - rand(-2 .. 5)
+        dead_on = game.ball_on + yardage
+        self.fumble = dead_on <= -10 || rand(4).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
       else
         land_on = game.ball_on + air_yardage
         if land_on >= 100

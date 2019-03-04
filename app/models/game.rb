@@ -400,14 +400,14 @@ class Game < ApplicationRecord
       self.ball_on += play.yardage
       toggle_possesion if play.possession_changing?
       if ball_on >= 100
-        play.yardage -= ball_on - 100
+        play.yardage -= ball_on - 100 unless play.punt_blocked?
         play.save!
         touchdown
       elsif ball_on <= 0
         if play.kick_and_return? || play.intercepted? || play.fumble_rec_by_opponent?
           touchback
         else
-          play.yardage += -ball_on
+          play.yardage += -ball_on unless play.punt_blocked?
           play.save!
           safety
         end
