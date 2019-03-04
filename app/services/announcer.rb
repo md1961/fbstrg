@@ -127,7 +127,8 @@ module Announcer
           announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
-          verb = play.no_return? ? "Fair catch" : play.out_of_bounds? ? "Out of bounds" : "Stopped"
+          verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
+                                      : play.out_of_bounds? ? "Out of bounds" : "Stopped"
           if play.possession_changing?
             if play.no_return? && run_from <= 0
               "Touchback"
@@ -189,7 +190,7 @@ module Announcer
 
     def at_yard_line(ball_on, only_yardage = false)
       side = ''
-      side = ball_on < 50 ? 'own ' : 'opponent ' if ball_on.between?(40, 60) && ball_on != 50
+      side = ball_on < 50 ? 'own ' : 'opponent ' if ball_on.between?(30, 70) && ball_on != 50
       return "in zone" if ball_on <= 0 || ball_on >= 100
       yardage = ball_on <= 50 ? ball_on : 100 - ball_on
       return yardage.to_s if only_yardage
