@@ -57,7 +57,8 @@ class OffensiveStrategy < ApplicationRecord
 
     def choose_on_4th_down(game)
       ball_on = game.ball_on
-      if ball_on < 100 - 45 || (game.quarter == 1 && game.score_diff >= 0 && ball_on < 100 - 40)
+      if ball_on < 100 - 45 || (game.quarter == 1 && game.score_diff >=  0 && ball_on < 100 - 40) \
+                            || (game.quarter >= 3 && game.score_diff >  14 && ball_on < 100 - 40)
         OffensivePlay.normal_punt
       elsif ball_on > 100 - 35
         OffensivePlay.field_goal
