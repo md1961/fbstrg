@@ -2,7 +2,7 @@ module GamesHelper
 
   def down_and_yard_display(game)
     if game.end_of_half?
-      'END OF HALF'
+      'HALFTIME'
     elsif game.final?
       'FINAL'
     elsif game.kickoff?
