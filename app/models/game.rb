@@ -66,7 +66,7 @@ class Game < ApplicationRecord
   end
 
   def shows_defensive_plays_to_choose?
-    playing? && allows_defensive_play_choice?
+    playing? && offensive_play&.normal? && allows_defensive_play_choice?
   end
 
   def clock_runs_out?
