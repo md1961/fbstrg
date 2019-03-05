@@ -156,7 +156,8 @@ module StrategyTool
       true
     ) ||
     game.quarter == 2 && (
-      (game.down == 4 && !tries_fourth_down_gamble?(game))
+      (game.down == 4 && !tries_fourth_down_gamble?(game)) \
+      || (game.time_left <= 60 * 2 && game.ball_on <= 10 && game.down >= 2)
     )
   end
 
