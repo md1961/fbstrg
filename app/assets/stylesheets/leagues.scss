@@ -20,6 +20,14 @@
 
     table.team_schedule {
       margin-right: 15px;
+
+      td.result, td.score {
+        text-align: center;
+      }
+
+      td.result {
+        padding: 0 4px;
+      }
     }
 
     td {
