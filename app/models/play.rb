@@ -327,7 +327,7 @@ class Play < ApplicationRecord
       change_pass_by_team_traits(game)
       if rand * 100 < pct_sack(game)
         self.result = :sacked
-        self.yardage = -(rand(2 .. 8) + rand(2 .. 7))
+        self.yardage = -[(rand(2 .. 8) + rand(2 .. 7)), game.ball_on + 8].min
         self.out_of_bounds = false
       elsif rand * 100 < pct_intercept(game)
         self.result = :intercepted
@@ -461,6 +461,8 @@ class Play < ApplicationRecord
     def yards_back_for_punt(game)
       [NORMAL_YARDS_BACK_FOR_PUNT, game.ball_on + 8].min
     end
+
+    # TODO: Consider to alter pass-related pct_...() back on own goal line.
 
     def pct_intercept(game)
       plus = 0.0
