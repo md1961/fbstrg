@@ -102,7 +102,7 @@ module Announcer
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero? && !offensive_play.hail_mary?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
-        text = offensive_play.screen_pass? ? "Screen pass" : "Throws"
+        text = offensive_play.screen_pass? ? "Screen" : "Throws" + (play.air_yardage <= 0 ? ' flat' : '')
         announcement.add(text, time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
