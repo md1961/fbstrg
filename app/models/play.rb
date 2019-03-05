@@ -272,7 +272,7 @@ class Play < ApplicationRecord
         self.yardage = air_yardage
         self.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         if fumble_rec_by_opponent? && rand(5).zero?
-          self.yardage -= rand(10 .. 100)
+          self.yardage -= rand(10 .. 150)
         end
       end
       return
