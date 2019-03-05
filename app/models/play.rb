@@ -329,6 +329,9 @@ class Play < ApplicationRecord
         self.result = :sacked
         self.yardage = -[(rand(2 .. 8) + rand(2 .. 7)), game.ball_on + 8].min
         self.out_of_bounds = false
+        if rand(5).zero?
+          determine_fumble_recovery
+        end
       elsif rand * 100 < pct_intercept(game)
         self.result = :intercepted
         # TODO: Adjust interception return yardage determination according to offensive_play.
