@@ -75,12 +75,15 @@ module Announcer
       time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
       announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5))
+      in_zone = play.safety? || run_from + play.yardage <= 0
+      text = "SACKED" + (in_zone ? " IN ZONE" : "")
       if play.fumble?
+        announcement.add(text, 500)
         announcement.add("FUMBLE", 2500)
         text = play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         announcement.add(text, 2000)
+        announcement.add(play.fumble_rec_by_own? ? "SAFETY" : "TOUCHDOWN", 1000) if in_zone
       else
-        text = "SACKED" + (play.safety? ? " IN ZONE" : "")
         announcement.add(text, 1000)
         if play.safety?
           announcement.add("SAFETY", 1000)
