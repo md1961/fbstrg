@@ -45,7 +45,7 @@ table.score_board {
   }
 }
 
-span.link {
+form a {
   margin-left: 20px;
 }
 
@@ -70,6 +70,7 @@ table#play_by_play {
 
 #judgments_and_plays {
   display: flex;
+  margin-top: 20px;
 }
 
 div.strategy_tool_judgments {
@@ -97,6 +98,10 @@ table.plays_to_choose {
   td {
     padding: 0 2px;
   }
+}
+
+div.team_traits {
+  margin-left: 20px;
 }
 
 div.stats {
