@@ -6,9 +6,10 @@
 </table>
 
 <br>
-<% announcement = @game.announcement -%>
+<% announcement = @game.announcement
+   hidden_due_to_announcement = announcement && !announcement.empty? ? 'hidden' : '' -%>
 <div id="announce_board" data-announcements="<%= announcement&.to_s(speed: @speed_of_announce) %>"></div>
-<table id="information_board" <%= 'hidden' if announcement && !announcement.empty? %>>
+<table id="information_board" <%= hidden_due_to_announcement %>>
   <tr>
     <td><%= @game.result %></td>
   </tr>
@@ -21,7 +22,7 @@
 </table>
 
 <% unless @replay -%>
-  <div id="form_command" <%= 'hidden' if announcement && !announcement.empty? %>>
+  <div id="form_command" <%= hidden_due_to_announcement %>>
     <br>
     <%= form_tag @game, method: :patch do %>
       <%= @game.prompt %>
@@ -87,10 +88,12 @@
     </div>
   </div>
 
-  <div class="buttons" <%= 'hidden' if announcement && !announcement.empty? %>>
+  <div class="buttons" <%= hidden_due_to_announcement %>>
     <span id="toggle_plays_display" class="button">[Plays]</span>
-    <span id="toggle_scorings" class="button" hidden>[Scorings]</span>
-    <span id="toggle_stats_display" class="button">[Stats]</span>
+    <span id="toggle_scorings" class="button" <%= hidden_due_to_announcement %>>[Scorings]</span>
+    <% unless @game.final? -%>
+      <span id="toggle_stats_display" class="button">[Stats]</span>
+    <% end -%>
   </div>
 
   <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.played_over? %>>

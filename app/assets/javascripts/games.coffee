@@ -6,7 +6,6 @@ $ ->
   $('span#toggle_plays_display').click ->
     $('table#play_by_play').toggle()
     $('span#toggle_scorings').toggle()
-    $('div.stats').toggle()
 
   $('span#toggle_scorings').click ->
     $('.no_scoring').toggle()
