@@ -257,9 +257,8 @@ class Play < ApplicationRecord
       pct_comp = 2.0 + @ttm.pass_complete_factor / 5.0
       if rand * 100 < pct_comp
         self.result = :complete
-        self.yardage = air_yardage
-        self.yardage += rand(20) if rand(4).zero?
-      elsif rand * 100 < 75
+        self.yardage += rand(10) if rand(4).zero?
+      elsif rand(4).zero?
         self.result = :intercepted
       end
     elsif field_goal_try?
@@ -395,7 +394,9 @@ class Play < ApplicationRecord
   def determine_air_yardage(offensive_play)
     self.air_yardage = \
       if offensive_play.hail_mary?
-        rand(offensive_play.throw_yard_range)
+        rand(offensive_play.throw_yard_range).tap { |air_y|
+          self.yardage = air_y
+        }
       elsif onside_kick?
         self.yardage = rand(8 .. 15)
         self.fumble = rand(100) < 15 ? :fumble_rec_by_own : :fumble_rec_by_opponent
