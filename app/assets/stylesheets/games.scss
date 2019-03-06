@@ -117,8 +117,12 @@ span.button {
   cursor: pointer;
 }
 
-span#toggle_scorings {
-  margin-left: 40px;
+div.buttons {
+  margin-top: 20px;
+
+  span {
+    margin-right: 40px;
+  }
 }
 
 body.real {

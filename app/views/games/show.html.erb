@@ -87,9 +87,11 @@
     </div>
   </div>
 
-  <br>
-  <span id="toggle_plays_display" class="button">[+]</span>
-  <span id="toggle_scorings" class="button">[Scorings]</span>
+  <div class="buttons">
+    <span id="toggle_plays_display" class="button">[Plays]</span>
+    <span id="toggle_scorings" class="button" hidden>[Scorings]</span>
+    <span id="toggle_stats_display" class="button">[Stats]</span>
+  </div>
 
   <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.played_over? %>>
     <% plays = @game.plays.includes(:game_snapshot).order(number: :desc) -%>

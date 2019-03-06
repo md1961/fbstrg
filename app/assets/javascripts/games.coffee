@@ -5,10 +5,14 @@
 $ ->
   $('span#toggle_plays_display').click ->
     $('table#play_by_play').toggle()
+    $('span#toggle_scorings').toggle()
     $('div.stats').toggle()
 
   $('span#toggle_scorings').click ->
     $('.no_scoring').toggle()
+
+  $('span#toggle_stats_display').click ->
+    $('div.stats').toggle()
 
   $('span.toggle_strategy_tool_judgments_display').click ->
     $(this).parents('tr').next('tr').toggle()
