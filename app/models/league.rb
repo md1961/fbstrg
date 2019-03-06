@@ -17,6 +17,14 @@ class League < TeamGroup
     )
   end
 
+  def prev_league
+    self.class.find_by(year: year - 1)
+  end
+
+  def next_league
+    self.class.find_by(year: year + 1)
+  end
+
   def won_lost_tied_pf_pa_for(team)
     games_finished.find_all { |g|
       g.for?(team)
