@@ -159,7 +159,7 @@ module Announcer
           elsif play.yardage.zero?
             "#{verb} at the line of scrimmage"
           else
-            at = is_long_gain ? " #{at_yard_line(game.ball_on)}" : ""
+            at = is_long_gain || game.ball_on > 90 ? " #{at_yard_line(game.ball_on)}" : ""
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
