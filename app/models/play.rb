@@ -17,8 +17,6 @@ class Play < ApplicationRecord
 
   attr_accessor :time_to_take, :after_safety
 
-  RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
-
   def self.parse(str, offensive_play)
     instance = \
       if offensive_play.kneel_down?
@@ -47,12 +45,41 @@ class Play < ApplicationRecord
     }
   end
 
+  RE_STR_RESULT_REVISED = /\A(\d+%)?([-\d]+)\.\.([-\d]+)(ob)?\z/
+
+  def self.parse_result_revised(str)
+    m = str.match(RE_STR_RESULT_REVISED)
+    raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
+    pct_comp, min_yard, max_yard, remark = m[1 .. 4]
+    min_yard, max_yard = min_yard.to_i, max_yard.to_i
+    if min_yard > max_yard
+      msg = "Illegal result string '#{str}', illegal range (#{min_yard} .. #{max_yard})"
+      raise Exceptions::IllegalResultStringError, msg
+    end
+
+    play = new.tap { |play|
+      play.yardage = rand(min_yard .. max_yard)
+      if pct_comp
+        play.result = rand * 100 < pct_comp.to_f ? :complete : :incomplete
+      else
+        play.result = :on_ground
+      end
+      play.out_of_bounds = !play.incomplete? && remark == 'ob'
+    }
+  end
+
+  RE_STR_RESULT = /\A([a-zA-Z_]+)?([+-]?(?:\d+|long))?(ob|af)?\z/
+
   def self.parse_result(str)
     m = str.match(RE_STR_RESULT)
-    raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
-    _result = m[1]
-    yardage = m[2]
-    remark  = m[3]
+    unless m
+      begin
+        return parse_result_revised(str)
+      rescue Exceptions::IllegalResultStringError => e
+        raise e
+      end
+    end
+    _result, yardage, remark = m[1 .. 3]
 
     play = new
 
