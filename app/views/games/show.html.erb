@@ -87,7 +87,7 @@
     </div>
   </div>
 
-  <div class="buttons">
+  <div class="buttons" <%= 'hidden' if announcement && !announcement.empty? %>>
     <span id="toggle_plays_display" class="button">[Plays]</span>
     <span id="toggle_scorings" class="button" hidden>[Scorings]</span>
     <span id="toggle_stats_display" class="button">[Stats]</span>

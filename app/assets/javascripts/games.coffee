@@ -27,6 +27,7 @@ $ ->
           $('#score_board').show()
           $('#form_command').show()
           $('#judgments_and_plays').show()
+          $('div.buttons').show()
         else
           $('#announce_board').html(text)
         resolve()
