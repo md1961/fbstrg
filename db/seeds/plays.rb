@@ -170,7 +170,7 @@ PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
   STDOUT.puts "  for OffensivePlay '#{offensive_play.number}'..."
   row.zip(defensive_plays) do |result, defensive_play|
     begin
-      Play.parse_result(result, offensive_play)
+      Play.parse_result(result)
     rescue Exceptions::IllegalResultStringError => e
       raise "#{e} for '#{offensive_play}' x '#{defensive_play}'"
     end

@@ -40,14 +40,14 @@ class Play < ApplicationRecord
       elsif offensive_play.kickoff_after_safety?
         punt(after_safety: true)
       else
-        parse_result(str, offensive_play)
+        parse_result(str)
       end
     instance.tap { |i|
       i.determine_air_yardage(offensive_play)
     }
   end
 
-  def self.parse_result(str, offensive_play)
+  def self.parse_result(str)
     m = str.match(RE_STR_RESULT)
     raise Exceptions::IllegalResultStringError, "Illegal result string '#{str}'" unless m
     _result = m[1]
