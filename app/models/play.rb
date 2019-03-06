@@ -612,7 +612,15 @@ class Play < ApplicationRecord
     end
 
     def fumble_to_s
-      field_goal_blocked? || punt_blocked? ? fumble.sub('fumble_', '') : fumble
+      s = fumble.gsub('_', ' ')
+      return s unless kick_blocked?
+      s.sub!('fumble_', '')
+      if yardage == air_yardage
+        "#{-yardage} yard loss #{s}"
+      else
+        return_y = [air_yardage - yardage, game_snapshot.ball_on + air_yardage].min
+        "#{return_y} yard return"
+      end
     end
 
     def result_to_s
@@ -641,6 +649,8 @@ class Play < ApplicationRecord
         "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (no_scoring? ? " field goal NO GOOD" : "")
       elsif extra_point_try?
         "Extra point is #{extra_point? ? '' : 'no '}good"
+      elsif kick_blocked?
+        "Blocked #{field_goal_blocked? ? 'field goal' : 'punt'}"
       elsif kneel_down?
         "QB kneel down"
       else
