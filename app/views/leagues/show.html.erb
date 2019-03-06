@@ -3,6 +3,9 @@
 
   <div class="page_title">
     <%= @league %>
+    <% prev_league, next_league = @league.prev_league, @league.next_league -%>
+    <span><%= link_to_if prev_league, '<', prev_league %></span>
+    <span><%= link_to_if next_league, '>', next_league %></span>
   </div>
 
   <div class="team_schedules">
