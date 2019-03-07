@@ -61,6 +61,7 @@ class Play < ApplicationRecord
       play.yardage = rand(min_yard .. max_yard)
       if pct_comp
         play.result = rand * 100 < pct_comp.to_f ? :complete : :incomplete
+        play.yardage = 0 if play.incomplete?
       else
         play.result = :on_ground
       end
