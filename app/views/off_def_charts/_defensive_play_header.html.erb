@@ -18,7 +18,7 @@
       <%= [nil, nil, 'against run', 'against pass'][index] %>
     </th>
     <% dp_attrs.each do |attr| -%>
-      <th ccolspan="2" class="<%= clazz %>">
+      <th colspan="2" class="<%= clazz %>">
         <%= attr.split(', ').join('<br>').html_safe %>
       </th>
     <% end -%>

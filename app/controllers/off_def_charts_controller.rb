@@ -44,7 +44,7 @@ class OffDefChartsController < ApplicationController
         [
           :normal_plays,
           ->(offensive_play, defensive_play) {
-            PlayResultChart.first.result(offensive_play, defensive_play)
+            PlayResultChart.find_by(name: 'Pro style (revised)').result(offensive_play, defensive_play)
           }
         ]
       end

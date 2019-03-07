@@ -17,7 +17,7 @@
     </thead>
     <tbody>
       <% @offensive_plays.each do |op| -%>
-        <tr>
+        <tr class="<%= op.number % 4 == 0 ? 'border_bottom_thick' : '' %>">
           <th><%= op.number %></th>
           <th class="border_right_thick"><%= op.name %></th>
           <% @defensive_plays.each do |dp| -%>
