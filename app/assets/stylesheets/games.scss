@@ -133,16 +133,25 @@ body.real {
     background-color: black;
     font: arial;
     font-size: xx-large;
-  }
 
-  table.score_board td {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-right: 20px;
-  }
+    td {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      padding-right: 20px;
+    }
 
-  table.score_board td.tight {
-    padding-right: 0px;
+    td.tight {
+      padding-right: 0px;
+    }
+
+    td.score_by_quarter {
+      width: 35px;
+      padding-right: 10px;
+    }
+
+    td.score_final {
+      width: 55px;
+    }
   }
 
   table#information_board, div#announce_board {
