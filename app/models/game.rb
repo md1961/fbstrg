@@ -406,7 +406,7 @@ class Game < ApplicationRecord
           play.yardage = (ball_on / 2).to_i - ball_on
         end
       end
-      self.ball_on += play.yardage
+      self.ball_on += play.yardage unless play.incomplete?
       toggle_possesion if play.possession_changing?
       if ball_on >= 100
         play.yardage -= ball_on - 100 unless play.punt_blocked?
