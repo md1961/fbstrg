@@ -30,7 +30,7 @@ OFFENSIVE_PLAYS = [
   # Cannot call below at 1-10 yard line.
   [13, 'Screen Pass'     , -5,  0],
   [14, 'Pop Pass'        ,  5, 15],
-  [15, 'Button Hook Pass',  5, 15],
+  [15, 'Button Hook Pass', 10, 20],
   [16, 'Razzle Dazzle'   , 20, 40],
   # Cannot call below at 1-20 yard line.
   [17, 'Down & Out Pass' , 15, 25],
