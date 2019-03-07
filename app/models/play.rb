@@ -599,9 +599,7 @@ class Play < ApplicationRecord
     end
 
     def determine_breakaway(game)
-      if punt_blocked? || field_goal_blocked?
-        # TODO: determine_breakaway for punt_blocked and field_goal_blocked.
-      elsif intercepted? || kick_and_return?
+      if intercepted? || kick_and_return? || kick_blocked?
         self.yardage -= rand(10 .. 120)
       else
         self.yardage += rand(10 .. 100)
@@ -646,7 +644,7 @@ class Play < ApplicationRecord
     def fumble_to_s
       s = fumble.gsub('_', ' ')
       return s unless kick_blocked?
-      s.sub!('fumble_', '')
+      s.sub!('fumble ', '')
       if yardage == air_yardage
         "#{-yardage} yard loss #{s}"
       else
