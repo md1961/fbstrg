@@ -73,6 +73,10 @@ class OffensivePlay < ApplicationRecord
     name.ends_with?('Punt')
   end
 
+  def confusing?
+    run_pass_option? || razzle_dazzle?
+  end
+
   def to_s
     normal? ? "#{number}. #{name}" : name
   end
