@@ -16,6 +16,11 @@ class Announcement
     self
   end
 
+  def add_time_to_last(time)
+    @statements.last.time += time unless empty?
+    self
+  end
+
   def empty?
     @statements.empty?
   end
