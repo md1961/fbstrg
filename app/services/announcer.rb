@@ -101,15 +101,16 @@ module Announcer
           play.air_yardage - play.yardage
         end
       if play.pass?
+        is_in_zone = true if run_from >= 100
         time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero? && !offensive_play.hail_mary?
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
-        text = offensive_play.screen_pass? ? "Screen" : "Throws" + (play.air_yardage <= 0 ? ' flat' : '')
+        where = is_in_zone ? ' into zone' : play.air_yardage <= 0 ? ' flat' : ''
+        text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
         announcement.add(text, time)
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
-        is_in_zone = true if run_from >= 100
       elsif play.no_return?
         announcement.add("Into zone", 1000) if run_from <= 0
       else # kick_and_return?
