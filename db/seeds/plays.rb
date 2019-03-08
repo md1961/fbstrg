@@ -31,12 +31,14 @@ OFFENSIVE_PLAYS = [
   [13, 'Screen Pass'      , -5,  0],
   [14, 'Pop Pass'         ,  5, 15],
   [15, 'Button Hook Pass' , 10, 20],
-  [16, 'Razzle Dazzle'    , 20, 40],
+  [16, 'Crossing Pass'    , 10, 20],
   # Cannot call below at 1-20 yard line.
   [17, 'Down & Out Pass'  , 15, 25],
   [18, 'Down & In Pass'   , 15, 25],
   [19, 'Long Bomb'        , 25, 40],
   [20, 'Stop & Go Pass'   , 15, 25],
+
+  [31, 'Razzle Dazzle'    , 20, 40],
 
   # For the followings, use alphabets and spaces ONLY for a name to .gsub(/\s+/, '').underscore makes a variable name.
   [101, 'Normal Kickoff'],
@@ -60,17 +62,17 @@ OffensivePlay.create!(OFFENSIVE_PLAYS.map { |values|
 
 OFFENSIVE_PLAY_SETS = [
   ['Dumb Even'   , [100] * 20],
-  #                   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-  ['Standard'    , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  10,  50,  50,  50,  50]],
-  ['Aggresive'   , [ 20,  20,   0,  70, 100, 100, 100,  70,  70,  70,  70,  70, 100, 100, 100,  20, 100, 100, 100, 100]],
-  ['Ball Control', [100, 100, 100, 100,  70,  50,  70,  80,  40,  70,  70,  70,  70,  40,  40,   0,   5,   5,   5,   5]],
-  ['Protect'     , [100, 100, 100, 100, 100,  50,  50, 100,   0,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
-  ['Aim Short'   , [100, 100, 100, 100, 100, 100, 100, 100,  50,  50,  50,  50,  50,  50,  50,   0,  20,  20,  20,  20]],
-  ['Aim Long'    , [  0,   0,   0,  20,  50,  50,  60,  50,  10,  70,  70,  70, 100, 100, 100,  20,  80,  80,  80,  80]],
-  ['Back On Goal', [100, 100, 100, 100,  50,   0,  80, 100,   0, 100, 100, 100, 100, 100, 100,   0,  50,  50,  50,  50]],
-  ['Hurry Up'    , [ 10,  10,   0,  50,  70,  50,  50,  50,  30,  70, 120,  70,  70, 100, 100,   0, 100, 100, 100, 100]],
-  ['Pass Only'   , [  0,   0,   0,   0,   0,   0,   5,   0,   0,  70, 100, 100,  70, 100, 100,   0, 100, 100, 100, 100]],
-  ['Goal Line'   , [100, 100, 100, 100, 100,  80,  80, 100,  40,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0]],
+  #                   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   31
+  ['Standard'    , [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  50,  50,  50,  50,  10]],
+  ['Aggresive'   , [ 20,  20,   0,  70, 100, 100, 100,  70,  70,  70,  70,  70, 100, 100, 100, 100, 100, 100, 100, 100,  20]],
+  ['Ball Control', [100, 100, 100, 100,  70,  50,  70,  80,  40,  70,  70,  70,  70,  40,  40,  40,   5,   5,   5,   5,   0]],
+  ['Protect'     , [100, 100, 100, 100, 100,  50,  50, 100,   0,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0,   0]],
+  ['Aim Short'   , [100, 100, 100, 100, 100, 100, 100, 100,  50,  50,  50,  50,  50,  50,  50,  50,  20,  20,  20,  20,   0]],
+  ['Aim Long'    , [  0,   0,   0,  20,  50,  50,  60,  50,  10,  70,  70,  70, 100, 100, 100, 100,  80,  80,  80,  80,  20]],
+  ['Back On Goal', [100, 100, 100, 100,  50,   0,  80, 100,   0, 100, 100, 100, 100, 100, 100, 100,  50,  50,  50,  50,   0]],
+  ['Hurry Up'    , [ 10,  10,   0,  50,  70,  50,  50,  50,  30,  70, 120,  70,  70, 100, 100, 100, 100, 100, 100, 100,   0]],
+  ['Pass Only'   , [  0,   0,   0,   0,   0,   0,   5,   0,   0,  70, 100, 100,  70, 100, 100, 100, 100, 100, 100, 100,   0]],
+  ['Goal Line'   , [100, 100, 100, 100, 100,  80,  80, 100,  40,  50,  50,  50,   0,   0,   0,   0,   0,   0,   0,   0,   0]],
 ]
 
 STDOUT.puts "Creating OffensivePlaySet..."
@@ -156,18 +158,23 @@ PRO_STYLE_RESULTS = [
   %w(cmp+18 cmp+15 cmp+9 cmp+6 cmp+4ob cmp+3 incmp cmp+12 incmp incmp),
   %w(cmp+19 cmp+16 cmp+11 cmp+8 incmp incmp cmp+4 incmp incmp incmp),
   %w(cmp+16 cmp+13 cmp+8 incmp incmp cmp+16 incmp cmp+7 incmp cmp+12),
-  %w(long long sck-15 +11ob -5 sck-10 sck-10 sck-15 long long),
+  %w(),  # to be created for 'Crossing Pass'
 
   %w(cmp+50ob cmp+45ob cmp+35 cmp+25 incmp cmp+25 incmp incmp incmp incmp),
   %w(cmp+45 cmp+35 cmp+25 cmp+35 cmp+30 incmp incmp incmp incmp incmp),
   %w(cmp+long cmp+long cmp+30 cmp+35ob incmp incmp incmp incmp incmp incmp),
   %w(cmp+35 cmp+30 incmp incmp incmp incmp cmp+35ob cmp+30ob incmp incmp),
+
+  %w(long long sck-15 +11ob -5 sck-10 sck-10 sck-15 long long),
 ]
 STDOUT.puts "Creating PlayResultChart (Pro style)..."
 result_chart = PlayResultChart.create!(name: 'Pro style')
 defensive_plays = DefensivePlay.order(:name)
+num_results = defensive_plays.size
 PRO_STYLE_RESULTS.zip(OffensivePlay.order(:number)) do |row, offensive_play|
   STDOUT.puts "  for OffensivePlay '#{offensive_play.number}'..."
+  STDOUT.flush
+  raise "Number of results must be #{num_results} (#{row.size})" unless row.size == num_results
   row.zip(defensive_plays) do |result, defensive_play|
     begin
       Play.parse_result(result)
