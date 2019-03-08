@@ -74,7 +74,7 @@ class OffensivePlay < ApplicationRecord
   end
 
   def confusing?
-    run_pass_option? || razzle_dazzle?
+    razzle_dazzle?
   end
 
   def to_s

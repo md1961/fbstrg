@@ -26,6 +26,10 @@ module Announcer
       announcement.add("Snap", time)
       time = offensive_play.normal? ? 1000 : 2500
       announcement.add(*first_announce(offensive_play, play))
+      if offensive_play.play_action_pass?
+        announcement.add("Play fake", 1000)
+        announcement.add("Back to throw", 1000)
+      end
     elsif offensive_play.onside_kickoff?
       announcement.add("Onside kick", 2500)
       rec_by = play.fumble_rec_by_own? ? 'kicking' : 'receiving'
@@ -102,8 +106,8 @@ module Announcer
         end
       if play.pass?
         is_in_zone = true if run_from >= 100
-        time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5)) if rand(2).zero? && !offensive_play.hail_mary?
+        time = [play.air_yardage / 10.0 * 1200, 1000].max
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
         where = is_in_zone ? ' into zone' : play.air_yardage <= 0 ? ' flat' : ''
@@ -187,8 +191,8 @@ module Announcer
       time = 1000
       text = \
         case offensive_play.number
-        when 1, 2, 4, 8
-          time -= 500 if play.yardage < 0
+        when 1, 2, 4, 8, 9
+          time -= 500 if play.yardage < 0 || offensive_play.play_action_pass?
           "Hand off"
         when 3
           "Quarterback keep"
