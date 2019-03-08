@@ -597,6 +597,7 @@ class Play < ApplicationRecord
         pct += 1.0
       elsif !offensive_play.run?
         pct += 0.1 * offensive_play.max_throw_yard
+        pct += 0.3 if offensive_play.crossing_pass?
       end
       pct - defensive_play.num_DBs * 0.05 + (defensive_play.blitz? ? 0.5 : 0.0)
     end
