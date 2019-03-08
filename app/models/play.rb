@@ -594,7 +594,7 @@ class Play < ApplicationRecord
 
       pct = 0.5
       if offensive_play.screen_pass?
-        pct += 2.0
+        pct += 1.0
       elsif !offensive_play.run?
         pct += 0.1 * offensive_play.max_throw_yard
       end
