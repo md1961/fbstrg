@@ -295,6 +295,7 @@ class Game < ApplicationRecord
     self.error_message = "Failed to update with '#{value}'" unless is_updated
   end
 
+  # TODO: Fix revert!() to put back huddle time as well.
   def revert!
     raise "No GameSnapshot's" if game_snapshots.empty?
     play_last, play_before = plays.order(number: :desc).first(2)

@@ -115,6 +115,10 @@ module Announcer
         where = is_in_zone ? ' into zone' : play.air_yardage <= 0 ? ' flat' : ''
         text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
         announcement.add(text, time)
+        if run_yardage_after >= 5 && rand(3).zero?
+          announcement.add_time_to_last(-500)
+          announcement.add("Wide open", 500)
+        end
         text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
         announcement.add(text, 1000)
       elsif play.no_return?
@@ -133,7 +137,7 @@ module Announcer
       end
       is_long_gain = false
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?) || play.blocked_kick_return?
-        announcement.add("Find hole!", 1000 + 150 * [play.yardage, 10].min) if play.on_ground?
+        announcement.add("Find hole!", 500 + 150 * [play.yardage, 10].min) if play.on_ground?
         if    (play.on_ground? && play.yardage >= 10) \
            || (play.pass? && !play.intercepted? && run_yardage_after > 5) \
            || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \

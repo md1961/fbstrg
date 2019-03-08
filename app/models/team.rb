@@ -6,7 +6,7 @@ class Team < ApplicationRecord
   has_one :team_trait, dependent: :destroy
 
   def human_assisted?
-    name == 'Miami'
+    name == 'Miami' || %w[H V].include?(abbr)
   end
 
   def league
