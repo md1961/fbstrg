@@ -29,6 +29,8 @@ module Announcer
       if offensive_play.play_action_pass?
         announcement.add("Play fake", 1000)
         announcement.add("Back to throw", 1000)
+      elsif offensive_play.razzle_dazzle?
+        announcement.add("Pitch back to QB", 2000)
       end
     elsif offensive_play.onside_kickoff?
       announcement.add("Onside kick", 2500)
@@ -191,8 +193,9 @@ module Announcer
       time = 1000
       text = \
         case offensive_play.number
-        when 1, 2, 4, 8, 9
+        when 1, 2, 4, 8, 9, 31
           time -= 500 if play.yardage < 0 || offensive_play.play_action_pass?
+          time += 500 if offensive_play.razzle_dazzle?
           "Hand off"
         when 3
           "Quarterback keep"
