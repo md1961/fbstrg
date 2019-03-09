@@ -122,7 +122,7 @@ module Announcer
         end
         text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
         announcement.add(text, time - time_throws_only)
-        if run_yardage_after >= 5 && rand(3).zero?
+        if play.air_yardage > 15 && run_yardage_after >= 5 && rand(3).zero?
           announcement.add_time_to_last(-500)
           announcement.add("Wide open", 500)
         end
