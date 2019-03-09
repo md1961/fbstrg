@@ -105,6 +105,8 @@ module Announcer
           play.yardage - play.air_yardage
         elsif play.possession_changing?
           play.air_yardage - play.yardage
+        else
+          0
         end
       if play.pass?
         is_in_zone = true if run_from >= 100
