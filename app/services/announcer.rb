@@ -115,13 +115,19 @@ module Announcer
         announcement.set_time_to_last(time * rand(1.0 .. 1.5))
         time = [play.air_yardage / 10.0 * 800, 1000].max
         where = is_in_zone ? ' into zone' : play.air_yardage <= 0 ? ' flat' : ''
+        time_throws_only = 0
+        if is_in_zone && time >= 1600
+          time_throws_only = time - 800
+          announcement.add("Throws", time_throws_only)
+        end
         text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
-        announcement.add(text, time)
+        announcement.add(text, time - time_throws_only)
         if run_yardage_after >= 5 && rand(3).zero?
           announcement.add_time_to_last(-500)
           announcement.add("Wide open", 500)
         end
-        text = "#{play.result.to_s.upcase} #{at_yard_line(run_from)}"
+        text = play.result.to_s.upcase
+        text += ' ' + at_yard_line(run_from) unless is_in_zone
         announcement.add(text, 1000)
       elsif play.no_return?
         announcement.add("Into zone", 1000) if run_from <= 0
