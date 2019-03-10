@@ -11,6 +11,12 @@ Rails.application.routes.draw do
   end
   resources :leagues, only: %i[index show]
 
+  resources :team_traits, only: [] do
+    member do
+      get :increment, :decrement
+    end
+  end
+
   resources :stats, only: :index
 
   resources :play_sets, only: :index
