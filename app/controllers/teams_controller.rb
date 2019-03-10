@@ -2,7 +2,8 @@ class TeamsController < ApplicationController
 
   def index
     league = League.find_by(id: params[:league_id])
-    teams = league&.teams || Team.all
-    @teams = teams.where.not(abbr: %w[H V])
+    new_teams = Team.where(team_group_id: nil).where.not(abbr: %w[H V])
+    league = League.order(:updated_at).last unless league
+    @teams = league.teams + new_teams
   end
 end
