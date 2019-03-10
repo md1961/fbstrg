@@ -18,6 +18,9 @@ class Game
         stat = play.game_snapshot.home_has_ball ? @stats_home : @stats_visitors
         stat.tally_from(play)
       end
+
+      @stats_home    .set_defense_stats(@stats_visitors)
+      @stats_visitors.set_defense_stats(@stats_home    )
     end
 end
 
