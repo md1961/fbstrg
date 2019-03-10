@@ -28,10 +28,10 @@
         <% teams.each do |team| -%>
           <% team_trait = team.team_trait -%>
           <td class="numeric <%= td_class %>">
-            <%= team_trait.send(trait_name) %>
+            <%= v = team_trait.send(trait_name); v > 0 ? "+#{v}" : v %>
             <span
                 class="actions <%= "team_#{team.id}" %>"
-                <%= team_trait.id == @team_trait_id ? '' : 'hidden' %>
+                <%= team_trait.id == flash[:team_trait_id] ? '' : 'hidden' %>
                 >
               <%= link_to '－', decrement_team_trait_path(team_trait, name: trait_name) %>
               <%= link_to '＋', increment_team_trait_path(team_trait, name: trait_name) %>
