@@ -3,4 +3,16 @@
   th {
     width: 30px;
   }
+
+  th.toggle_actions {
+    cursor: pointer;
+  }
+
+  td.numeric {
+    padding-left: 20px;
+  }
+
+  td a {
+    margin-left: 5px;
+  }
 }
