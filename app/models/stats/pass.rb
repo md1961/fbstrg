@@ -1,7 +1,7 @@
 module Stats
 
 class Pass
-  attr_reader :attempts, :completions, :yards, :long, :touchdowns,
+  attr_reader :owner, :attempts, :completions, :yards, :long, :touchdowns,
               :intercepted, :sacked, :longs
 
   def initialize(owner)

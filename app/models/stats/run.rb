@@ -1,7 +1,7 @@
 module Stats
 
 class Run
-  attr_reader :attempts, :yards, :long, :touchdowns, :longs
+  attr_reader :owner, :attempts, :yards, :long, :touchdowns, :longs
 
   def initialize(owner)
     @owner = owner
