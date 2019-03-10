@@ -60,42 +60,8 @@
       <%= render partial: 'team_run_stats',
             locals: {team_run_stats: @league.total_team_stats.map(&:run_stats).sort_by { |s| -s.yards }} %>
 
-      <table class="stats">
-        <thead>
-          <tr>
-            <th>
-            <th>Att</th>
-            <th>Cmp</th>
-            <th>%Cmp</th>
-            <th>Yards</th>
-            <th>Y/Att</th>
-            <th>Y/Cmp</th>
-            <th>Long</th>
-            <th>TD</th>
-            <th>Int</th>
-            <th>Sack</th>
-            <th>Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @league.total_team_stats.map(&:pass_stats).sort_by { |s| -s.rating }.each do |pass_stats| -%>
-            <tr>
-              <td><%= pass_stats.owner %></td>
-              <td class="numeric"><%= pass_stats.attempts %></td>
-              <td class="numeric"><%= pass_stats.completions %></td>
-              <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
-              <td class="numeric"><%= pass_stats.yards.to_s(:delimited) %></td>
-              <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
-              <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
-              <td class="numeric"><%= pass_stats.long %></td>
-              <td class="numeric"><%= pass_stats.touchdowns %></td>
-              <td class="numeric"><%= pass_stats.intercepted %></td>
-              <td class="numeric"><%= pass_stats.sacked %></td>
-              <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
-            </tr>
-          <% end -%>
-        </tbody>
-      </table>
+      <%= render partial: 'team_pass_stats',
+            locals: {team_pass_stats: @league.total_team_stats.map(&:pass_stats).sort_by { |s| -s.rating }} %>
 
       <table class="stats">
         <thead>

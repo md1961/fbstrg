@@ -1,0 +1,36 @@
+<table class="stats">
+  <thead>
+    <tr>
+      <th>
+      <th>Att</th>
+      <th>Cmp</th>
+      <th>%Cmp</th>
+      <th>Yards</th>
+      <th>Y/Att</th>
+      <th>Y/Cmp</th>
+      <th>Long</th>
+      <th>TD</th>
+      <th>Int</th>
+      <th>Sack</th>
+      <th>Rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% team_pass_stats.each do |pass_stats| -%>
+      <tr>
+        <td><%= pass_stats.owner %></td>
+        <td class="numeric"><%= pass_stats.attempts %></td>
+        <td class="numeric"><%= pass_stats.completions %></td>
+        <td class="numeric"><%= "%3.1f" % pass_stats.pct_comp %></td>
+        <td class="numeric"><%= pass_stats.yards.to_s(:delimited) %></td>
+        <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_attempt %></td>
+        <td class="numeric"><%= "%3.1f" % pass_stats.yards_per_completion %></td>
+        <td class="numeric"><%= pass_stats.long %></td>
+        <td class="numeric"><%= pass_stats.touchdowns %></td>
+        <td class="numeric"><%= pass_stats.intercepted %></td>
+        <td class="numeric"><%= pass_stats.sacked %></td>
+        <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
