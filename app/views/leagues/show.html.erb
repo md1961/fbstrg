@@ -57,30 +57,8 @@
 
   <% if @shows_stats -%>
     <div class="stats_tables">
-      <table class="stats">
-        <thead>
-          <tr>
-            <th>
-            <th>Att</th>
-            <th>Yards</th>
-            <th>Avg</th>
-            <th>Long</th>
-            <th>TD</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @league.total_team_stats.map(&:run_stats).sort_by { |s| -s.yards }.each do |run_stats| -%>
-            <tr>
-              <td><%= run_stats.owner %></td>
-              <td class="numeric"><%= run_stats.attempts %></td>
-              <td class="numeric"><%= run_stats.yards.to_s(:delimited) %></td>
-              <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
-              <td class="numeric"><%= run_stats.long %></td>
-              <td class="numeric"><%= run_stats.touchdowns %></td>
-            </tr>
-          <% end -%>
-        </tbody>
-      </table>
+      <%= render partial: 'team_run_stats',
+            locals: {team_run_stats: @league.total_team_stats.map(&:run_stats).sort_by { |s| -s.yards }} %>
 
       <table class="stats">
         <thead>
