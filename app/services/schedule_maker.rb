@@ -50,6 +50,7 @@ module ScheduleMaker
     }
 
     conf1, conf2 = league.conferences
+    conf1, conf2 = conf2, conf1 if rand(2).zero?
     schedules_conf1, schedules_conf2 = [conf1, conf2].map { |conf|
       make_round_robin_schedules(conf.teams).tap { |schedules|
         schedules.group_by(&:week).each do |week, schedules_by_week|
@@ -86,9 +87,11 @@ module ScheduleMaker
   def check_6_team_x_2_conference_schedules(schedules, league)
     size = 12 * 16 / 2
     raise "Size must be #{size} (#{schedules.size})" unless schedules.size == size
+
     league.teams.each do |team|
       team_schedules = schedules.find_all { |s| s.for?(team) }
-      raise "Number of schedules for #{team} must be 16 (#{team_schedules.size})" unless team_schedules.size == 16
+      weeks = team_schedules.map(&:week).sort
+      raise "Weeks of schedules for #{team} is illegally #{weeks.join(', ')}" unless weeks == (1 .. 16).to_a
 
       home_schedules = team_schedules.find_all { |s| s.game.home_team == team }
       raise "Number of home schedules for #{team} must be 8 (#{home_schedules.size})" unless home_schedules.size == 8
@@ -116,7 +119,11 @@ module ScheduleMaker
       inter_teams = (league.conferences - [conference]).first.teams
       raise "Inter conf. schedule for #{team} is illegally #{inter_opponents.join(', ')}" \
           unless inter_opponents.size == inter_teams.size && (inter_opponents - inter_teams).empty?
+
+      inter_home_schedules = inter_schedules.find_all { |s| s.game.home_team == team }
+      raise "Number of inter. home schedules for #{team} must be 3 (#{inter_home_schedules.size})" unless inter_home_schedules.size == 3
     end
+
     schedules.group_by(&:week).each do |week, schedules_by_week|
       raise "Number of schedules for week #{week} must be 6 (#{schedules_by_week.size})" unless schedules_by_week.size == 6
 
