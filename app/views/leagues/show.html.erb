@@ -8,11 +8,21 @@
     <span><%= link_to_if next_league, '>', next_league %></span>
   </div>
 
-  <div class="team_schedules">
-    <% @league.standings.map(&:team).each do |team| -%>
-      <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+  <% if !@league.direct_teams.empty? -%>
+    <div class="team_schedules">
+      <% @league.standings.map(&:team).each do |team| -%>
+        <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+      <% end -%>
+    </div>
+  <% else -%>
+    <% @league.conferences.each do |conference| -%>
+      <div class="team_schedules">
+        <% conference.standings.map(&:team).each do |team| -%>
+          <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+        <% end -%>
+      </div>
     <% end -%>
-  </div>
+  <% end -%>
 
   <div class="standings">
     <% if !@league.direct_teams.empty? -%>
