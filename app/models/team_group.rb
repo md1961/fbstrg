@@ -1,11 +1,13 @@
 class TeamGroup < ApplicationRecord
   has_many :direct_teams, class_name: 'Team'
-  belongs_to :parent, class_name: 'TeamGroup', foreign_key: 'parent_id', optional: true
+  has_many :child_groups, class_name: 'TeamGroup', foreign_key: 'parent_id'
+  belongs_to :parent    , class_name: 'TeamGroup', foreign_key: 'parent_id', optional: true
 
   before_save :set_abbr
 
   def teams
-    direct_teams
+    return direct_teams unless direct_teams.empty?
+    child_groups.flat_map(&:teams)
   end
 
   private
