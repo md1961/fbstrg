@@ -15,7 +15,13 @@
   </div>
 
   <div class="standings">
-    <%= render partial: 'standings', locals: {standings: @league.standings} %>
+    <% if !@league.direct_teams.empty? -%>
+      <%= render partial: 'standings', locals: {standings: @league.standings} %>
+    <% else -%>
+      <% @league.conferences.each do |conference| -%>
+        <%= render partial: 'standings', locals: {standings: conference.standings} %>
+      <% end -%>
+    <% end -%>
 
     <div class="team_traits" hidden>
       <%= render partial: 'teams/traits', locals: {teams: @league.standings.map(&:team)} %>
