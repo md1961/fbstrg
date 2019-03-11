@@ -19,6 +19,11 @@ class Team < ApplicationRecord
     team_group.league
   end
 
+  def conference
+    return team_group if team_group.nil? || team_group.is_a?(Conference)
+    team_group.conference
+  end
+
   def year
     league&.year
   end
