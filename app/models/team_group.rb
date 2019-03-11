@@ -10,6 +10,10 @@ class TeamGroup < ApplicationRecord
     child_groups.flat_map(&:teams)
   end
 
+  def standings
+    teams.map { |team| TeamStanding.new(team) }.sort
+  end
+
   private
 
     def set_abbr
