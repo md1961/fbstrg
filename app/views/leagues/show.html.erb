@@ -15,30 +15,7 @@
   </div>
 
   <div class="standings">
-    <table class="standings">
-      <thead>
-        <th>
-        <th>G</th>
-        <th>W</th>
-        <th>L</th>
-        <th>T</th>
-        <th>PF</th>
-        <th>PA</th>
-      </thead>
-      <tbody>
-        <% @league.standings.each do |standing| -%>
-          <tr>
-            <td><%= standing.team %></td>
-            <td class="games  numeric"><%= standing.games %></td>
-            <td class="games  numeric"><%= standing.won   %></td>
-            <td class="games  numeric"><%= standing.lost  %></td>
-            <td class="games  numeric"><%= standing.tied  %></td>
-            <td class="points numeric"><%= standing.pf    %></td>
-            <td class="points numeric"><%= standing.pa    %></td>
-          </tr>
-        <% end -%>
-      </tbody>
-    </table>
+    <%= render partial: 'standings', locals: {standings: @league.standings} %>
 
     <div class="team_traits" hidden>
       <%= render partial: 'teams/traits', locals: {teams: @league.standings.map(&:team)} %>
