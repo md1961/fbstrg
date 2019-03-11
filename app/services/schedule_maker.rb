@@ -1,6 +1,16 @@
 module ScheduleMaker
   module_function
 
+  def clear_schedules!(league)
+    raise "Cannot clear schedules of a league already started." if league.games_finished.size > 0
+    schedules = league.schedules
+    games = Game.where(id: schedules.map(&:game_id))
+    ApplicationRecord.transaction do
+      schedules.destroy_all
+      games.destroy_all
+    end
+  end
+
   def make_round_robin_schedules(teams)
     return if teams.empty?
     team_ids = teams.map(&:id).sort_by { rand }
