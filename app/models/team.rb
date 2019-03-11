@@ -15,7 +15,7 @@ class Team < ApplicationRecord
   end
 
   def league
-    team_group if team_group.nil? || team_group.is_a?(League)
+    return team_group if team_group.nil? || team_group.is_a?(League)
     team_group.league
   end
 
