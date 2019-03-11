@@ -2,8 +2,6 @@ class League < TeamGroup
   has_many :schedules, -> { order(:week, :number) },
                        foreign_key: 'team_group_id', dependent: :destroy
 
-  before_save :set_abbr
-
   def self.create_next
     last_league = League.order(:updated_at).last
     create!(
@@ -15,10 +13,6 @@ class League < TeamGroup
         }
       }
     )
-  end
-
-  def teams
-    direct_teams
   end
 
   def prev_league
@@ -99,10 +93,5 @@ class League < TeamGroup
         h[game.home_team.id].add(game_stats.stats_home    )
         h[game.visitors .id].add(game_stats.stats_visitors)
       }
-    end
-
-    def set_abbr
-      return if abbr
-      self.abbr = (name.split + [self.class.name]).map(&:first).join
     end
 end
