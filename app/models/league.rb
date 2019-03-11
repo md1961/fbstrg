@@ -9,12 +9,16 @@ class League < TeamGroup
     create!(
       name: last_league.name,
       year: last_league.year + 1,
-      teams: last_league.teams.map { |team|
+      direct_teams: last_league.teams.map { |team|
         team.dup.tap { |new_team|
           new_team.team_trait = team.team_trait.dup
         }
       }
     )
+  end
+
+  def teams
+    direct_teams
   end
 
   def prev_league
