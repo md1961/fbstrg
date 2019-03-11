@@ -15,8 +15,8 @@ class Team < ApplicationRecord
   end
 
   def league
-    raise "Implement same as Schedule#league()" unless team_group.nil? || team_group.is_a?(League)
-    team_group
+    team_group if team_group.nil? || team_group.is_a?(League)
+    team_group.league
   end
 
   def year
