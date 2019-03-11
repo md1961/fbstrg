@@ -52,8 +52,12 @@ module ScheduleMaker
     conf1, conf2 = league.conferences
     schedules_conf1, schedules_conf2 = [conf1, conf2].map { |conf|
       make_round_robin_schedules(conf.teams).tap { |schedules|
-        schedules.each do |schedule|
-          schedule.week = h_conf_week_converter[schedule.week]
+        schedules.group_by(&:week).each do |week, schedules_by_week|
+          schedules_by_week.each_with_index do |schedule, offset|
+            schedule.week = h_conf_week_converter[week]
+            offset0 = (conf == conf1 && week.odd?) || (conf == conf2 && week.even?) ? 0 : 1
+            schedule.number += offset0 + offset
+          end
         end
       }
     }
@@ -112,6 +116,12 @@ module ScheduleMaker
       inter_teams = (league.conferences - [conference]).first.teams
       raise "Inter conf. schedule for #{team} is illegally #{inter_opponents.join(', ')}" \
           unless inter_opponents.size == inter_teams.size && (inter_opponents - inter_teams).empty?
+    end
+    schedules.group_by(&:week).each do |week, schedules_by_week|
+      raise "Number of schedules for week #{week} must be 6 (#{schedules_by_week.size})" unless schedules_by_week.size == 6
+
+      numbers = schedules_by_week.map(&:number).sort
+      raise "'number's of schedules for week #{week} is illegally #{numbers.join(', ')}" unless numbers == (1 .. 6).to_a
     end
   end
 end
