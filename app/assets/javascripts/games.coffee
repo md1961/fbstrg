@@ -11,7 +11,7 @@ $ ->
     $('.no_scoring').toggle()
 
   $('span#toggle_stats_display').click ->
-    $('div.stats').toggle()
+    $('div.stats').parent().toggle()
 
   $('span.toggle_strategy_tool_judgments_display').click ->
     $(this).parents('tr').next('tr').toggle()

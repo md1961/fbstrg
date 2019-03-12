@@ -105,11 +105,24 @@ div.team_traits {
 }
 
 div.stats {
+  display: flex;
   font-size: xx-small;
+
+  div {
+    margin-right: 20px;
+  }
 
   table {
     margin-bottom: 10px;
   }
+
+  table.team_traits {
+    margin-top: 20px;
+  }
+}
+
+div.stats.hidden {
+  display: none;
 }
 
 span.button {
