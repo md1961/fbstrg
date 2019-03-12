@@ -673,8 +673,8 @@ class Play < ApplicationRecord
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
       elsif complete?
         run_after = yardage - air_yardage
-        run_after_breakdown = run_after > 0 ? " (#{air_yardage}y air + #{run_after}y run_after)" : ''
-        "Pass #{yardage} yard#{run_after_breakdown}"
+        sup = run_after > 0 ? " (#{air_yardage}y air + #{run_after}y run_after)" : yardage < 0 ? ' loss' : ''
+        "Pass #{yardage.abs} yard#{sup}"
       elsif incomplete?
         "Incomplete"
       elsif sacked?
