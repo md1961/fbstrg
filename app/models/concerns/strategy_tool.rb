@@ -95,7 +95,8 @@ module StrategyTool
     return false if game.quarter == 4 && game.score_diff == 0 && zone_conservative?(game)
     return false if game.quarter == 4 && game.score_diff <  0 && zone_conservative?(game) && game.time_left >= 4 * 60
     return false if game.quarter == 4 && game.score_diff >= -14 && game.ball_on < 40 && game.time_left >= 10 * 60
-    return false if game.quarter == 4 && game.time_left > 5 * 60 && game.yard_to_go > 15
+    return false if game.quarter == 4 && game.score_diff >=  -7 && game.time_left >= 3 * 60 && game.yard_to_go > 15
+    return false if game.quarter == 4 && game.time_left >= 5 * 60 && game.yard_to_go > 15
     return false if game.quarter == 3 && game.score_diff > 14
     return false if game.quarter <= 3 && game.yard_to_go > 10
     return false if game.quarter == 2 && game.time_left <= seconds_needed_for_field_goal(game)
