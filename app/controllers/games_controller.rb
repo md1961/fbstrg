@@ -60,6 +60,7 @@ class GamesController < ApplicationController
       elsif params[:play] =~ /\A[a-j]\z/i && @game.defense_human_assisted?
         play = DefensivePlay.find_by(name: params[:play].upcase)
         @game.defensive_play = play
+        @game.defensive_play_set = nil
         session[:defensive_play_id]     = play&.id
         session[:defensive_play_set_id] = nil
         render :show and return
