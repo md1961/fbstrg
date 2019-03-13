@@ -1,7 +1,7 @@
 module Stats
 
 class Run
-  attr_reader :owner, :attempts, :yards, :long, :touchdowns, :longs
+  attr_reader :owner, :attempts, :yards, :long, :touchdowns, :fumbles_lost, :longs
 
   def initialize(owner)
     @owner = owner
@@ -9,6 +9,7 @@ class Run
     @yards = 0
     @long = -999
     @touchdowns = 0
+    @fumbles_lost = 0
     @longs = []
   end
 
@@ -19,6 +20,7 @@ class Run
       @yards += yardage
       @long = yardage if yardage > @long
       @touchdowns += 1 if play.touchdown?
+      @fumbles_lost += 1 if play.fumble_rec_by_opponent?
       @longs << yardage if yardage >= 15
     end
   end
@@ -32,6 +34,7 @@ class Run
     @yards += other.yards
     @long = other.long if other.long > long
     @touchdowns += other.touchdowns
+    @fumbles_lost += other.fumbles_lost
     @longs.concat(other.longs)
   end
 end

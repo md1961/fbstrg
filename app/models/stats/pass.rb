@@ -2,7 +2,7 @@ module Stats
 
 class Pass
   attr_reader :owner, :attempts, :completions, :yards, :long, :touchdowns,
-              :intercepted, :sacked, :longs
+              :intercepted, :sacked, :fumbles_lost, :longs
 
   def initialize(owner)
     @owner = owner
@@ -13,6 +13,7 @@ class Pass
     @touchdowns = 0
     @intercepted = 0
     @sacked = 0
+    @fumbles_lost = 0
     @longs = []
   end
 
@@ -24,6 +25,7 @@ class Pass
       @yards += yardage
       @long = yardage if yardage > @long
       @touchdowns += 1 if play.touchdown?
+      @fumbles_lost += 1 if play.fumble_rec_by_opponent?
       @longs << yardage if yardage >= 20
     elsif play.incomplete?
       @attempts += 1
@@ -32,6 +34,7 @@ class Pass
       @intercepted += 1
     elsif play.sacked?
       @sacked += 1
+      @fumbles_lost += 1 if play.fumble_rec_by_opponent?
     end
   end
 
@@ -64,6 +67,7 @@ class Pass
     @touchdowns += other.touchdowns
     @intercepted += other.intercepted
     @sacked += other.sacked
+    @fumbles_lost += other.fumbles_lost
     @longs.concat(other.longs)
   end
 end
