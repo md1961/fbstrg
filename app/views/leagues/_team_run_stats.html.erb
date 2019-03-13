@@ -7,6 +7,7 @@
       <th>Avg</th>
       <th>Long</th>
       <th>TD</th>
+      <th>FL</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,7 @@
         <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
         <td class="numeric"><%= run_stats.long %></td>
         <td class="numeric"><%= run_stats.touchdowns %></td>
+        <td class="numeric"><%= run_stats.fumbles_lost %></td>
       </tr>
     <% end -%>
   </tbody>
