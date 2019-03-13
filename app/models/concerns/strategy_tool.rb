@@ -153,7 +153,7 @@ module StrategyTool
   def needs_defense_timeout?(game)
     return false if game.clock_stopped || game.timeout_left(false) <= 0
     return false if [1, 3].include?(game.quarter) || game.time_left >= 60 * 3
-    game.quarter == 4 && game.score_diff >= 0 && (
+    game.quarter == 4 && game.score_diff > 0 && (
       # TODO: Adjust conditions depending on scores.
       true
     ) ||
