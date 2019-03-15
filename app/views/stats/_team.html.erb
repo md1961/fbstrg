@@ -12,6 +12,7 @@
         <th>Avg</th>
         <th>Long</th>
         <th>TD</th>
+        <th>FL</th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
         <td class="numeric"><%= "%3.1f" % run_stats.yards_per_carry %></td>
         <td class="numeric"><%= run_stats.long %></td>
         <td class="numeric"><%= run_stats.touchdowns %></td>
+        <td class="numeric"><%= run_stats.fumbles_lost %></td>
       </tr>
     </tbody>
   </table>
@@ -38,6 +40,7 @@
         <th>TD</th>
         <th>Int</th>
         <th>Sack</th>
+        <th>FL</th>
         <th>Rating</th>
       </tr>
     </thead>
@@ -53,6 +56,7 @@
         <td class="numeric"><%= pass_stats.touchdowns %></td>
         <td class="numeric"><%= pass_stats.intercepted %></td>
         <td class="numeric"><%= pass_stats.sacked %></td>
+        <td class="numeric"><%= pass_stats.fumbles_lost %></td>
         <td class="numeric"><%= "%4.1f" % pass_stats.rating %></td>
       </tr>
     </tbody>
