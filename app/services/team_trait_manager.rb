@@ -32,6 +32,7 @@ class TeamTraitManager
     @offense_trait.run_yardage - @defense_trait.run_defense + 10 + home_factor
   end
 
+  # TODO: Consider to reduce pass_complete_factor.
   def pass_complete_factor
     multiplier = @offensive_play.short_pass? ? 5.0 : @offensive_play.medium_pass? ? 4.0 : 3.0
     (pass_offense_factor - @defense_trait.pass_coverage + home_factor) * multiplier
