@@ -34,7 +34,7 @@ module Announcer
       end
     elsif offensive_play.onside_kickoff?
       announcement.add("Onside kick", 2500)
-      rec_by = play.fumble_rec_by_own? ? 'kicking' : 'receiving'
+      rec_by = play.fumble_rec_by_own? ? 'KICKING' : 'receiving'
       announcement.add("Recovered by #{rec_by} team", 2000)
       return announcement
     elsif offensive_play.kickoff?

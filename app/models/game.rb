@@ -426,7 +426,7 @@ class Game < ApplicationRecord
           play.save!
           safety
         end
-      elsif !play.possession_changing?
+      elsif !play.possession_changing? && !play.onside_kick?
         self.yard_to_go -= play.yardage
         self.down += 1 if play.no_penalty?
         if yard_to_go <= 0 || play.auto_firstdown?
