@@ -36,7 +36,9 @@ module GamesHelper
   def offensive_play_display(game)
     return 'X' * 10 if game.hides_offensive_play?
     play_set = game.offensive_play_set
-    "#{game.offensive_play}#{play_set.blank? ? '' : " : from #{play_set}"}"
+    play = game.offensive_play
+    fg_yard = play&.field_goal? && !game.result ? " #{100 - game.ball_on + 17} yard" : ""
+    "#{play}#{fg_yard}#{play_set.blank? ? '' : " : from #{play_set}"}"
   end
 
   def defensive_play_display(game)
