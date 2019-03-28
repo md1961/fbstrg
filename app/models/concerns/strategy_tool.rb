@@ -14,7 +14,8 @@ module StrategyTool
   ]
 
   def offense_running_out_of_time?(game)
-    game.score_diff < 0 && time_running_out?(game)
+    (game.score_diff < 0 && time_running_out?(game)) \
+    || (game.score_diff == 0 && time_running_out?(game) && zone_aggresive?(game))
   end
 
   def defense_running_out_of_time?(game)
