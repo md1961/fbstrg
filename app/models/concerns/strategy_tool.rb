@@ -109,10 +109,9 @@ module StrategyTool
            && game.time_left <= seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) \
        || (game.score_diff < -7 && !zone_conservative?(game) \
            && game.time_left <= (seconds_needed_for_touchdown(game) + seconds_needed_to_get_ball_back(game)) * 2)
-    ) ||
-    (
-      (game.ball_on.between?(50, 100 - 35 - rand(5)) && game.yard_to_go <= 3)
-    )
+    ) \
+    || (game.ball_on.between?(50, 100 - 35 - rand(5)) && game.yard_to_go <= 3) \
+    || (game.quarter >= 3 && game.score_diff <= -14 && game.ball_on >= 50 && game.yard_to_go <= 10)
   end
 
   # TODO: Consider plays before trying FG.
