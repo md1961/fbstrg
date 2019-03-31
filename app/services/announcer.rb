@@ -133,7 +133,7 @@ module Announcer
       elsif play.no_return?
         announcement.add("Into zone", 1000) if run_from <= 0
       else # kick_and_return?
-        announcement.add("From #{at_yard_line(run_from, true)}", 1000)
+        announcement.add("From #{at_yard_line(run_from, only_yardage: true)}", 1000)
       end
     end
 
@@ -162,7 +162,7 @@ module Announcer
       end
       text = \
         if play.fumble? && !play.blocked_kick_return?
-          announcement.add("FUMBLE #{at_yard_line(game.ball_on)}", 2500)
+          announcement.add("FUMBLE #{at_yard_line(game.ball_on, no_side: true)}", 2500)
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
           verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
@@ -227,9 +227,9 @@ module Announcer
       [text, time]
     end
 
-    def at_yard_line(ball_on, only_yardage = false)
+    def at_yard_line(ball_on, only_yardage: false, no_side: false)
       side = ''
-      side = ball_on < 50 ? 'own ' : 'opponent ' if ball_on.between?(30, 70) && ball_on != 50
+      side = ball_on < 50 ? 'own ' : 'opponent ' if !no_side && ball_on.between?(30, 70) && ball_on != 50
       return "in zone" if ball_on <= 0 || ball_on >= 100
       yardage = ball_on <= 50 ? ball_on : 100 - ball_on
       return yardage.to_s if only_yardage
@@ -243,7 +243,7 @@ module Announcer
       start_on.step(end_on, 5).map { |ball_on|
         prefix = start_on == ball_on ? "To the " : ""
         time -= 50
-        [prefix + at_yard_line(ball_on, true), [time, 750].max]
+        [prefix + at_yard_line(ball_on, only_yardage: true), [time, 750].max]
       }
     end
 end
