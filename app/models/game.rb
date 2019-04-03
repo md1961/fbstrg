@@ -125,9 +125,8 @@ class Game < ApplicationRecord
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       self.error_message = "Illegal offensive play '#{play_input}'" unless play
       if play&.let_clock_run?
-        if !clock_stopped && (time_left <= 40 || ([2, 4].include?(quarter) && time_left > 120 && time_left <= 160))
-          advance_clock(40, in_play: false)
-          save!
+        is_successful = let_clock_run
+        if is_successful
           return
         else
           play = nil
@@ -141,6 +140,11 @@ class Game < ApplicationRecord
     else
       offensive_strategy = offense.offensive_strategy
       @offensive_play, option = offensive_strategy.choose_play(self)
+      if @offensive_play&.let_clock_run?
+        # FIXME: Do not let let_clock_run() to return false.
+        let_clock_run
+        return
+      end
       return if timeout_taken?(option) || with_no_huddle?(option)
       @offensive_play_set = offensive_strategy.play_set
     end
@@ -158,6 +162,16 @@ class Game < ApplicationRecord
   end
 
   private
+
+    def let_clock_run
+      if !clock_stopped && (time_left <= 40 || ([2, 4].include?(quarter) && time_left > 120 && time_left <= 160))
+        advance_clock(40, in_play: false)
+        save!
+        true
+      else
+        false
+      end
+    end
 
     def timeout_taken?(play_input)
       return false if play_input.blank?
