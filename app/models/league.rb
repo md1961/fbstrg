@@ -29,8 +29,10 @@ class League < TeamGroup
     child_groups
   end
 
-  def won_lost_tied_pf_pa_for(team)
-    games_finished.find_all { |g|
+  def won_lost_tied_pf_pa_for(team, within: nil)
+    games = games_finished
+    games = games.find_all(&:within_conference?) if within&.to_sym == :conference
+    games.find_all { |g|
       g.for?(team)
     }.each_with_object([0] * 5) { |game, results|
       result, score_own, score_opp = game.result_and_scores_for(team)
