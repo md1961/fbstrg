@@ -7,6 +7,7 @@
     <th>T</th>
     <th>PF</th>
     <th>PA</th>
+    <th>Conference</th>
   </thead>
   <tbody>
     <% standings.each do |standing| -%>
@@ -18,6 +19,7 @@
         <td class="games  numeric"><%= standing.tied  %></td>
         <td class="points numeric"><%= standing.pf    %></td>
         <td class="points numeric"><%= standing.pa    %></td>
+        <td class="centered"><%= standing.conference %></td>
       </tr>
     <% end -%>
   </tbody>
