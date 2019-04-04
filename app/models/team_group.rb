@@ -14,6 +14,10 @@ class TeamGroup < ApplicationRecord
     teams.map { |team| TeamStanding.new(team) }.sort
   end
 
+  def ==(other)
+    id == other.id
+  end
+
   private
 
     def set_abbr
