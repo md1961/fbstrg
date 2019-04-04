@@ -77,6 +77,10 @@ class Game < ApplicationRecord
     [home_team_id, visitors_id].include?(team.id)
   end
 
+  def within_conference?
+    home_team.conference && home_team.conference == visitors.conference
+  end
+
   def opponent_for(team)
     return nil unless for?(team)
     team == home_team ? visitors : home_team
