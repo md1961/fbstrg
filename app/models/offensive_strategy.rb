@@ -35,7 +35,7 @@ class OffensiveStrategy < ApplicationRecord
       OffensivePlay.kickoff_after_safety
     elsif needs_defense_timeout?(game)
       [nil, 'TD']
-    elsif let_clock_run_to_finish_game?(game)
+    elsif let_clock_run_to_finish_quarter?(game)
       OffensivePlay.let_clock_run
     elsif kneel_down_to_finish_game?(game) || kneel_down_to_finish_half?(game)
       OffensivePlay.kneel_down

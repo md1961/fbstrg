@@ -167,9 +167,15 @@ module StrategyTool
     )
   end
 
-  def let_clock_run_to_finish_game?(game)
-    game.quarter == 4 && game.score_diff > 0 && game.timeout_left(false).zero? \
-      && game.time_left <= 40 && !game.clock_stopped
+  def let_clock_run_to_finish_quarter?(game)
+    (game.time_left <= 40 && !game.clock_stopped && game.timeout_left(false).zero?) && (
+         (game.quarter == 4 && game.score_diff > 0) \
+      || (game.quarter == 2 && (
+              (game.down == 4 && game.ball_on < 40) \
+           || (zone_conservative?(game))
+           )
+         )
+    )
   end
 
   def kneel_down_to_finish_game?(game)
