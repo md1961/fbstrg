@@ -365,7 +365,7 @@ class Play < ApplicationRecord
         self.yardage = air_yardage
         self.out_of_bounds = false
         no_need_to_return = game.quarter == 4 && game.score_diff < 0 && game.timeout_left <= 20
-        self.yardage -= (rand(31) - rand(31)).abs if rand(1).zero? && !no_need_to_return
+        self.yardage -= (rand(31) - rand(31)).abs if rand(2).zero? && !no_need_to_return
       elsif game.no_huddle && complete?
         if rand * 100 < 5.0 - @ttm.qb_read_factor * 0.5
           self.result = :incomplete
