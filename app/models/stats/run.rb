@@ -13,10 +13,18 @@ class Run
     @longs = []
   end
 
+  def to_be_tallied?(play)
+    play.on_ground?
+  end
+
+  def yardage_from(play)
+    play.yardage
+  end
+
   def tally_from(play)
-    if play.on_ground?
+    if to_be_tallied?(play)
       @attempts += 1
-      yardage = play.yardage
+      yardage = yardage_from(play)
       @yards += yardage
       @long = yardage if yardage > @long
       @touchdowns += 1 if play.touchdown?
