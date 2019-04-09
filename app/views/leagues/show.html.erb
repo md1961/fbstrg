@@ -106,5 +106,16 @@
       <%= render partial: 'team_pass_stats',
             locals: {team_pass_stats: @league.total_team_stats.map(&:pass_defense_stats).sort_by { |s| s.rating }} %>
     </div>
+
+    <div class="stats_tables">
+      <%= render partial: 'team_run_stats',
+            locals: {team_run_stats: @league.total_team_stats.map(&:kickoff_return_stats).sort_by { |s| -s.yards_per_carry }} %>
+
+      <%= render partial: 'team_run_stats',
+            locals: {team_run_stats: @league.total_team_stats.map(&:punt_return_stats).sort_by { |s| -s.yards_per_carry }} %>
+
+      <%= render partial: 'team_run_stats',
+            locals: {team_run_stats: @league.total_team_stats.map(&:int_return_stats).sort_by { |s| -s.yards_per_carry }} %>
+    </div>
   <% end -%>
 </div>
