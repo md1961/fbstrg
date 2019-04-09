@@ -485,6 +485,10 @@ class Play < ApplicationRecord
     a.join(' ')
   end
 
+  def return_yardage
+    [air_yardage - yardage, game_snapshot.ball_on + air_yardage].min
+  end
+
   private
 
     def self.long_yardage
@@ -652,8 +656,7 @@ class Play < ApplicationRecord
       if yardage == air_yardage
         "#{-yardage} yard loss #{s}"
       else
-        return_y = [air_yardage - yardage, game_snapshot.ball_on + air_yardage].min
-        "#{return_y} yard return"
+        "#{return_yardage} yard return"
       end
     end
 
@@ -665,9 +668,7 @@ class Play < ApplicationRecord
         kick, int = '', ''
         kick = kickoff_and_return? ? ' kickoff' : ' punt' if kick_and_return?
         int = 'Intercepted ' if intercepted?
-        return_y = air_yardage - yardage
-        return_y = [return_y, game_snapshot.ball_on + air_yardage].min unless no_scoring?
-        return_y = "#{return_y.zero? ? 'no' : "#{return_y } yard"} return"
+        return_y = "#{return_yardage.zero? ? 'no' : "#{return_yardage } yard"} return"
         "#{int}#{air_yardage} yard#{kick}, #{return_y}"
       elsif on_ground?
         "Run " + (yardage.zero? ? "no gain" : yardage > 0 ? "#{yardage} yard" : "#{-yardage} yard loss")
