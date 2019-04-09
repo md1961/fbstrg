@@ -28,8 +28,8 @@ class Team < ApplicationRecord
     league&.year
   end
 
-  def won_lost_tied_pf_pa(within: nil)
-    league.won_lost_tied_pf_pa_for(self, within: within)
+  def team_record
+    league.team_record_for(self)
   end
 
   def to_s

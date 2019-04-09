@@ -10,8 +10,16 @@ class TeamGroup < ApplicationRecord
     child_groups.flat_map(&:teams)
   end
 
+  def team_record_for(team)
+    league.games_finished.find_all { |g|
+      g.for?(team)
+    }.each_with_object(TeamStanding.new(team)) { |game, record|
+      record.update_by(game)
+    }
+  end
+
   def standings
-    teams.map { |team| TeamStanding.new(team) }.sort
+    teams.map { |team| team_record_for(team) }.sort
   end
 
   def ==(other)

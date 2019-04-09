@@ -16,5 +16,6 @@
 !/log/.keep
 /tmp
 *~
+Session.vim
 
 .ruby-version

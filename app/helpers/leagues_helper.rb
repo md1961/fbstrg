@@ -1,9 +1,7 @@
 module LeaguesHelper
 
   def team_result_display_for(team)
-    results = team.won_lost_tied_pf_pa.first(3)
-    results.pop if results.last.zero?
-    results.join('-')
+    team.team_record.to_s
   end
 
   def game_result_display(game, team)
