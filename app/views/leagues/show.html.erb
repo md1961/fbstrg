@@ -10,14 +10,14 @@
 
   <% if !@league.direct_teams.empty? -%>
     <div class="team_schedules">
-      <% @league.standing.map(&:team).each do |team| -%>
+      <% @league.standing.teams.each do |team| -%>
         <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
       <% end -%>
     </div>
   <% else -%>
     <% @league.conferences.each do |conference| -%>
       <div class="team_schedules">
-        <% conference.standing.map(&:team).each do |team| -%>
+        <% conference.standing.teams.each do |team| -%>
           <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
         <% end -%>
       </div>
@@ -34,7 +34,7 @@
     <% end -%>
 
     <div class="team_traits" hidden>
-      <%= render partial: 'teams/traits', locals: {teams: @league.standing.map(&:team)} %>
+      <%= render partial: 'teams/traits', locals: {teams: @league.standing.teams} %>
     </div>
   </div>
 

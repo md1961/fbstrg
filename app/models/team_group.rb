@@ -19,7 +19,7 @@ class TeamGroup < ApplicationRecord
   end
 
   def standing
-    teams.map { |team| team_record_for(team) }.sort
+    TeamStanding.new(self)
   end
 
   def ==(other)
