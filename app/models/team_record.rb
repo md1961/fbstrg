@@ -1,4 +1,4 @@
-class TeamStanding
+class TeamRecord
   include Comparable
 
   attr_reader :team, :conference
