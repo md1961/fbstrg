@@ -10,31 +10,31 @@
 
   <% if !@league.direct_teams.empty? -%>
     <div class="team_schedules">
-      <% @league.standings.map(&:team).each do |team| -%>
+      <% @league.standing.map(&:team).each do |team| -%>
         <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
       <% end -%>
     </div>
   <% else -%>
     <% @league.conferences.each do |conference| -%>
       <div class="team_schedules">
-        <% conference.standings.map(&:team).each do |team| -%>
+        <% conference.standing.map(&:team).each do |team| -%>
           <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
         <% end -%>
       </div>
     <% end -%>
   <% end -%>
 
-  <div class="standings">
+  <div class="standing">
     <% if !@league.direct_teams.empty? -%>
-      <%= render partial: 'standings', locals: {standings: @league.standings} %>
+      <%= render partial: 'standing', locals: {standing: @league.standing} %>
     <% else -%>
       <% @league.conferences.each do |conference| -%>
-        <%= render partial: 'standings', locals: {standings: conference.standings} %>
+        <%= render partial: 'standing', locals: {standing: conference.standing} %>
       <% end -%>
     <% end -%>
 
     <div class="team_traits" hidden>
-      <%= render partial: 'teams/traits', locals: {teams: @league.standings.map(&:team)} %>
+      <%= render partial: 'teams/traits', locals: {teams: @league.standing.map(&:team)} %>
     </div>
   </div>
 

@@ -1,0 +1,26 @@
+<table class="standing">
+  <thead>
+    <th>
+    <th>G</th>
+    <th>W</th>
+    <th>L</th>
+    <th>T</th>
+    <th>PF</th>
+    <th>PA</th>
+    <th>Conference</th>
+  </thead>
+  <tbody>
+    <% standing.each do |team_record| -%>
+      <tr>
+        <td><%= team_record.team %></td>
+        <td class="games  numeric"><%= team_record.games %></td>
+        <td class="games  numeric"><%= team_record.won   %></td>
+        <td class="games  numeric"><%= team_record.lost  %></td>
+        <td class="games  numeric"><%= team_record.tied  %></td>
+        <td class="points numeric"><%= team_record.pf    %></td>
+        <td class="points numeric"><%= team_record.pa    %></td>
+        <td class="centered"><%= team_record.conference %></td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>

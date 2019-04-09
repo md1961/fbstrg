@@ -18,7 +18,7 @@ class TeamGroup < ApplicationRecord
     }
   end
 
-  def standings
+  def standing
     teams.map { |team| team_record_for(team) }.sort
   end
 
