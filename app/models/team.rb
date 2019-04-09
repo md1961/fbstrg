@@ -20,6 +20,7 @@ class Team < ApplicationRecord
   end
 
   def conference
+    return nil if team_group.is_a?(League)
     return team_group if team_group.nil? || team_group.is_a?(Conference)
     team_group.conference
   end
