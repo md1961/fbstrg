@@ -3,11 +3,13 @@ class TeamRecord
 
   attr_reader :team, :conference
   delegate :won, :lost, :tied, :pf, :pa, to: :@league
+  attr_accessor :rank
 
   def initialize(team)
     @team = team
     @league     = Record.new
     @conference = Record.new
+    @rank = 1
   end
 
   def games
@@ -24,7 +26,7 @@ class TeamRecord
   end
 
   def <=>(other)
-    pct <=> other.pct
+    rank <=> other.rank
   end
 
   def to_s
