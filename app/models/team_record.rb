@@ -3,13 +3,14 @@ class TeamRecord
 
   attr_reader :team, :conference
   delegate :won, :lost, :tied, :pf, :pa, to: :@league
-  attr_accessor :rank
+  attr_accessor :rank, :remarks
 
   def initialize(team)
     @team = team
     @league     = Record.new
     @conference = Record.new
     @rank = 1
+    @remarks = []
   end
 
   def games
@@ -23,6 +24,10 @@ class TeamRecord
   def update_by(game)
     @league    .update_by(game, @team)
     @conference.update_by(game, @team) if game.within_conference?
+  end
+
+  def remark_display
+    remarks.empty? ? '' : "(by #{remarks.join(', ')})"
   end
 
   def <=>(other)
