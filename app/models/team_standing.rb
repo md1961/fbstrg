@@ -5,6 +5,7 @@ class TeamStanding
 
     @team_records = make_standing
     add_ranks_to(@team_records)
+    break_ties_in(@team_records)
     @team_records.sort!
   end
 
@@ -14,6 +15,12 @@ class TeamStanding
 
   def each(&block)
     @team_records.each(&block)
+  end
+
+  def rank_of(team)
+    @team_records.detect { |team_record|
+      team_record.team == team
+    }&.rank
   end
 
   private
@@ -31,6 +38,18 @@ class TeamStanding
           record.rank += rank_add
         end
         rank_add += records.size
+      end
+    end
+
+    def break_ties_in(team_records)
+      team_records.sort_by(&:rank).group_by(&:rank).each do |_, records|
+        next if records.size < 2
+        head_to_head_group = HeadToHeadGroup.new(records.map(&:team))
+        head_to_head_standing = TeamStanding.new(head_to_head_group)
+        records.each do |record|
+          rank_in_head_to_head = head_to_head_standing.rank_of(record.team)
+          record.rank += rank_in_head_to_head - 1
+        end
       end
     end
 end
