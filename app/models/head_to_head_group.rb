@@ -15,4 +15,9 @@ class HeadToHeadGroup
       record.update_by(game)
     }
   end
+
+  def all_equal_by?(&f_cmp)
+    team_records = @teams.map { |team| team_record_for(team) }
+    team_records.all?(&f_cmp)
+  end
 end

@@ -45,10 +45,15 @@ class TeamStanding
       team_records.sort_by(&:rank).group_by(&:rank).each do |_, records|
         next if records.size < 2
         head_to_head_group = HeadToHeadGroup.new(records.map(&:team))
+        return if @team_group.is_a?(HeadToHeadGroup) && head_to_head_group.all_equal_by?(&:pct)
         head_to_head_standing = TeamStanding.new(head_to_head_group)
         records.each do |record|
           rank_in_head_to_head = head_to_head_standing.rank_of(record.team)
-          record.rank += rank_in_head_to_head - 1
+          rank_add = rank_in_head_to_head - 1
+          if rank_add > 0
+            record.rank += rank_add
+            record.remarks << 'head-to-head'
+          end
         end
       end
     end
