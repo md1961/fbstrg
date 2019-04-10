@@ -77,6 +77,11 @@ class Game < ApplicationRecord
     [home_team_id, visitors_id].include?(team.id)
   end
 
+  def head_to_head_for?(teams)
+    team_ids = teams.map(&:id)
+    team_ids.include?(home_team_id) && team_ids.include?(visitors_id)
+  end
+
   def within_conference?
     home_team.conference && home_team.conference == visitors.conference
   end
