@@ -44,6 +44,7 @@ class TeamRecord
 
     def update_by(game, team)
       result, score_own, score_opp = game.result_and_scores_for(team)
+      return unless result
       case result.upcase
       when 'W'
         @won += 1
