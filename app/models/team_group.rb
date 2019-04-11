@@ -11,8 +11,8 @@ class TeamGroup < ApplicationRecord
   end
 
   def team_record_for(team)
-    league.games_finished.find_all { |g|
-      g.for?(team)
+    league.games_finished.find_all { |game|
+      game.for?(team)
     }.each_with_object(TeamRecord.new(team)) { |game, record|
       record.update_by(game)
     }
