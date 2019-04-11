@@ -2,7 +2,7 @@ class TeamRecord
   include Comparable
 
   attr_reader :team, :conference
-  delegate :won, :lost, :tied, :pf, :pa, to: :@league
+  delegate :won, :lost, :tied, :pf, :pa, :games, :pct, to: :@league
   attr_accessor :rank, :remarks
 
   def initialize(team)
@@ -11,14 +11,6 @@ class TeamRecord
     @conference = Record.new
     @rank = 1
     @remarks = []
-  end
-
-  def games
-    won + lost + tied
-  end
-
-  def pct
-    -(won + tied * 0.5)
   end
 
   def update_by(game)
@@ -47,6 +39,14 @@ class TeamRecord
       @tied = 0
       @pf   = 0
       @pa   = 0
+    end
+
+    def games
+      won + lost + tied
+    end
+
+    def pct
+      -(won + tied * 0.5)
     end
 
     def update_by(game, team)
