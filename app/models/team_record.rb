@@ -13,6 +13,10 @@ class TeamRecord
     @remarks = []
   end
 
+  def conference_pct
+    @team.conference.team_record_for(@team).conference.pct
+  end
+
   def update_by(game)
     @league    .update_by(game, @team)
     @conference.update_by(game, @team) if game.within_conference?
