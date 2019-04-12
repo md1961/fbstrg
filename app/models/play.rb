@@ -277,7 +277,8 @@ class Play < ApplicationRecord
   end
 
   def change_due_to(game)
-    return if kneel_down?
+    return if kneel_down? || game.offensive_play&.spike_ball?
+
     # TODO: Use Play#offensive_play for TeamTraitManager.new().
     @ttm = TeamTraitManager.new(game, game.offensive_play)
 
