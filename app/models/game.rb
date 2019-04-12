@@ -243,6 +243,7 @@ class Game < ApplicationRecord
 
   def play(value=nil)
     unless clock_stopped
+      no_huddle = true if offensive_play&.spike_ball?
       time_to_huddle = \
         if last_play_out_of_bounds?
           no_huddle ? rand(2 .. 5) : 30 - rand(0 .. 5)
