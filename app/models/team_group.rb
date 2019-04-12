@@ -23,7 +23,7 @@ class TeamGroup < ApplicationRecord
   end
 
   def ==(other)
-    id == other.id
+    other.is_a?(self.class) && id == other.id
   end
 
   private
