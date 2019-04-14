@@ -20,6 +20,14 @@ class GameSnapshot < ApplicationRecord
     false
   end
 
+  def hides_offensive_play?
+    false
+  end
+
+  def hides_defensive_play?
+    false
+  end
+
   def total_score
     score_home + score_visitors
   end

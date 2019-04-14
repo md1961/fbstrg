@@ -22,7 +22,7 @@ class OffensivePlaySet < ApplicationRecord
   end
 
   def hurrying?
-    [ 'hurry up', 'pass only'].include?(name.downcase)
+    ['hurry up', 'pass only'].include?(name.downcase)
   end
 
   class BasicWeightCorrector
