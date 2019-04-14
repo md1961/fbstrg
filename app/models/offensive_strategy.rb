@@ -3,6 +3,10 @@ class OffensiveStrategy < ApplicationRecord
 
   attr_reader :play_set
 
+  def hurrying?(game)
+    offense_running_out_of_time?(game)
+  end
+
   def offensive_play_set(game)
     if cannot_down_in_field?(game)
       OffensivePlaySet.pass_only
