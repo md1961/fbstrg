@@ -396,8 +396,9 @@ class Play < ApplicationRecord
     if on_ground? || complete? || intercepted? || kickoff_and_return?
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
+      end
       # TODO: Extract tries_to_go_out_of_bounds?().
-      elsif (on_ground? || complete?) && game.offensive_play_set&.hurrying? && game.ball_on < 95 && game.ball_on + air_yardage < 100
+      if (on_ground? || complete?) && game.offensive_play_set&.hurrying? && game.ball_on < 95 && game.ball_on + air_yardage < 100
         if !game.offensive_play&.hard_to_go_out_of_bounds? && !out_of_bounds && game.down < 4 && rand(2).zero?
           minus_yardage  = rand(2 .. 6)
           minus_yardage -= rand(1 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
