@@ -69,6 +69,10 @@ class Game < ApplicationRecord
     playing? && offensive_play&.normal? && allows_defensive_play_choice?
   end
 
+  def offense_hurrying?
+    offense.offensive_strategy.hurrying?(self)
+  end
+
   def clock_runs_out?
     end_of_quarter? || end_of_half? || final?
   end
