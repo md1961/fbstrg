@@ -398,13 +398,12 @@ class Play < ApplicationRecord
       if rand * 100 < pct_breakaway(game)
         determine_breakaway(game)
       end
-      # TODO: Extract tries_to_go_out_of_bounds?().
-      if (on_ground? || complete?) && game.offensive_play_set&.hurrying? && game.ball_on < 95 && game.ball_on + air_yardage < 100
-        if !game.offensive_play&.hard_to_go_out_of_bounds? && !out_of_bounds && game.down < 4 && rand(2).zero?
-          minus_yardage  = rand(2 .. 6)
-          minus_yardage -= rand(1 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
-          self.yardage -= [minus_yardage, 0].max
-          self.out_of_bounds = true
+      if tries_to_go_out_of_bounds?(game)
+        if rand(2).zero?
+        minus_yardage  = rand(2 .. 6)
+        minus_yardage -= rand(1 .. 4) if game.offensive_play.easy_to_go_out_of_bounds?
+        self.yardage -= [minus_yardage, 0].max
+        self.out_of_bounds = true
         end
       end
     end
@@ -497,6 +496,17 @@ class Play < ApplicationRecord
 
     def self.long_yardage
       30 + rand(21)
+    end
+
+    def tries_to_go_out_of_bounds?(game)
+      return false unless on_ground? || complete?
+      return false unless game.offense_hurrying?
+      return false if out_of_bounds
+      return false if game.offensive_play&.hard_to_go_out_of_bounds?
+      return false if game.down == 4
+      return false if game.ball_on >= 95
+      return false if game.ball_on + air_yardage >= 100
+      true
     end
 
     NORMAL_YARDS_BACK_FOR_PUNT = 13

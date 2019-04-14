@@ -115,6 +115,7 @@ module StrategyTool
     || (game.quarter >= 3 && game.score_diff <= -14 && game.ball_on >= 50 && game.yard_to_go <= 10)
   end
 
+  # FIXME: Consider an alternative to FG try over 60 yard in final seconds.
   # TODO: Consider plays before trying FG.
   def kick_FG_now?(game)
     return false if [1, 3].include?(game.quarter) || game.ball_on < 50
