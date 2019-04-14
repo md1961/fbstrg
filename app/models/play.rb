@@ -371,8 +371,8 @@ class Play < ApplicationRecord
         if rand * 100 < 5.0 - @ttm.qb_read_factor * 0.5
           self.result = :incomplete
           self.yardage = 0
+          self.out_of_bounds = false
         end
-        self.out_of_bounds = false
       end
     end
 
@@ -381,6 +381,7 @@ class Play < ApplicationRecord
       if return_from >= 110
         self.result = :incomplete
         self.yardage = 0
+        self.out_of_bounds = false
         return
       elsif return_from >= 100
         depth = return_from - 100
