@@ -1,3 +1,5 @@
+exit
+
 crossing_pass    = OffensivePlay.crossing_pass
 button_hook_pass = OffensivePlay.button_hook_pass
 razzle_dazzle    = OffensivePlay.razzle_dazzle
