@@ -73,9 +73,9 @@ module Announcer
       else
         announcement.add("Kick is up", 1000)
         time = (100 - run_from + 7 + 10) * 50 - 200
-        announcement.add("Kick is up, and it's", time)
+        announcement.add("Kick is up, and it is", time)
         result = play.no_scoring? ? 'NO GOOD' : 'GOOD'
-        announcement.add("Kick is up, and it's #{result}", 2000)
+        announcement.add("Kick is up, and it is #{result}", 2000)
       end
     elsif play.sacked?
       time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
