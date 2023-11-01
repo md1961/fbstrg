@@ -14,7 +14,7 @@ class GamesController < ApplicationController
   end
 
   def update
-    @game.no_huddle = session[:no_huddle]
+    @game.no_huddle = (params[:no_huddle] == 'true') || session[:no_huddle]
     @game_snapshot_prev = nil
     if params[:play] == 'to_final_minutes'
       @game.to_final_minutes!

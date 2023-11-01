@@ -27,6 +27,7 @@
     <%= form_tag @game, method: :patch do %>
       <%= @game.prompt %>
       <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
+      <%= hidden_field_tag :no_huddle, @game.no_huddle %>
       <%= submit_tag :proceed %>
 
       <%= link_to "Stats", stats_path(game_id: @game) %>
