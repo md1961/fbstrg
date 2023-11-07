@@ -11,7 +11,7 @@ class Game < ApplicationRecord
   attr_reader   :result, :previous_spot, :announcement, :goes_into_huddle
   attr_accessor :offensive_play, :offensive_play_set,
                 :defensive_play, :defensive_play_set,
-                :no_huddle, :error_message
+                :no_huddle, :two_point_try, :error_message
 
   KICKOFF_YARDLINE = 35
   TOUCHBACK_YARDLINE = 20
@@ -127,7 +127,7 @@ class Game < ApplicationRecord
 
   def determine_offensive_play(play_input)
     return if timeout_taken?(play_input) || with_no_huddle?(play_input)
-    if play_input == '>' && offense_human_assisted?
+    if (play_input == '>' && offense_human_assisted?) || @two_point_try
       @goes_into_huddle = true
       play_input = 'scrimmage'
     end
@@ -272,6 +272,11 @@ class Game < ApplicationRecord
     @previous_spot = ball_on
     self.next_play = :scrimmage
     self.status = :huddle
+    if @result.two_point_try?
+      @two_point_try = true
+      return
+    end
+
     @result.change_due_to(self)
     if @result.field_goal_try? || @result.extra_point_try?
       try_field_goal(@result)
@@ -284,6 +289,7 @@ class Game < ApplicationRecord
     @result.record(self, game_snapshot)
 
     advance_clock(Clocker.time_to_take(@result, self))
+    @two_point_try = false
   end
 
   def advance_to_next_quarter
@@ -400,6 +406,14 @@ class Game < ApplicationRecord
       @result.scoring = :touchdown
     end
 
+    def two_point_converted
+      score(2)
+      @two_point_try = false
+      self.ball_on = KICKOFF_YARDLINE
+      self.next_play = :kickoff
+      @result.scoring = :two_point
+    end
+
     def try_field_goal(play)
       scoring = :no_scoring
       if play.yardage >= 100 - ball_on
@@ -440,12 +454,21 @@ class Game < ApplicationRecord
           play.yardage = (ball_on / 2).to_i - ball_on
         end
       end
+
       self.ball_on += play.yardage unless play.incomplete?
       toggle_possesion if play.possession_changing?
       if ball_on >= 100
         play.yardage -= ball_on - 100 unless play.punt_blocked?
         play.save!
-        touchdown
+        if two_point_try
+          two_point_converted
+        else
+          touchdown
+        end
+      elsif two_point_try
+        toggle_possesion if play.possession_changing?
+        self.ball_on = KICKOFF_YARDLINE
+        self.next_play = :kickoff
       elsif ball_on <= 0
         if play.kick_and_return? || play.intercepted? || play.fumble_rec_by_opponent?
           touchback

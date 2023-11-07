@@ -5,7 +5,7 @@ class GameSnapshot < ApplicationRecord
   belongs_to :play, optional: true
   delegate :game, to: :play
 
-  delegate :home_team, :visitors, :defense_human?, to: :game
+  delegate :home_team, :visitors, :defense_human?, :two_point_try, to: :game
 
   attr_accessor :result, :offensive_play, :previous_spot, :announcement
   attr_reader :offensive_play_set, :defensive_play, :defensive_play_set
