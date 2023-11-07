@@ -146,7 +146,15 @@ module Announcer
       end
       is_long_gain = false
       if play.yardage >= 5 || (play.possession_changing? && play.no_fumble?) || play.blocked_kick_return?
-        announcement.add("Find hole!", 500 + 150 * [play.yardage, 10].min) if play.on_ground?
+        if play.on_ground? && play.yardage >= 5
+          text = if offensive_play.sweep? || offensive_play.reverse? || (offensive_play.slant? && rand(4).zero?)
+                   "Turn the corner"
+                 else
+                   "Nice hole"
+                 end
+          time = 500 + 150 * [play.yardage, 10].min
+          announcement.add(text, time)
+        end
         if    (play.on_ground? && play.yardage >= 10) \
            || (play.pass? && !play.intercepted? && run_yardage_after > 5) \
            || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \
