@@ -8,13 +8,21 @@ class GamesController < ApplicationController
   end
 
   def show
-    offensive_play_id = session[:offensive_play_id]
-    @game.offensive_play = OffensivePlay.find(offensive_play_id) if offensive_play_id
-    @play_id_to_show_details = params[:play_id_to_show_details].to_i
+    if params[:two_point_try] == 'true'
+      session[:offensive_play_id] = nil
+      @game.two_point_try = true
+      @game.huddle!
+    else
+      offensive_play_id = session[:offensive_play_id]
+      @game.offensive_play = OffensivePlay.find(offensive_play_id) if offensive_play_id
+      @play_id_to_show_details = params[:play_id_to_show_details].to_i
+    end
   end
 
   def update
     @game.no_huddle = (params[:no_huddle] == 'true') || session[:no_huddle]
+    @game.two_point_try = (params[:two_point_try] == 'true') || session[:two_point_try]
+
     @game_snapshot_prev = nil
     if params[:play] == 'to_final_minutes'
       @game.to_final_minutes!
@@ -72,7 +80,9 @@ class GamesController < ApplicationController
         @game.no_huddle = false
         session[:no_huddle] = false
       end
-      if @game.result.is_a?(Play)
+      if @game.two_point_try
+        redirect_to game_path(@game, two_point_try: true) and return
+      elsif @game.result.is_a?(Play)
         game_snapshot_prev = @game.game_snapshots.order(:play_id).last
         @game_snapshot_prev = game_snapshot_prev&.dup
       end

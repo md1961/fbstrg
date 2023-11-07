@@ -7,6 +7,8 @@ module GamesHelper
       'FINAL'
     elsif game.kickoff?
       'KICKOFF'
+    elsif game.two_point_try
+      'TWO POINT'
     elsif game.extra_point?
       'XP'
     else
