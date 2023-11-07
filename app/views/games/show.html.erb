@@ -99,7 +99,11 @@
   </div>
 
   <table id="play_by_play" class="table_base" <%= 'hidden' unless @game.played_over? %>>
-    <% plays = @game.plays.includes(:game_snapshot).order(number: :desc) -%>
+    <% plays = @game.plays.includes(:game_snapshot).order(number: :desc).tap { |plays|
+                 plays.each_cons(2) do |next_play, play|
+                   next_play.is_two_point_try = play.touchdown? && !next_play.extra_point_try?
+                 end
+               } -%>
     <%= render plays %>
   </table>
 

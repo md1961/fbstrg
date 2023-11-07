@@ -15,7 +15,7 @@ class Play < ApplicationRecord
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
   enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4, two_point: 5}
 
-  attr_accessor :time_to_take, :after_safety
+  attr_accessor :time_to_take, :after_safety, :is_two_point_try
 
   def self.parse(str, offensive_play)
     instance = \
@@ -494,7 +494,11 @@ class Play < ApplicationRecord
     a << "(GAMBLE)" if fourth_down_gambled?
     if !no_scoring? && !extra_point?
       a << scoring.upcase.gsub('_', ' ')
-      a << "(XP #{next_play.no_scoring? ? 'NO ': ''}GOOD)" if touchdown? && next_play
+      if touchdown? && next_play
+        next_try = next_play.extra_point_try? ? 'XP' : 'Two Point'
+        next_result = "#{next_play.no_scoring? ? 'NO ': ''}GOOD"
+        a << "(#{next_try} #{next_result})"
+      end
     end
     a.join(' ')
   end
