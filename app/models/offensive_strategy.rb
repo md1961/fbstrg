@@ -34,7 +34,7 @@ class OffensiveStrategy < ApplicationRecord
     if game.kickoff?
       needs_onside_kickoff?(game) ? OffensivePlay.onside_kickoff : OffensivePlay.normal_kickoff
     elsif game.extra_point?
-      OffensivePlay.extra_point
+      tries_two_point_conversion?(game) ? OffensivePlay.two_point_conversion : OffensivePlay.extra_point
     elsif game.kickoff_after_safety?
       OffensivePlay.kickoff_after_safety
     elsif needs_defense_timeout?(game)

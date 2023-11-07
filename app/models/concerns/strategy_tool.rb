@@ -115,6 +115,10 @@ module StrategyTool
     || (game.quarter >= 3 && game.score_diff <= -14 && game.ball_on >= 50 && game.yard_to_go <= 10)
   end
 
+  def tries_two_point_conversion?(game)
+    game.quarter >= 3 && [-15, -11, -9, -8, -4, -1, 2, 6].include?(game.score_diff + 1)
+  end
+
   # FIXME: Consider an alternative to FG try over 60 yard in final seconds.
   # TODO: Consider plays before trying FG.
   def kick_FG_now?(game)
