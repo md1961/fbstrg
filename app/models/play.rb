@@ -10,7 +10,7 @@ class Play < ApplicationRecord
   enum result:  {on_ground: 0, complete: 1, incomplete: 2, intercepted: 3, sacked: 4,
                  kickoff_and_return: 5, punt_and_return: 6, punt_blocked: 7,
                  field_goal_try: 8, field_goal_blocked: 9, extra_point_try: 10, kneel_down: 11,
-                 onside_kick: 12, two_point_conversion: 13}
+                 onside_kick: 12, two_point_try: 13}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
   enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4, two_point: 5}
@@ -31,6 +31,8 @@ class Play < ApplicationRecord
         kickoff
       elsif offensive_play.extra_point?
         extra_point_try
+      elsif offensive_play.two_point_conversion?
+        two_point_try
       elsif offensive_play.punt?
         punt
       elsif offensive_play.field_goal?
@@ -178,6 +180,12 @@ class Play < ApplicationRecord
   def self.extra_point_try
     field_goal_try.tap { |play|
       play.result = :extra_point_try
+    }
+  end
+
+  def self.two_point_try
+    new.tap { |play|
+      play.result = :two_point_try
     }
   end
 
@@ -382,6 +390,9 @@ class Play < ApplicationRecord
         self.result = :incomplete
         self.yardage = 0
         self.out_of_bounds = false
+        return
+      elsif game.two_point_try
+        self.yardage = air_yardage
         return
       elsif return_from >= 100
         depth = return_from - 100
