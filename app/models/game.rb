@@ -77,6 +77,12 @@ class Game < ApplicationRecord
     end_of_quarter? || end_of_half? || final?
   end
 
+  def both_teams_possess_in_overtime?
+    plays.find_all { |play| play.quarter >= 5 }
+         .reject(&:kickoff_and_return?)
+         .map(&:team).uniq.size == 2
+  end
+
   def for?(team)
     [home_team_id, visitors_id].include?(team.id)
   end
