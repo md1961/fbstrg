@@ -145,6 +145,8 @@ module StrategyTool
     return false if game.quarter == 4 && game.score_diff > 0
     return false if game.quarter == 2 && !zone_aggresive?(game) && game.down >= 3
     return false if game.time_left >= 40 && game.down == 4 && !tries_fourth_down_gamble?(game)
+    return false if game.time_left > seconds_needed_for_touchdown(game) && [2, 4].include?(game.quarter)
+    return false if game.time_left > seconds_needed_for_field_goal(game) && game.quarter == 4 && game.score_diff >= -3
     if game.time_left >= 40 * 2
       return game.timeout_left >= 3
     elsif game.time_left >= 40 * 1
