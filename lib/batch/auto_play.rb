@@ -82,8 +82,16 @@ while !game.final?
       ball_on = game.ball_on
       ball_on_prefix = ball_on == 50 ? '' : ball_on < 50 ? 'Own ' : 'Opp '
       ball_on = 100 - ball_on if ball_on > 50
-      print "  #{game.offense.abbr} on #{ball_on_prefix}#{ball_on}"
-      print ' ' * 40 + "\r"
+
+      play = game.result
+      if !play.is_a?(Play) || play.no_scoring?
+        print "  #{game.offense.abbr} on #{ball_on_prefix}#{ball_on}"
+        print ' ' * 40 + "\r"
+      else
+        print "  #{play}"
+        print ' ' * 40 + "\r"
+        gets
+      end
     end
   end
 end
