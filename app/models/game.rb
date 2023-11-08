@@ -298,11 +298,20 @@ class Game < ApplicationRecord
     self.clock_stopped = true
     self.status = :huddle
     if quarter == 3 || quarter == 5
-      self.home_has_ball = !home_kicks_first
       self.ball_on = KICKOFF_YARDLINE
       self.next_play = :kickoff
-      self.timeout_home     = 3
-      self.timeout_visitors = 3
+      if quarter == 3
+        self.home_has_ball = !home_kicks_first
+        self.timeout_home     = 3
+        self.timeout_visitors = 3
+      else
+        self.home_has_ball = rand(2).zero?
+        @result = "#{defense} won the coin toss and chose to receive the kickoff"
+      end
+    end
+    if quarter >= 5
+      self.timeout_home     = 2
+      self.timeout_visitors = 2
     end
   end
 
