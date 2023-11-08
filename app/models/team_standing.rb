@@ -28,6 +28,14 @@ class TeamStanding
     team_record_of(team)&.rank
   end
 
+  def team_with_rank_of(rank)
+    @team_records.find_all { |team_record|
+      team_record.rank == rank
+    }.map(&:team).then { |teams|
+      teams.size <= 1 ? teams.first : teams
+    }
+  end
+
   private
 
     def head_to_head?
