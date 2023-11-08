@@ -15,6 +15,8 @@ class Play < ApplicationRecord
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
   enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4, two_point: 5}
 
+  delegate :quarter, to: :game_snapshot
+
   attr_accessor :time_to_take, :after_safety, :is_two_point_try
 
   def self.parse(str, offensive_play)
