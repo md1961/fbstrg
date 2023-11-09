@@ -43,6 +43,32 @@ table.score_board {
   td.score_final {
     width: 25px;
   }
+
+  &.pretty {
+    font-size: 2rem;
+    color: yellow;
+    background-color: black;
+
+    a.button_to_toggle_pretty {
+      color: yellow;
+    }
+
+    td {
+      padding-right: 10px;
+    }
+
+    td.numeric {
+      width: 40px;
+    }
+
+    td.score_by_quarter {
+      width: 40px;
+    }
+
+    td.score_final {
+      width: 60px;
+    }
+  }
 }
 
 form a {
