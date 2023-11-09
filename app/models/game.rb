@@ -78,7 +78,8 @@ class Game < ApplicationRecord
   end
 
   def both_teams_possess_in_overtime?
-    plays.find_all { |play| play.quarter >= 5 }
+    plays.includes(:game_snapshot)
+         .find_all { |play| play.quarter >= 5 }
          .reject(&:kickoff_and_return?)
          .map(&:team).uniq.size == 2
   end
