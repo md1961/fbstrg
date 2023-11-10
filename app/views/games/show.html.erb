@@ -1,11 +1,7 @@
-<table id="score_board"
-       class="score_board <%= @score_board_class %>"
-       <%= 'hidden' if @game_snapshot_prev %>>
+<table id="score_board" class="score_board" <%= 'hidden' if @game_snapshot_prev %>>
   <%= render partial: 'score_board', locals: {game: @game} %>
 </table>
-<table id="score_board_prev"
-       class="score_board"
-       <%= 'hidden' unless @game_snapshot_prev %>>
+<table id="score_board_prev" class="score_board" <%= 'hidden' unless @game_snapshot_prev %>>
   <%= render partial: 'score_board', locals: {game: @game_snapshot_prev} %>
 </table>
 
