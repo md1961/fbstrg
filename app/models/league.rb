@@ -37,6 +37,12 @@ class League < TeamGroup
     @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
   end
 
+  def game_ongoing
+    schedules.includes(:game).map(&:game).sort_by(&:updated_at).last.then { |game|
+      game.final? ? nil : game
+    }
+  end
+
   def total_team_stats
     h_team_stats.values
   end
