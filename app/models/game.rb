@@ -568,7 +568,7 @@ class Game < ApplicationRecord
       ) { |play, hs|
         gss = play.game_snapshot
         team_index = gss.offense == gss.visitors ? 0 : 1
-        team_index = 1 - team_index if play.safety? || play.possession_changed?
+        team_index = 1 - team_index if play.safety? || play.possession_changing?
         hs[team_index][gss.quarter] += play.point_scored
       }
     end
