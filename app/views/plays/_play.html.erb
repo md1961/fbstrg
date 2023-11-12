@@ -24,7 +24,7 @@
   <td><%= play %></td>
   <td>
     <% unless play.no_scoring? -%>
-      <% for_offense = !play.safety? && (play.touchdown? || !play.possession_changed?)
+      <% for_offense = !play.safety? && !play.possession_changing?
          gss.add_points(play.point_scored, for_offense)
          gss.add_points(play.next_play&.point_scored, for_offense) if play.touchdown? -%>
       <%= "#{game.visitors} #{gss.score_visitors} - #{game.home_team} #{gss.score_home}" %>
