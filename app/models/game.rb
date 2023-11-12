@@ -406,6 +406,15 @@ class Game < ApplicationRecord
     "#{visitors}#{str_v} at #{home_team}#{str_h}"
   end
 
+  def live_score
+    mins = time_left / 60
+    time_left_display = format("%d:%02d", mins, time_left - mins * 60)
+    [
+      "#{quarter}Q #{time_left_display}",
+      "#{visitors.abbr} #{score_visitors} - #{home_team.abbr} #{score_home}"
+    ].join(' ')
+  end
+
   private
 
     def last_play_out_of_bounds?
