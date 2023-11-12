@@ -23,10 +23,10 @@ class Game < ApplicationRecord
 
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
-    false
+    offense_human_assisted?
   end
   def defense_human?
-    false
+    defense_human_assisted? && scrimmage?
   end
 
   def offense_human_assisted?
@@ -134,13 +134,17 @@ class Game < ApplicationRecord
 
   def determine_offensive_play(play_input)
     return if timeout_taken?(play_input) || with_no_huddle?(play_input)
-    if (play_input == '>' && offense_human_assisted?) || @two_point_try
+    if play_input == '>' && offense_human_assisted?
       @goes_into_huddle = true
       play_input = 'scrimmage'
     end
     @offensive_play_set = nil
     play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
-    if offense_human? || OffensivePlay.find_by(number: play_input.to_i)
+    if offense_human_assisted? || OffensivePlay.find_by(number: play_input.to_i)
+      if offense_human_assisted? && OffensiveStrategy.new.needs_defense_timeout?(self)
+        return if timeout_taken?('TD')
+      end
+
       play = OffensivePlay.find_by(number: play_input.to_i)
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
       self.error_message = "Illegal offensive play '#{play_input}'" unless play
@@ -231,11 +235,10 @@ class Game < ApplicationRecord
     end
 
     def get_play(value)
-      defensive_play = DefensivePlay.find_by(name: value&.upcase)
+      @defensive_play ||= DefensivePlay.find_by(name: value&.upcase)
       if defense_human? && !defensive_play
         raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
       elsif defensive_play
-        @defensive_play = defensive_play
         @defensive_play_set = nil
       end
       result = \
