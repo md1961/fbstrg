@@ -13,6 +13,11 @@ class ApplicationController < ActionController::Base
       end
       @body_class = session[:body_class]
 
+      if params[:no_announce]
+        session[:no_announce] = params[:no_announce] == 'true'
+      end
+      @no_announce = session[:no_announce]
+
       if params[:speed]
         session[:speed_of_announce] = params[:speed].to_f
       end

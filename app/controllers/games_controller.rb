@@ -88,6 +88,8 @@ class GamesController < ApplicationController
       end
       #game_snapshot_prev.update_scores_by(@game)
     end
+
+    @game.remove_announcement if !@game.human_assisted? && @no_announce
     render :show
   end
 
