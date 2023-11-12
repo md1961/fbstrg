@@ -189,6 +189,10 @@ class Game < ApplicationRecord
     }
   end
 
+  def remove_announcement
+    @announcement = nil
+  end
+
   private
 
     def let_clock_run
