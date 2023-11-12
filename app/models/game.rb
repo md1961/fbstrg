@@ -21,6 +21,10 @@ class Game < ApplicationRecord
     final? && result.blank?
   end
 
+  def human_assisted?
+    offense_human_assisted? || defense_human_assisted?
+  end
+
   # TODO: Implement properly offense_human?() and defense_human?()
   def offense_human?
     offense_human_assisted?
