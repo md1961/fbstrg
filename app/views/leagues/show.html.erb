@@ -46,6 +46,9 @@
     <%= link_to 'Teams', '#', id: 'toggle_teams' %>
     <%= link_to_toggle_stats %>
     <%= link_to 'Last Game', @game_played_last %>
+    <% if game_ongoing = @league.game_ongoing -%>
+      <%= link_to "Ongoing Game (#{game_ongoing.live_score})", game_ongoing %>
+    <% end -%>
   </div>
 
   <% if @shows_stats -%>
