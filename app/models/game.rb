@@ -81,13 +81,6 @@ class Game < ApplicationRecord
     end_of_quarter? || end_of_half? || final?
   end
 
-  def both_teams_possess_in_overtime?
-    plays.includes(:game_snapshot)
-         .find_all { |play| play.quarter >= 5 }
-         .reject(&:kickoff_and_return?)
-         .map(&:team).uniq.size == 2
-  end
-
   def for?(team)
     [home_team_id, visitors_id].include?(team.id)
   end
@@ -529,6 +522,10 @@ class Game < ApplicationRecord
     end
 
     def toggle_possesion
+      if quarter >= 5 && both_teams_possess_in_overtime? && score_diff < 0
+        finish_quarter
+      end
+
       self.home_has_ball = !home_has_ball
       self.ball_on = 100 - ball_on
       firstdown
@@ -562,13 +559,30 @@ class Game < ApplicationRecord
 
     def finish_quarter
       self.clock_stopped = true
-      if quarter >= 4 && score_diff != 0
+      if game_concluded?
         final!
       elsif quarter == 2
         end_of_half!
-      else
+      elsif time_left <= 0
         end_of_quarter!
       end
+    end
+
+    def game_concluded?
+      return false if quarter <  4
+      return true  if quarter == 5 && time_left <=0 && score_diff == 0 && @allows_tie
+      return false if quarter >= 4 && score_diff == 0
+      return false if quarter >= 5 && score_diff.abs == 3 && !both_teams_possess_in_overtime?
+      return true  if quarter >= 5 && both_teams_possess_in_overtime? && score_diff.nonzero?
+      return false if quarter >= 5 && !@result.try(:scoring?)
+      true
+    end
+
+    def both_teams_possess_in_overtime?
+      plays.includes(:game_snapshot)
+           .find_all { |play| play.quarter >= 5 }
+           .reject(&:kickoff_and_return?)
+           .map(&:team).uniq.size == 2
     end
 
     def scores_by_quarter_for(home_team: true)
