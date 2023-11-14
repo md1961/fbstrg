@@ -57,7 +57,8 @@
             <% plays.order(:number).each do |offensive_play| -%>
               <% clazz = ''
                  clazz = 'border_bottom' if offensive_play.number % 4 == 0
-                 clazz = 'border_top'    if offensive_play.number % 100 == 1 -%>
+                 clazz = 'border_top'    if offensive_play.number % 100 == 1
+                 clazz = 'strike'        if offensive_play.name == 'Coffin Corner Punt' -%>
               <tr class="<%= clazz %>">
                 <td class="numeric"><%= offensive_play.number %></td>
                 <td><%= offensive_play.name %></td>
