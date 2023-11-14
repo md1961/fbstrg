@@ -5,6 +5,7 @@ class TeamTraitManager
     @defense_trait = game.defense.team_trait
     @offensive_play = offensive_play
     @home_has_ball = game.home_has_ball
+    @is_neutral_game = game.is_neutral
   end
 
   def place_kicking_factor
@@ -55,10 +56,14 @@ class TeamTraitManager
 
   private
 
+    # Home field advantage is in effect in (the ratio below to 1).
+    HOME_FIELD_ADVANTAGE_RATIO = 10
+
     def home_factor(for_offense = true)
+      return 0 if @is_neutral_game
       return 0 if  @home_has_ball && !for_offense
       return 0 if !@home_has_ball &&  for_offense
-      rand(10).zero? ? 1 : 0
+      rand(HOME_FIELD_ADVANTAGE_RATIO).zero? ? 1 : 0
     end
 
     def pass_offense_factor
