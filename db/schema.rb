@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_15_001224) do
+ActiveRecord::Schema.define(version: 2023_11_15_045203) do
 
   create_table "defensive_play_set_choices", force: :cascade do |t|
     t.integer "defensive_play_set_id"
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 2023_11_15_001224) do
     t.integer "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_neutral", default: false, null: false
     t.index ["game_id"], name: "index_game_snapshots_on_game_id"
     t.index ["play_id"], name: "index_game_snapshots_on_play_id"
   end
