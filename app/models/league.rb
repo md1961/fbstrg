@@ -56,6 +56,15 @@ class League < TeamGroup
     games_finished.map(&:schedule).map(&:week).max + 1
   end
 
+  def eliminate_loser_in!(game)
+    return if !game.playoff? || !game.final?
+
+    loser = game.loser
+    playoff_berth = playoff_berths.find_by(team: loser)
+
+    playoff_berth&.destroy
+  end
+
   def to_s
     "#{year} #{abbr}"
   end
