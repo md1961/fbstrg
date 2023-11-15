@@ -2,7 +2,7 @@
   <caption><%= "#{team} (#{team_result_display_for(team)})" %></caption>
   <% @schedules_by_week.each do |week, schedules| -%>
     <% schedule = schedules.detect { |s| s.for?(team) }
-       break if schedule.is_playoff
+       break if schedule.try(:is_playoff)
        game = schedule&.game
        game_display = game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '')
        result_displays = game_result_display(game, team) -%>

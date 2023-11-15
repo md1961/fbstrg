@@ -51,6 +51,8 @@ class League < TeamGroup
   def next_schedule
     schedules.detect { |schedule| !schedule.game.final? }.tap do |schedule|
 
+      return nil if conferences.empty?
+
       if schedules.size > 0 && schedule.nil?
         if playoff_berths.empty?
           berths = PlayoffBerth.build_initial_berths(self)

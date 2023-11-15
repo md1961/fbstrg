@@ -57,7 +57,7 @@ class TeamStanding
 
     def cmp_names
       [:pct].tap { |names|
-        names.concat([:conference_pct]) if head_to_head?
+        names.concat([:conference_pct]) if head_to_head? && @team_group.teams.all?(&:conference)
       }
     end
 
