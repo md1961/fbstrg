@@ -1,4 +1,6 @@
 class PlayoffBerth < ApplicationRecord
+  include Comparable
+
   belongs_to :league, class_name: 'TeamGroup', foreign_key: 'team_group_id'
   belongs_to :team
 
@@ -24,6 +26,10 @@ class PlayoffBerth < ApplicationRecord
     end
 
     berths
+  end
+
+  def <=>(other)
+    rank <=> other.rank
   end
 
   def to_s
