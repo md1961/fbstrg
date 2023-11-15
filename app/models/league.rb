@@ -52,6 +52,10 @@ class League < TeamGroup
     schedules.detect { |schedule| !schedule.game.final? }
   end
 
+  def next_week
+    games_finished.map(&:schedule).map(&:week).max + 1
+  end
+
   def to_s
     "#{year} #{abbr}"
   end
