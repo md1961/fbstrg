@@ -1,6 +1,7 @@
 class League < TeamGroup
   has_many :schedules, -> { order(:week, :number) },
                        foreign_key: 'team_group_id', dependent: :destroy
+  has_many :playoff_berths, foreign_key: 'team_group_id', dependent: :destroy
 
   def self.create_next
     last_league = League.order(:updated_at).last
