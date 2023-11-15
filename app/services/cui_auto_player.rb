@@ -58,5 +58,9 @@ class CuiAutoPlayer
       end
     end
     puts
+
+    if @game.final? && @game.playoff?
+      @game.league&.eliminate_loser_in!(@game)
+    end
   end
 end
