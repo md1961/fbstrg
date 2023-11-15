@@ -49,7 +49,27 @@ class League < TeamGroup
   end
 
   def next_schedule
-    schedules.detect { |schedule| !schedule.game.final? }
+    schedules.detect { |schedule| !schedule.game.final? }.tap do |schedule|
+
+      if schedules.size > 0 && schedule.nil?
+        if playoff_berths.empty?
+          berths = PlayoffBerth.build_initial_berths(self)
+          PlayoffBerth.transaction do
+            berths.map(&:save!)
+          end
+        end
+
+        playoff_schedules = PlayoffScheduleMaker.build_next_schedule_for(self)
+        unless playoff_schedules.empty?
+          Schedule.transaction do
+            playoff_schedules.map(&:save!)
+          end
+
+          return next_schedule
+        end
+      end
+
+    end
   end
 
   def next_week
