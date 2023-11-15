@@ -3,4 +3,4 @@ $ ->
     $('div.team_traits').toggle()
 
   $('table.standing').on 'click', ->
-    $(this).find('.rank').toggle()
+    $(this).closest('div.standing').find('.rank').toggle()
