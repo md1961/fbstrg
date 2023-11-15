@@ -9,9 +9,9 @@ class ApplicationController < ActionController::Base
 
     def configure
       if params[:real]
-        session[:body_class] = params[:real] == 'true' ? 'real' : nil
+        session[:real] = params[:real] == 'true'
       end
-      @body_class = session[:body_class]
+      @real = session[:real]
 
       if params[:no_announce]
         session[:no_announce] = params[:no_announce] == 'true'
