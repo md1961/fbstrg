@@ -21,6 +21,10 @@ class Game < ApplicationRecord
     final? && result.blank?
   end
 
+  def playoff?
+    schedule.is_playoff
+  end
+
   def human_assisted?
     offense_human_assisted? || defense_human_assisted?
   end
@@ -117,6 +121,12 @@ class Game < ApplicationRecord
 
   def score_home_by_quarter
     scores_by_quarter_for(home_team: true)
+  end
+
+  def loser
+    return nil if score_home == score_visitors
+
+    score_home < score_visitors ? home_team : visitors
   end
 
   def prompt
