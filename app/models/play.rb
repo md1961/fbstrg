@@ -453,7 +453,7 @@ class Play < ApplicationRecord
           self.yardage = air_y - (10 + rand(11) + rand(11))
         }
       elsif offensive_play.punt? || offensive_play.kickoff_after_safety?
-        max_air_y = [70, 100 + 10 - game.ball_on].min
+        max_air_y = 70
         n_overlay = 3
         n_overlay.times.map { rand(10 .. max_air_y / n_overlay + 1) }.sum.tap { |air_y|
           pct_returnable = MathUtil.linear_interporation([30, 10.0], [60, 60.0], air_y)
