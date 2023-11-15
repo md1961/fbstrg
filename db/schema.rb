@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_15_000403) do
+ActiveRecord::Schema.define(version: 2023_11_15_001224) do
 
   create_table "defensive_play_set_choices", force: :cascade do |t|
     t.integer "defensive_play_set_id"
@@ -138,6 +138,17 @@ ActiveRecord::Schema.define(version: 2023_11_15_000403) do
     t.index ["defensive_play_id"], name: "index_play_results_on_defensive_play_id"
     t.index ["offensive_play_id"], name: "index_play_results_on_offensive_play_id"
     t.index ["play_result_chart_id"], name: "index_play_results_on_play_result_chart_id"
+  end
+
+  create_table "playoff_berths", force: :cascade do |t|
+    t.integer "team_group_id", null: false
+    t.integer "team_id", null: false
+    t.integer "rank", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_group_id", "team_id"], name: "index_playoff_berths_on_team_group_id_and_team_id", unique: true
+    t.index ["team_group_id"], name: "index_playoff_berths_on_team_group_id"
+    t.index ["team_id"], name: "index_playoff_berths_on_team_id"
   end
 
   create_table "plays", force: :cascade do |t|

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  team_group: one
+  team: one
+  rank: 1
+
+two:
+  team_group: two
+  team: two
+  rank: 1
