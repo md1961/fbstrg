@@ -17,6 +17,8 @@ class GamesController < ApplicationController
       @game.offensive_play = OffensivePlay.find(offensive_play_id) if offensive_play_id
       @play_id_to_show_details = params[:play_id_to_show_details].to_i
     end
+
+    @offensive_play_id_in_session = session[:offensive_play_id]
   end
 
   def update
@@ -35,7 +37,9 @@ class GamesController < ApplicationController
     elsif Game.tampering_game?(params[:play])
       @game.tamper(params[:play])
     elsif @game.final?
-      # No action.
+      if @game.playoff?
+        @game.league&.eliminate_loser_in!(@game)
+      end
     elsif @game.end_of_quarter? || @game.end_of_half?
       if session[:next_quarter]
         @game.advance_to_next_quarter
@@ -73,7 +77,9 @@ class GamesController < ApplicationController
         session[:defensive_play_set_id] = nil
         render :show and return
       end
+
       @game.play(params[:play])
+
       if @game.error_message.blank?
         session[:offensive_play_id] = nil
         @game.save!
