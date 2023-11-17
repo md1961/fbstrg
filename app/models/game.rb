@@ -252,10 +252,11 @@ class Game < ApplicationRecord
       elsif defensive_play
         @defensive_play_set = nil
       end
+
       result = \
         if offensive_play&.normal? && (defense_human? || defense_human_assisted? || value.blank?)
           play_result_from_chart
-        elsif value
+        elsif value.present?
           unless value.start_with?('=')
             raise Exceptions::IllegalResultStringError, "Specify result string with '=' at head"
           end
