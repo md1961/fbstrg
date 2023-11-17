@@ -211,7 +211,7 @@ class Game < ApplicationRecord
     def timeout_taken?(play_input)
       return false if play_input.blank?
       is_offense = \
-        case play_input.upcase
+        case play_input.upcase.split(/\W/).first
         when 'T'
           defense_human? ? offense_human? : true
         when 'TO'
@@ -222,7 +222,13 @@ class Game < ApplicationRecord
           return false
         end
       return false if timeout_left(is_offense).zero?
-      use_timeout(is_offense)
+
+      time_left_up_to = nil
+      if is_offense && play_input =~ /(\d+)\z/
+        time_left_up_to = Integer($1)
+      end
+      use_timeout(is_offense, time_left_up_to)
+
       @result = "Timeout ##{3 - timeout_left(is_offense)} by #{is_offense ? 'offense' : 'defense'}"
       return true
     end
@@ -233,9 +239,16 @@ class Game < ApplicationRecord
       true
     end
 
-    def use_timeout(is_offense)
+    TIME_LEFT_UP_TO_FOR_FG = 2
+
+    def use_timeout(is_offense, time_left_up_to = nil)
       is_home = (home_has_ball && is_offense) || (!home_has_ball && !is_offense)
       is_home ? self.timeout_home -= 1 : self.timeout_visitors -= 1
+
+      if time_left_up_to
+        self.time_left = [time_left - (40 - time_left_up_to), TIME_LEFT_UP_TO_FOR_FG].max
+      end
+
       self.clock_stopped = true
       save!
     end

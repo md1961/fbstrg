@@ -48,6 +48,9 @@ class OffensiveStrategy < ApplicationRecord
     elsif needs_no_huddle?(game) && !game.goes_into_huddle
       [nil, 'NH']
     elsif kick_FG_now?(game)
+      if use_up_time_and_take_timeout?(game)
+        return [nil, 'TO-0']
+      end
       OffensivePlay.field_goal
     elsif tries_hail_mary?(game)
       OffensivePlay.hail_mary
