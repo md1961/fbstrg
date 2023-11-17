@@ -201,8 +201,8 @@ module StrategyTool
   def kneel_down_to_finish_half?(game)
     game.quarter == 2 && game.ball_on > 2 \
       && game.time_left <= 30 * (5 - game.down - (game.clock_stopped? ? 1 : 0) - game.timeout_left(false)) && (
-           (game.ball_on < 20) \
-        || (game.score_diff >= -14 && game.ball_on <= 30)
+           (game.ball_on < 10) \
+        || (game.score_diff >= 0 && game.ball_on <= 20)
     )
   end
 
