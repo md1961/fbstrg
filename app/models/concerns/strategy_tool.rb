@@ -35,7 +35,7 @@ module StrategyTool
     game.quarter == 4 && (
          (score_diff <=  -3 && time_left <= secs_for_TD) \
       || (score_diff <=   0 && time_left <= secs_for_FG) \
-      || (score_diff <=   0 && time_left <= 120 && zone_aggresive?(game)) \
+      || (score_diff <=   0 && time_left <= secs_for_TD && zone_aggresive?(game)) \
       || (score_diff <=  -7 && time_left <= secs_for_TD + secs_for_FG + secs_for_FG) \
       || (score_diff <= -10 && time_left <= secs_for_TD * 2 + secs_for_FG) \
       || (score_diff <= -14)
@@ -53,8 +53,7 @@ module StrategyTool
 
   def needs_to_hurry_before_halftime?(game)
     game.quarter == 2 && (
-         game.time_left <= 120 && threatening_into_end_zone?(game) \
-      || game.time_left <= seconds_needed_for_touchdown(game) && (
+      game.time_left <= seconds_needed_for_touchdown(game) && (
            (zone_aggresive?(game)) \
         || (game.score_diff <= 7 && !zone_conservative?(game))
       )
