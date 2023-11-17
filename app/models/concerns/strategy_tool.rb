@@ -161,6 +161,7 @@ module StrategyTool
   def needs_no_huddle?(game)
     return false if game.clock_stopped || game.no_huddle
     return false if game.time_left >= 40 && game.down == 4 && !tries_fourth_down_gamble?(game)
+    return false if game.final_FG_stands? && game.timeout_left > 0
     offense_running_out_of_time?(game) || needs_to_hurry_before_halftime?(game)
   end
 
