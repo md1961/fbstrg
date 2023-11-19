@@ -161,7 +161,7 @@ module StrategyTool
       return game.timeout_left >= 2
     end
     return true if game.timeout_left >= 2
-    game.time_left <= 15 && game.timeout_left >= 1
+    game.time_left <= 30 && game.timeout_left >= 1
   end
 
   def needs_no_huddle?(game)
