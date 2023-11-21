@@ -24,6 +24,12 @@
     <% end -%>
   <% end -%>
 
+  <% unless @playoffs_by_week.empty? -%>
+    <div class="playoffs">
+      <%= render partial: 'playoffs' %>
+    </div>
+  <% end -%>
+
   <div class="standing">
     <% if !@league.direct_teams.empty? -%>
       <%= render partial: 'standing', locals: {standing: @league.standing} %>

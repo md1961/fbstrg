@@ -1,0 +1,11 @@
+<table class="playoffs">
+  <% @playoffs_by_week.each do |week, schedules| -%>
+    <tr><td><%= "Week #{week}" %></td></tr>
+    <% schedules.each do |schedule| -%>
+      <tr>
+        <td><%= schedule.number %></td>
+        <td><%= schedule.game %></td>
+      </tr>
+    <% end -%>
+  <% end -%>
+</table>
