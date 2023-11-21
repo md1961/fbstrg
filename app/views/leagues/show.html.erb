@@ -25,8 +25,8 @@
   <% end -%>
 
   <% unless @playoffs_by_week.empty? -%>
-    <div class="playoffs">
-      <%= render partial: 'playoffs' %>
+    <div class="playoff_schedules">
+      <%= render partial: 'playoffs', locals: {next_schedule: next_schedule} %>
     </div>
   <% end -%>
 

@@ -1,10 +1,13 @@
 <table class="playoffs">
   <% @playoffs_by_week.each do |week, schedules| -%>
-    <tr><td><%= "Week #{week}" %></td></tr>
+    <tr><td colspan="3"><%= "Week #{week}" %></td></tr>
     <% schedules.each do |schedule| -%>
+      <% game = schedule.game -%>
       <tr>
-        <td><%= schedule.number %></td>
-        <td><%= schedule.game %></td>
+        <td class="numeric <%= schedule && schedule == next_schedule ? 'next_game' : '' %>">
+          <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
+        </td>
+        <td><%= game %></td>
       </tr>
     <% end -%>
   <% end -%>
