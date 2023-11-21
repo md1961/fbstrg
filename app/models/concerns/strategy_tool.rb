@@ -134,6 +134,7 @@ module StrategyTool
 
   def use_up_time_and_take_timeout?(game)
     return false if game.clock_stopped
+    return false if game.time_left >= 60 * 2
     game.quarter == 2 || game.final_FG_stands?
   end
 
