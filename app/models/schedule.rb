@@ -4,6 +4,9 @@ class Schedule < ApplicationRecord
   belongs_to :team_group
   belongs_to :game
 
+  scope :regulars, -> { where(is_playoff: false) }
+  scope :playoffs, -> { where(is_playoff: true ) }
+
   def for?(team)
     game.for?(team)
   end
