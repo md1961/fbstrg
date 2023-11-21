@@ -88,9 +88,10 @@ module StrategyTool
   end
 
   def tries_fourth_down_gamble?(game)
+    return false unless game.down == 4
+
     return true if game.quarter >= 5 && game.score_diff < 0
 
-    return false unless game.down == 4
     return false if game.ball_on < 30 && game.yard_to_go >= 20 \
                     && !(game.quarter == 4 && game.time_left <= 120 && game.score_diff < 0)
     return false if game.ball_on < 30 && game.score_diff < -14
