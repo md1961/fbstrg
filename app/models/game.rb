@@ -260,7 +260,7 @@ class Game < ApplicationRecord
 
     def get_play(value)
       @defensive_play ||= DefensivePlay.find_by(name: value&.upcase)
-      if defense_human? && !defensive_play
+      if defense_human? && offensive_play.normal? && !defensive_play
         raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
       elsif defensive_play
         @defensive_play_set = nil
@@ -269,7 +269,7 @@ class Game < ApplicationRecord
       result = \
         if offensive_play&.normal? && (defense_human? || defense_human_assisted? || value.blank?)
           play_result_from_chart
-        elsif value.present?
+        elsif value.present? && value != 'choose defense'
           unless value.start_with?('=')
             raise Exceptions::IllegalResultStringError, "Specify result string with '=' at head"
           end
