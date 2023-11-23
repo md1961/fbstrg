@@ -6,7 +6,7 @@ class Game < ApplicationRecord
   belongs_to :visitors , class_name: 'Team'
   has_many :plays         , dependent: :destroy
   has_many :game_snapshots, through: :plays
-  has_one :schedule
+  has_one :schedule, dependent: :destroy
 
   attr_reader   :result, :previous_spot, :announcement, :goes_into_huddle
   attr_accessor :offensive_play, :offensive_play_set,
