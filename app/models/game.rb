@@ -146,7 +146,18 @@ class Game < ApplicationRecord
       play_input = 'scrimmage'
     end
     @offensive_play_set = nil
-    play_input = OffensivePlay.normal_punt.number if play_input.upcase == 'P'
+
+    play_input = case play_input.upcase
+                 when 'P'
+                   OffensivePlay.normal_punt.number
+                 when 'FG'
+                   OffensivePlay.field_goal.number
+                 when 'XP'
+                   OffensivePlay.extra_point.number
+                 else
+                   play_input
+                 end
+
     if offense_human_assisted? || OffensivePlay.find_by(number: play_input.to_i)
       if offense_human_assisted? && OffensiveStrategy.new.needs_defense_timeout?(self)
         return if timeout_taken?('TD')
