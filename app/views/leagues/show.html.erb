@@ -24,12 +24,6 @@
     <% end -%>
   <% end -%>
 
-  <% unless @playoffs_by_week.empty? -%>
-    <div class="playoff_schedules">
-      <%= render partial: 'playoffs', locals: {next_schedule: next_schedule} %>
-    </div>
-  <% end -%>
-
   <div class="standing">
     <% if !@league.direct_teams.empty? -%>
       <%= render partial: 'standing', locals: {standing: @league.standing} %>
@@ -43,6 +37,12 @@
       <%= render partial: 'teams/traits', locals: {teams: @league.standing.teams} %>
     </div>
   </div>
+
+  <% unless @playoffs_by_week.empty? -%>
+    <div class="playoff_schedules">
+      <%= render partial: 'playoffs', locals: {next_schedule: next_schedule} %>
+    </div>
+  <% end -%>
 
   <div class="links">
     <% if next_schedule -%>
