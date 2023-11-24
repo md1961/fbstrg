@@ -46,7 +46,10 @@
     <div id="judgments_and_plays">
       <div id="strategy_tool_judgments">
         <div style="margin-bottom: 5px;">
-          <%= "speed = #{@speed_of_announce || 1}" %>
+          <div><%= "speed = #{@speed_of_announce || 1}" %></div>
+          <div><%= "announce = #{@no_announce ? 'OFF' : 'ON'}" %></div>
+          <%#= "session[:offensive_play_id] = #{@offensive_play_id_in_session.inspect}" %>
+          <%#= "@game.two_point_try = #{@game.two_point_try.inspect}" %>
         </div>
         <%= render partial: 'strategy_tool_judgments', locals: {game: @game} %>
       </div>
