@@ -26,7 +26,7 @@
     <br>
     <%= form_tag @game, method: :patch do %>
       <%= @game.prompt %>
-      <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();" %>
+      <%= text_field_tag :play, @game.default_play_input, onfocus: "this.select();", autofocus: true %>
       <%= hidden_field_tag :no_huddle, @game.no_huddle %>
       <%= hidden_field_tag :two_point_try, @game.two_point_try %>
       <%= submit_tag :proceed %>
