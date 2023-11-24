@@ -43,27 +43,7 @@ class StrategyTool
   end
 
   def defense_running_out_of_time?
-    score_diff > 0 && time_running_out?(game, for_defense: true)
-  end
-
-  # TODO: Add conditions for possible-tie or sudden-death in overtime.
-  def time_running_out?(for_defense: false)
-    score_diff, time_left = score_diff, time_left
-    secs_for_TD = seconds_needed_for_touchdown
-    secs_for_FG = seconds_needed_for_field_goal
-    secs_for_stop = seconds_needed_to_get_ball_back
-    if for_defense
-      score_diff *= -1
-      time_left -= secs_for_stop
-    end
-    quarter == 4 && (
-         (score_diff <=  -3 && time_left <= secs_for_TD) \
-      || (score_diff <=   0 && time_left <= secs_for_FG) \
-      || (score_diff <=   0 && time_left <= secs_for_TD && zone_aggresive?) \
-      || (score_diff <=  -7 && time_left <= secs_for_TD + secs_for_FG + secs_for_FG) \
-      || (score_diff <= -10 && time_left <= secs_for_TD * 2 + secs_for_FG) \
-      || (score_diff <= -14)
-    )
+    score_diff > 0 && time_running_out?(for_defense: true)
   end
 
   def needs_onside_kickoff?
@@ -241,6 +221,28 @@ class StrategyTool
   end
 
   private
+
+    # TODO: Add conditions for possible-tie or sudden-death in overtime.
+    def time_running_out?(for_defense: false)
+      secs_for_TD = seconds_needed_for_touchdown
+      secs_for_FG = seconds_needed_for_field_goal
+      secs_for_stop = seconds_needed_to_get_ball_back
+
+      score_diff = @game.score_diff
+      time_left  = @game.time_left
+      if for_defense
+        score_diff *= -1
+        time_left -= secs_for_stop
+      end
+      quarter == 4 && (
+           (score_diff <=  -3 && time_left <= secs_for_TD) \
+        || (score_diff <=   0 && time_left <= secs_for_FG) \
+        || (score_diff <=   0 && time_left <= secs_for_TD && zone_aggresive?) \
+        || (score_diff <=  -7 && time_left <= secs_for_TD + secs_for_FG + secs_for_FG) \
+        || (score_diff <= -10 && time_left <= secs_for_TD * 2 + secs_for_FG) \
+        || (score_diff <= -14)
+      )
+    end
 
     def zone_conservative?
       ball_on <= 20 + rand(-3 .. 3)
