@@ -240,6 +240,8 @@ class StrategyTool
     )
   end
 
+  private
+
     def zone_conservative?
       ball_on <= 20 + rand(-3 .. 3)
     end
