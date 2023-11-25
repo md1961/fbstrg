@@ -60,6 +60,8 @@ class League < TeamGroup
           PlayoffBerth.transaction do
             berths.map(&:save!)
           end
+        else
+          confirm_playoff_loser_elimination
         end
 
         playoff_schedules = PlayoffScheduleMaker.build_next_schedule_for(self)
@@ -109,5 +111,11 @@ class League < TeamGroup
         h[game.home_team.id].add(game_stats.stats_home    )
         h[game.visitors .id].add(game_stats.stats_visitors)
       }
+    end
+
+    def confirm_playoff_loser_elimination
+      schedules.where(is_playoff: true).map(&:game).each do |game|
+        eliminate_loser_in!(game)
+      end
     end
 end
