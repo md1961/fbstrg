@@ -123,9 +123,13 @@ class Game < ApplicationRecord
     scores_by_quarter_for(home_team: true)
   end
 
+  def winner
+    return nil if score_home == score_visitors
+    score_home > score_visitors ? home_team : visitors
+  end
+
   def loser
     return nil if score_home == score_visitors
-
     score_home < score_visitors ? home_team : visitors
   end
 
