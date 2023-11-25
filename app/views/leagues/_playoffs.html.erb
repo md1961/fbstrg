@@ -1,6 +1,6 @@
 <table class="playoffs">
   <% @playoffs_by_week.each do |week, schedules| -%>
-    <tr><td colspan="3"><%= "Week #{week}" %></td></tr>
+    <tr><td colspan="3"><%= @league.playoff_name_in(week) %></td></tr>
     <% schedules.each do |schedule| -%>
       <% game = schedule.game -%>
       <tr>
