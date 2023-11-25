@@ -8,6 +8,13 @@
           <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
         </td>
         <td><%= game %></td>
+        <% if game.final? -%>
+          <td class="winner"><%= game.winner.abbr %></td>
+          <td>wins</td>
+          <td class="centered">
+            <%= game.result_and_scores_for(game.winner).last(2).join(' - ') %>
+          </td>
+        <% end -%>
       </tr>
     <% end -%>
   <% end -%>
