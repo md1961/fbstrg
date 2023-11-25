@@ -2,6 +2,7 @@ class League < TeamGroup
   has_many :schedules, -> { order(:week, :number) },
                        foreign_key: 'team_group_id', dependent: :destroy
   has_many :playoff_berths, foreign_key: 'team_group_id', dependent: :destroy
+  has_many :playoff_traits, foreign_key: 'team_group_id', dependent: :destroy
 
   def self.create_next
     last_league = League.order(:updated_at).last
@@ -76,6 +77,10 @@ class League < TeamGroup
 
   def next_week
     games_finished.map(&:schedule).map(&:week).max + 1
+  end
+
+  def playoff_name_in(week)
+    playoff_traits.find_by(week: week)&.name
   end
 
   def eliminate_loser_in!(game)
