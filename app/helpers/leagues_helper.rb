@@ -4,12 +4,6 @@ module LeaguesHelper
     team.team_record.to_s
   end
 
-  def game_result_display(game, team)
-    rs = game&.result_and_scores_for(team)
-    return [] if !rs || rs.empty?
-    [rs[0], "#{rs[1]} - #{rs[2]}"]
-  end
-
   def schedule_index_display(schedule, week)
     return week unless schedule
     content_tag :span do

@@ -3,15 +3,19 @@
   <% @schedules_by_week.each do |week, schedules| -%>
     <% schedule = schedules.detect { |s| s.for?(team) }
        game = schedule&.game
-       game_display = game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '')
-       result_displays = game_result_display(game, team) -%>
+       game_display = game&.to_s&.sub(/\s*(?:at\s+)?#{team.name}\s*/, '') -%>
     <tr>
       <td class="numeric <%= schedule && schedule == next_schedule ? 'next_game' : '' %>">
         <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
       </td>
       <td class="opponent"><%= game_display || '(bye)' %></td>
-      <td class="result"><%= result_displays[0] %></td>
-      <td class="score"> <%= result_displays[1] %></td>
+      <% if game&.final? -%>
+        <% result, score_own, score_opp = game.result_and_scores_for(team) -%>
+        <td class="result"><%= result %></td>
+        <td class="numeric"><%= score_own %></td>
+        <td>-</td>
+        <td class="numeric"><%= score_opp %></td>
+      <% end -%>
     </tr>
   <% end -%>
 </table>
