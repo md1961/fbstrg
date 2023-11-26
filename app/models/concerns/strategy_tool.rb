@@ -110,6 +110,7 @@ class StrategyTool
     return false if quarter <= 3 && yard_to_go > 10
     return false if quarter == 2 && time_left <= seconds_needed_for_field_goal
     return false if quarter <= 2 && score_diff >= 0 && ball_on < 55 + rand(6)
+
     quarter == 4 && (
           (score_diff < 0 \
            && time_left <= seconds_needed_for_field_goal + seconds_needed_to_get_ball_back) \
@@ -120,7 +121,8 @@ class StrategyTool
        || (score_diff < -14 && zone_aggresive?)
     ) \
     || (ball_on.between?(50, 100 - 35 - rand(5)) && yard_to_go <= 3) \
-    || (quarter >= 3 && score_diff <= -14 && ball_on >= 50 && yard_to_go <= 10)
+    || (quarter >= 3 && score_diff <= -12 && ball_on >= 50 && yard_to_go <= 10) \
+    || (quarter >= 3 && score_diff <= -17 && ball_on >= 40 && yard_to_go <=  5)
   end
 
   def tries_two_point_conversion?
