@@ -26,6 +26,7 @@ $ ->
           $('#form_command').show()
           $('#judgments_and_plays').show()
           $('div.buttons').show()
+          $('input#play').focus()
         else
           $('#announce_board').html(text)
         resolve()
