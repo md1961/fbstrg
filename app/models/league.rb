@@ -36,7 +36,7 @@ class League < TeamGroup
   end
 
   def games_finished
-    @games_finished ||= schedules.includes(:game).map(&:game).find_all(&:final?)
+    @games_finished ||= schedules.includes(:game).where(is_playoff: false).map(&:game).find_all(&:final?)
   end
 
   def game_ongoing
@@ -78,7 +78,7 @@ class League < TeamGroup
   end
 
   def next_week
-    games_finished.map(&:schedule).map(&:week).max + 1
+    schedules.includes(:game).find_all { |schedule| schedule.game.final? }.pluck(:week).max + 1
   end
 
   def playoff_name_in(week)
