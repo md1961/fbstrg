@@ -1,6 +1,8 @@
 <table class="playoffs">
   <% @playoffs_by_week.each do |week, schedules| -%>
-    <tr><td colspan="3"><%= @league.playoff_name_in(week) %></td></tr>
+    <tr>
+      <td class="name" colspan="3"><%= @league.playoff_name_in(week) %></td>
+    </tr>
     <% schedules.each do |schedule| -%>
       <% game = schedule.game -%>
       <tr>
@@ -9,11 +11,12 @@
         </td>
         <td><%= game %></td>
         <% if game.final? -%>
-          <td class="winner"><%= game.winner.abbr %></td>
-          <td>wins</td>
-          <td class="centered">
-            <%= game.result_and_scores_for(game.winner).last(2).join(' - ') %>
-          </td>
+          <% score_winner, score_loser = game.result_and_scores_for(game.winner).last(2) -%>
+          <td class="winner"><%= game.winner %></td>
+          <td class="numeric"><%= score_winner %></td>
+          <td class="centered">-</td>
+          <td class><%= game.loser %></td>
+          <td class="numeric"><%= score_loser %></td>
         <% end -%>
       </tr>
     <% end -%>

@@ -28,6 +28,14 @@
       }
     }
 
+    table.playoffs {
+      margin-top: 5px;
+
+      td.name {
+        padding-top: 10px;
+      }
+    }
+
     td {
       white-space: nowrap;
     }
@@ -46,7 +54,7 @@
     }
 
     td.winner {
-      padding-left: 10px;
+      padding-left: 20px;
     }
   }
 
