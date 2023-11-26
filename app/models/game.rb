@@ -124,11 +124,13 @@ class Game < ApplicationRecord
   end
 
   def winner
+    return nil unless final?
     return nil if score_home == score_visitors
     score_home > score_visitors ? home_team : visitors
   end
 
   def loser
+    return nil unless final?
     return nil if score_home == score_visitors
     score_home < score_visitors ? home_team : visitors
   end
