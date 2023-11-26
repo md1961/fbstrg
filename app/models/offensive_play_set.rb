@@ -22,7 +22,7 @@ class OffensivePlaySet < ApplicationRecord
   end
 
   class BasicWeightCorrector
-    include StrategyTool
+    # include StrategyTool
 
     def correct(offensive_play_set_choices, game)
       if game.ball_on >= 100 - 10

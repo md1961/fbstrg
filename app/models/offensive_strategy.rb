@@ -1,28 +1,30 @@
 class OffensiveStrategy < ApplicationRecord
-  include StrategyTool
-
   attr_reader :play_set
 
   def hurrying?(game)
-    offense_running_out_of_time?(game)
+    set_strategy_tool(game)
+
+    @strategy_tool.offense_running_out_of_time?
   end
 
   def offensive_play_set(game)
-    if cannot_down_in_field?(game)
+    set_strategy_tool(game)
+
+    if @strategy_tool.cannot_down_in_field?
       OffensivePlaySet.pass_only
-    elsif close_to_goal_line?(game)
+    elsif @strategy_tool.close_to_goal_line?
       OffensivePlaySet.goal_line
-    elsif offense_running_out_of_time?(game)
+    elsif @strategy_tool.offense_running_out_of_time?
       OffensivePlaySet.hurry_up
-    elsif defense_running_out_of_time?(game)
+    elsif @strategy_tool.defense_running_out_of_time?
       OffensivePlaySet.ball_control
-    elsif needs_long_yardage?(game)
+    elsif @strategy_tool.needs_long_yardage?
       OffensivePlaySet.aim_long
-    elsif needs_very_short_yardage?(game)
+    elsif @strategy_tool.needs_very_short_yardage?
       OffensivePlaySet.aim_short
-    elsif plays_safe_back_on_goal_line?(game)
+    elsif @strategy_tool.plays_safe_back_on_goal_line?
       OffensivePlaySet.back_on_goal
-    elsif needs_to_hurry_before_halftime?(game)
+    elsif @strategy_tool.needs_to_hurry_before_halftime?
       OffensivePlaySet.hurry_up
     else
       OffensivePlaySet.standard
@@ -30,31 +32,33 @@ class OffensiveStrategy < ApplicationRecord
   end
 
   def choose_play(game)
+    set_strategy_tool(game)
+
     @play_set = nil
     if game.kickoff?
-      needs_onside_kickoff?(game) ? OffensivePlay.onside_kickoff : OffensivePlay.normal_kickoff
+      @strategy_tool.needs_onside_kickoff? ? OffensivePlay.onside_kickoff : OffensivePlay.normal_kickoff
     elsif game.extra_point?
-      tries_two_point_conversion?(game) ? OffensivePlay.two_point_conversion : OffensivePlay.extra_point
+      @strategy_tool.tries_two_point_conversion? ? OffensivePlay.two_point_conversion : OffensivePlay.extra_point
     elsif game.kickoff_after_safety?
       OffensivePlay.kickoff_after_safety
-    elsif needs_defense_timeout?(game)
+    elsif @strategy_tool.needs_defense_timeout?
       [nil, 'TD']
-    elsif let_clock_run_to_finish_quarter?(game)
+    elsif @strategy_tool.let_clock_run_to_finish_quarter?
       OffensivePlay.let_clock_run
-    elsif kneel_down_to_finish_game?(game) || kneel_down_to_finish_half?(game)
+    elsif @strategy_tool.kneel_down_to_finish_game? || @strategy_tool.kneel_down_to_finish_half?
       OffensivePlay.kneel_down
-    elsif needs_offense_timeout?(game) && !game.goes_into_huddle
+    elsif @strategy_tool.needs_offense_timeout? && !game.goes_into_huddle
       [nil, 'TO']
-    elsif needs_no_huddle?(game) && !game.goes_into_huddle
+    elsif @strategy_tool.needs_no_huddle? && !game.goes_into_huddle
       [nil, 'NH']
-    elsif kick_FG_now?(game)
-      if use_up_time_and_take_timeout?(game)
+    elsif @strategy_tool.kick_FG_now?
+      if @strategy_tool.use_up_time_and_take_timeout?
         return [nil, 'TO-0']
       end
       OffensivePlay.field_goal
-    elsif tries_hail_mary?(game)
+    elsif @strategy_tool.tries_hail_mary?
       OffensivePlay.hail_mary
-    elsif game.down == 4 && !tries_fourth_down_gamble?(game)
+    elsif game.down == 4 && !@strategy_tool.tries_fourth_down_gamble?
       choose_on_4th_down(game)
     else
       @play_set = offensive_play_set(game)
@@ -75,5 +79,9 @@ class OffensiveStrategy < ApplicationRecord
         pct_for_FG = MathUtil.linear_interporation([45, 5], [35, 100], 100 - ball_on)
         rand(1 .. 100) > pct_for_FG ? OffensivePlay.normal_punt : OffensivePlay.field_goal
       end
+    end
+
+    def set_strategy_tool(game)
+      @strategy_tool = StrategyTool.new(game)
     end
 end
