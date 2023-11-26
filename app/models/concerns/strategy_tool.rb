@@ -131,7 +131,7 @@ class StrategyTool
   # TODO: Consider plays before trying FG.
   def kick_FG_now?
     return false if [1, 3].include?(quarter) || ball_on < 50
-    return false if score_diff.zero? && ball_on < 50 + 7 && time_left > 5
+    return false if score_diff >= 0 && ball_on < 50 + 7 && time_left > 5
     (quarter == 2 || final_FG_stands?) && (
          (down == 4) \
       || (time_left <= 10) \
