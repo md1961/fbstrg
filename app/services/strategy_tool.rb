@@ -129,11 +129,13 @@ class StrategyTool
     quarter >= 3 && [-15, -12, -11, -9, -8, -4, -1, 2, 6].include?(score_diff + 1)
   end
 
+  TIME_LEFT_TO_KICK_FG_NOW = 5
+
   # FIXME: Consider an alternative to FG try over 60 yard in final seconds.
   # TODO: Consider plays before trying FG.
   def kick_FG_now?
     return false if [1, 3].include?(quarter) || ball_on < 50
-    return false if score_diff >= 0 && ball_on < 50 + 7 && time_left > 5
+    return false if score_diff >= 0 && ball_on < 50 + 7 && time_left > TIME_LEFT_TO_KICK_FG_NOW
     (quarter == 2 || final_FG_stands?) && (
          (down == 4) \
       || (time_left <= 10) \
