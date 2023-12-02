@@ -21,6 +21,10 @@ class Game < ApplicationRecord
     final? && result.blank?
   end
 
+  def ongoing?
+    !final? && !(quarter == 1 && time_left == 900)
+  end
+
   def playoff?
     schedule.is_playoff
   end
