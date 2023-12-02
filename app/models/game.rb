@@ -165,7 +165,7 @@ class Game < ApplicationRecord
                  end
 
     if offense_human_assisted? || OffensivePlay.find_by(number: play_input.to_i)
-      if offense_human_assisted? && OffensiveStrategy.new(self).needs_defense_timeout?(self)
+      if offense_human_assisted? && StrategyTool.new(self).needs_defense_timeout?
         return if timeout_taken?('TD')
       end
 
