@@ -41,7 +41,7 @@ class League < TeamGroup
 
   def game_ongoing
     schedules.includes(:game).map(&:game).sort_by(&:updated_at).last.then { |game|
-      game.final? ? nil : game
+      game.ongoing? ? game : nil
     }
   end
 
