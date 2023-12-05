@@ -189,7 +189,9 @@ class StrategyTool
     return false if [2, 4].include?(quarter) && time_left.between?(60 * 2, 60 * 2 + 20)
     quarter == 4 && (
          (score_diff > 8 && time_left <= 60 * 4) \
-      || (score_diff > 0 && time_left <= 60 * 3)
+      || (score_diff > 0 && time_left <= 60 * 3) \
+      || (score_diff >= -8 && time_left <= 60 * 2 && ball_on >= 80) \
+      || (score_diff >= -3 && time_left <= 60 * 2 && ball_on >= 60)
     ) ||
     quarter == 2 && (
          (down == 4 && !tries_fourth_down_gamble?) \
