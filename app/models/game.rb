@@ -282,7 +282,7 @@ class Game < ApplicationRecord
     end
 
     def get_play(value)
-      @defensive_play ||= DefensivePlay.find_by(name: value&.upcase)
+      @defensive_play ||= value == 'choose defense' ? nil : DefensivePlay.pick_from(value&.upcase)
       if defense_human? && offensive_play.normal? && !defensive_play
         raise Exceptions::IllegalResultStringError, "Illegal defensive play '#{value}'"
       elsif defensive_play
