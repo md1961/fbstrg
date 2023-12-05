@@ -164,6 +164,8 @@ class Game < ApplicationRecord
                    OffensivePlay.field_goal.number
                  when 'XP'
                    OffensivePlay.extra_point.number
+                 when 'LET'
+                   OffensivePlay.let_clock_run.number
                  else
                    play_input
                  end
