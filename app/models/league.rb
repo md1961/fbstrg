@@ -5,7 +5,7 @@ class League < TeamGroup
   has_many :playoff_traits, foreign_key: 'team_group_id', dependent: :destroy
 
   def self.create_next
-    last_league = League.order(:updated_at).last
+    last_league = League.order(:year).last
     ApplicationRecord.transaction do
       create!(
         name: last_league.name,
@@ -41,7 +41,7 @@ class League < TeamGroup
 
   def game_ongoing
     schedules.includes(:game).map(&:game).sort_by(&:updated_at).last.then { |game|
-      game.ongoing? ? game : nil
+      game&.ongoing? ? game : nil
     }
   end
 
