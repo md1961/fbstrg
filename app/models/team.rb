@@ -25,6 +25,12 @@ class Team < ApplicationRecord
     team_group.conference
   end
 
+  def division
+    return nil unless conference
+    return nil if conference.divisions.empty?
+    team_group
+  end
+
   def year
     league&.year
   end
