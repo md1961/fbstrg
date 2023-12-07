@@ -162,13 +162,24 @@ class FourByFourScheduleMaker
       end
     end
 
-    schedules = games_by_week.flat_map { |week, games|
+    @schedules = games_by_week.flat_map { |week, games|
       games.map.with_index(1) { |game, number|
         Schedule.new(week: week, number: number, game: game)
       }
     }
 
-    verify(schedules)
+    verify(@schedules)
+  end
+
+  def to_s
+    @schedules.group_by(&:week).flat_map { |week, schedules|
+      [
+        "Week #{week}",
+        schedules.map { |schedule|
+          "##{schedule.number}: #{schedule.game}"
+        }.join("\n")
+      ]
+    }.join("\n")
   end
 
   private
