@@ -35,6 +35,10 @@ class League < TeamGroup
     child_groups
   end
 
+  def divisions
+    conferences.flat_map(&:divisions)
+  end
+
   def games_finished
     @games_finished ||= schedules.includes(:game).where(is_playoff: false).map(&:game).find_all(&:final?)
   end
