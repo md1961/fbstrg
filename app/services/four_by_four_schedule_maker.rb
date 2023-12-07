@@ -162,13 +162,98 @@ class FourByFourScheduleMaker
       end
     end
 
-    games_by_week.each do |week, games|
-      puts "Week #{week}"
-      games.each do |game|
-        puts "  #{game}"
-      end
-    end
+    schedules = games_by_week.flat_map { |week, games|
+      games.map.with_index(1) { |game, number|
+        Schedule.new(week: week, number: number, game: game)
+      }
+    }
 
-    nil
+    verify(schedules)
   end
+
+  private
+
+    def verify(schedules)
+      size = 16 * 16 / 2
+      raise "Size must be #{size} (#{schedules.size})" unless schedules.size == size
+
+      schedules.group_by(&:week).each do |week, schedules_by_week|
+        raise "Number of schedules for week #{week} must be 8 (#{schedules_by_week.size})" unless schedules_by_week.size == 8
+
+        numbers = schedules_by_week.map(&:number).sort
+        raise "'number's of schedules for week #{week} is illegally #{numbers.join(', ')}" unless numbers == (1 .. 8).to_a
+      end
+
+      @league.teams.each do |team|
+        team_schedules = schedules.find_all { |s| s.for?(team) }
+        weeks = team_schedules.map(&:week).sort
+        raise "Weeks of schedules for #{team} is illegally #{weeks.join(', ')}" unless weeks == (1 .. 16).to_a
+
+        home_schedules = team_schedules.find_all { |s| s.game.home_team == team }
+        raise "Number of home schedules for #{team} must be 8 (#{home_schedules.size})" unless home_schedules.size == 8
+
+
+        division = team.division
+        division_schedules = team_schedules.find_all { |s| division.teams.include?(s.game.opponent_for(team)) }
+
+        raise "Number of division schedules for #{team} must be 6 (#{division_schedules.size})" \
+            unless division_schedules.size == 6
+
+        division_home_schedules = division_schedules.find_all { |s| s.game.home_team == team }
+        raise "Number of division. home schedules for #{team} must be 3 (#{division_home_schedules.size})" \
+            unless division_home_schedules.size == 3
+
+        division_teams = division.teams - [team]
+
+        division_home_opponents = division_home_schedules.map { |s| s.game.opponent_for(team) }
+        raise "Division home schedule for #{team} is illegally [#{division_home_opponents.join(', ')}]" \
+            unless division_home_opponents.size == division_teams.size && (division_home_opponents - division_teams).empty?
+
+
+        division_away_schedules = division_schedules - division_home_schedules
+        division_away_opponents = division_away_schedules.map { |s| s.game.opponent_for(team) }
+        raise "Division away schedule for #{team} is illegally [#{division_away_opponents.join(', ')}]" \
+            unless division_away_opponents.size == division_teams.size && (division_away_opponents - division_teams).empty?
+
+
+        conference = team.conference
+        conference_teams = conference.teams - division.teams
+
+        conf_schedules = team_schedules.find_all { |s| conference_teams.include?(s.game.opponent_for(team)) }
+        raise "Number of conf. schedules for #{team} must be 4 (#{conf_schedules.size})" unless conf_schedules.size == 4
+
+        conf_home_schedules = conf_schedules.find_all { |s| s.game.home_team == team }
+        raise "Number of conf. home schedules for #{team} must be 2 (#{conf_home_schedules.size})" \
+            unless conf_home_schedules.size == 2
+
+        conf_home_opponents = conf_home_schedules.map { |s| s.game.opponent_for(team) }
+        conf_away_schedules = conf_schedules - conf_home_schedules
+        conf_away_opponents = conf_away_schedules.map { |s| s.game.opponent_for(team) }
+        raise "Conf. schedule for #{team} is illegally [#{(conf_home_opponents + conf_away_opponents).join(', ')}]" \
+            unless conf_home_opponents.size == conf_away_opponents.size \
+                && (conference_teams - conf_home_opponents - conf_away_opponents).empty?
+
+
+        inter_schedules = team_schedules - division_schedules - conf_schedules
+        inter_opponents = inter_schedules.map { |s| s.game.opponent_for(team) }
+        inter_teams = (@league.conferences - [conference]).first.teams
+
+        raise "Inter conf. schedule for #{team} is illegally [#{inter_opponents.join(', ')}]" \
+            unless inter_opponents.size == 6
+
+        inter_home_schedules = inter_schedules.find_all { |s| s.game.home_team == team }
+        raise "Number of inter. home schedules for #{team} must be 3 (#{inter_home_schedules.size})" \
+            unless inter_home_schedules.size == 3
+
+        inter_east_opponents = inter_opponents.find_all { |o| o.division.name == 'East' }
+        raise "Inter conf. East schedule for #{team} is illegally [#{inter_east_opponents.join(', ')}]" \
+            unless inter_east_opponents.size == 3
+
+        inter_west_opponents = inter_opponents.find_all { |o| o.division.name == 'West' }
+        raise "Inter conf. West schedule for #{team} is illegally [#{inter_west_opponents.join(', ')}]" \
+            unless inter_west_opponents.size == 3
+      end
+
+      return 'CHECKED!'
+    end
 end
