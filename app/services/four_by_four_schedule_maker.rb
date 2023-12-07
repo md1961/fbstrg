@@ -245,6 +245,10 @@ class FourByFourScheduleMaker
         raise "Number of inter. home schedules for #{team} must be 3 (#{inter_home_schedules.size})" \
             unless inter_home_schedules.size == 3
 
+        inter_east_home_schedules = inter_home_schedules.find_all { |s| s.game.opponent_for(team).division.name == 'East' }
+        raise "Number of inter. East home schedules for #{team} must be 1 or 2 (#{inter_east_home_schedules.size})" \
+            unless inter_east_home_schedules.size.between?(1, 2)
+
         inter_east_opponents = inter_opponents.find_all { |o| o.division.name == 'East' }
         raise "Inter conf. East schedule for #{team} is illegally [#{inter_east_opponents.join(', ')}]" \
             unless inter_east_opponents.size == 3
