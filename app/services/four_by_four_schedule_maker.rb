@@ -101,24 +101,24 @@ class FourByFourScheduleMaker
     end
   end
 
-  def make_schedules
+  def make
     formats = [
-      "Division    1@4 2@3",
-      "Division    1@3 2@4",
-      "Division    1@2 3@4",
-      "Division    4@1 3@2",
       "Division    3@1 4@2",
-      "Division    2@1 4@3",
       "Conference  W4@E1 W3@E2 W2@E3 W1@E4",
-      "Conference  E1@W3 E2@W4 E3@W1 E4@W2",
-      "Conference  W2@E1 W1@E2 W3@E4 W4@E3",
-      "Conference  E1@W1 E2@W2 E3@W3 E4@W4",
-      "InterSameD  A1@N3 A2@N4 A3@N1 A4@N2",
-      "InterSameD  N2@A1 N1@A2 N3@A4 N4@A3",
-      "InterSameD  A1@N1 A2@N2 A3@N3 A4@N4",
-      "InterCross  N1@A3 N2@A4 N3@A1 N4@A2",
-      "InterCross  A2@N1 A1@N2 A3@N4 A4@N3",
+      "Division    1@4 2@3",
       "InterCross  N1@A1 N2@A2 N3@A3 N4@A4",
+      "Division    1@2 3@4",
+      "InterSameD  A1@N3 A2@N4 A3@N1 A4@N2",
+      "Conference  E1@W3 E2@W4 E3@W1 E4@W2",
+      "InterCross  N1@A3 N2@A4 N3@A1 N4@A2",
+      "InterSameD  A1@N1 A2@N2 A3@N3 A4@N4",
+      "Conference  W2@E1 W1@E2 W3@E4 W4@E3",
+      "InterCross  A2@N1 A1@N2 A3@N4 A4@N3",
+      "Division    4@1 3@2",
+      "InterSameD  N2@A1 N1@A2 N3@A4 N4@A3",
+      "Division    1@3 2@4",
+      "Conference  E1@W1 E2@W2 E3@W3 E4@W4",
+      "Division    2@1 4@3",
     ]
 
     games_by_week = {}
