@@ -14,7 +14,7 @@
         <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
       <% end -%>
     </div>
-  <% else -%>
+  <% elsif @league.divisions.empty? -%>
     <% @league.conferences.each do |conference| -%>
       <div class="team_schedules">
         <% conference.standing.teams.each do |team| -%>
@@ -22,15 +22,39 @@
         <% end -%>
       </div>
     <% end -%>
+  <% else -%>
+    <div style="display: flex;">
+      <% @league.conferences.each do |conference| -%>
+        <div style="margin-right: 40px;">
+          <% conference.divisions.each do |division| -%>
+            <div class="team_schedules">
+              <% division.standing.teams.each do |team| -%>
+                <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+              <% end -%>
+            </div>
+          <% end -%>
+        </div>
+      <% end -%>
+    </div>
   <% end -%>
 
   <div class="standing">
     <% if !@league.direct_teams.empty? -%>
       <%= render partial: 'standing', locals: {standing: @league.standing} %>
-    <% else -%>
+    <% elsif @league.divisions.empty? -%>
       <% @league.conferences.each do |conference| -%>
         <%= render partial: 'standing', locals: {standing: conference.standing} %>
       <% end -%>
+    <% else -%>
+      <div style="display: flex;">
+        <% @league.conferences.each do |conference| -%>
+          <div>
+            <% conference.divisions.each do |division| -%>
+              <%= render partial: 'standing', locals: {standing: division.standing} %>
+            <% end -%>
+          </div>
+        <% end -%>
+      </div>
     <% end -%>
 
     <div class="team_traits" hidden>
