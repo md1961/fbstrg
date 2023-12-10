@@ -164,11 +164,17 @@ class FourByFourScheduleMaker
 
     @schedules = games_by_week.flat_map { |week, games|
       games.map.with_index(1) { |game, number|
-        Schedule.new(week: week, number: number, game: game)
+        @league.schedules.build(week: week, number: number, game: game)
       }
     }
 
     verify(@schedules)
+  end
+
+  def create!
+    Schedule.transaction do
+      @schedules.map(&:save!)
+    end
   end
 
   def to_s
