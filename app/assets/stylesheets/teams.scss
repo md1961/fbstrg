@@ -11,6 +11,16 @@
       background-color: gainsboro;
       padding-left: 8px;
     }
+
+    span.increased {
+      color: blue;
+      font-weight: bold;
+    }
+
+    span.decreased {
+      color: red;
+      font-weight: bold;
+    }
   }
 
   td a {
