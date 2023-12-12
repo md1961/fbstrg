@@ -39,6 +39,10 @@ class Team < ApplicationRecord
     league.team_record_for(self)
   end
 
+  def team_in_last_year
+    self.class.where(abbr: abbr).detect { |team| team.league&.year == year - 1}
+  end
+
   def to_s
     name
   end
