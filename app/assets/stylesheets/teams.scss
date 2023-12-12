@@ -1,15 +1,16 @@
 .teams_index {
 
-  th {
-    width: 30px;
-  }
-
   th.toggle_actions {
     cursor: pointer;
   }
 
   td.numeric {
     padding-left: 20px;
+
+    &.last {
+      background-color: gainsboro;
+      padding-left: 8px;
+    }
   }
 
   td a {

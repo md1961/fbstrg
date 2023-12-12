@@ -3,7 +3,7 @@
     <tr>
       <th class="border_bottom_none border_right_thick">
       <% teams.each do |team| -%>
-        <th class="toggle_actions" data-team_id="<%= team.id %>">
+        <th colspan="2" class="toggle_actions" data-team_id="<%= team.id %>">
           <%= team.abbr %>
         </th>
       <% end -%>
@@ -11,7 +11,7 @@
     <tr class="border_bottom_thick">
       <th class="border_top_none border_right_thick">
       <% teams.each do |team| -%>
-        <th class="toggle_actions" data-team_id="<%= team.id %>">
+        <th colspan="2" class="toggle_actions" data-team_id="<%= team.id %>">
           <%= team.year %>
         </th>
       <% end -%>
@@ -26,9 +26,13 @@
           <%= trait_name %>
         </td>
         <% teams.each do |team| -%>
-          <% team_trait = team.team_trait -%>
+          <% team_trait = team.team_trait
+             team_trait_last = team.team_in_last_year&.team_trait -%>
+          <td class="numeric last <%= td_class %>">
+            <%= team_trait_display(team_trait_last, trait_name) %>
+          </td>
           <td class="numeric <%= td_class %>">
-            <%= v = team_trait.send(trait_name); v > 0 ? "+#{v}" : v %>
+            <%= team_trait_display(team_trait, trait_name) %>
             <span
                 class="actions <%= "team_#{team.id}" %>"
                 <%= team_trait.id == flash[:team_trait_id] ? '' : 'hidden' %>
