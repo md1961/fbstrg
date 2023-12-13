@@ -29,6 +29,9 @@ class ApplicationController < ActionController::Base
     def trait_names
       @__trait_names ||= TeamTrait.first.attributes.keys.reject { |name|
         %w[id team_id created_at updated_at].include?(name)
+      }.then { |names|
+        names.insert(names.find_index('qb_mobility'), names.delete('qb_read'))
+        names
       }
     end
     helper_method :trait_names

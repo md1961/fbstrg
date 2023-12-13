@@ -20,7 +20,7 @@
   <tbody>
     <% trait_names.each do |trait_name| -%>
       <% td_class = ''
-         td_class = 'border_top_thick' if %w[run_defense place_kicking].include?(trait_name) -%>
+         td_class = 'border_top_thick' if %w[pass_short run_defense pass_rush place_kicking].include?(trait_name) -%>
       <tr>
         <td class="border_right_thick <%= td_class %>">
           <%= trait_name %>
