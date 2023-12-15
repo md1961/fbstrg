@@ -52,7 +52,7 @@ class OffensiveStrategy < ApplicationRecord
     elsif @strategy_tool.needs_no_huddle? && !game.goes_into_huddle
       [nil, 'NH']
     elsif @strategy_tool.kick_FG_now?
-      if @strategy_tool.use_up_time_and_take_timeout?
+      if !game.clock_stopped && game.timeout_left(true) > 0 && @strategy_tool.use_up_time_and_take_timeout?
         return [nil, 'TO-0']
       end
       OffensivePlay.field_goal
