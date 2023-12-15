@@ -12,4 +12,12 @@ module TeamsHelper
       end
     end
   end
+
+  def team_rating_names
+    %w[
+      run_offense_rating pass_offense_rating
+      run_defense_rating pass_defense_rating
+      offense_rating defense_rating total_rating
+    ]
+  end
 end
