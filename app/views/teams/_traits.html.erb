@@ -28,7 +28,8 @@
   <tbody>
     <% trait_names.each do |trait_name| -%>
       <% td_class = ''
-         td_class = 'border_top_thick' if %w[pass_short run_defense pass_rush place_kicking].include?(trait_name) -%>
+         td_class = 'border_top_thick' if %w[pass_short run_defense pass_rush place_kicking].include?(trait_name)
+         td_class = 'border_bottom_thick' if trait_name == 'return_coverage' -%>
       <tr>
         <td class="border_right_thick <%= td_class %>">
           <%= trait_name %>
@@ -50,6 +51,32 @@
               <%= link_to '－', decrement_team_trait_path(team_trait, name: trait_name) %>
               <%= link_to '＋', increment_team_trait_path(team_trait, name: trait_name) %>
             </span>
+          </td>
+        <% end -%>
+      </tr>
+    <% end -%>
+
+    <tr><td class="border_right_none">&nbsp;</td></tr>
+
+    <tr>
+      <th class="border_top_thick border_bottom_none border_right_thick">
+      <% teams.each do |team| -%>
+        <th colspan="<%= cols_team %>" class="border_top_thick">
+          <%= team.abbr %>
+        </th>
+      <% end -%>
+    </tr>
+    <% team_rating_names.each do |rating_name| -%>
+      <% td_class = ''
+         td_class = 'border_top_thick' if rating_name =~ /\A(?:run|off|total)/ -%>
+      <tr>
+        <td class="border_right_thick <%= td_class %>">
+          <%= rating_name %>
+        </td>
+        <% teams.each do |team| -%>
+          <% team_trait = team.team_trait -%>
+          <td colspan="<%= cols_team %>" class="numeric rating <%= td_class %>">
+            <%= team_trait.send(rating_name) %>
           </td>
         <% end -%>
       </tr>
