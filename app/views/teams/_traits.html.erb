@@ -1,9 +1,17 @@
+<%
+  unless defined? shows_last_year
+    shows_last_year = false
+  end
+
+  cols_team = shows_last_year ? 2 : 1
+-%>
+
 <table class="table_base team_traits">
   <thead>
     <tr>
       <th class="border_bottom_none border_right_thick">
       <% teams.each do |team| -%>
-        <th colspan="2" class="toggle_actions" data-team_id="<%= team.id %>">
+        <th colspan="<%= cols_team %>" class="toggle_actions" data-team_id="<%= team.id %>">
           <%= team.abbr %>
         </th>
       <% end -%>
@@ -11,7 +19,7 @@
     <tr class="border_bottom_thick">
       <th class="border_top_none border_right_thick">
       <% teams.each do |team| -%>
-        <th colspan="2" class="toggle_actions" data-team_id="<%= team.id %>">
+        <th colspan="<%= cols_team %>" class="toggle_actions" data-team_id="<%= team.id %>">
           <%= team.year %>
         </th>
       <% end -%>
@@ -28,9 +36,11 @@
         <% teams.each do |team| -%>
           <% team_trait = team.team_trait
              team_trait_last = team.team_in_last_year&.team_trait -%>
-          <td class="numeric last <%= td_class %>">
-            <%= value_last = team_trait_display(team_trait_last, trait_name) %>
-          </td>
+          <% if shows_last_year -%>
+            <td class="numeric last <%= td_class %>">
+              <%= value_last = team_trait_display(team_trait_last, trait_name) %>
+            </td>
+          <% end -%>
           <td class="numeric <%= td_class %>">
           <%= team_trait_display(team_trait, trait_name, value_last) %>
             <span
