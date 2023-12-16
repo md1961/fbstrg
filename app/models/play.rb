@@ -610,7 +610,7 @@ class Play < ApplicationRecord
         pct_add = @ttm.run_breakaway_factor * 0.1
         [pct + pct_add, 0.1].max
       elsif complete?
-        pct_add = @ttm.pass_breakaway_factor * 0.5
+        pct_add = @ttm.pass_breakaway_factor * 0.25
         [pct + pct_add, 1.0].max
       elsif kick_and_return?
         pct_add = @ttm.return_breakaway_factor * 0.1
