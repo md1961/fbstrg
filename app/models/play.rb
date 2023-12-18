@@ -633,7 +633,8 @@ class Play < ApplicationRecord
       if offensive_play.screen_pass?
         pct += 1.0
       elsif !offensive_play.run?
-        pct += 0.1 * offensive_play.max_throw_yard
+        pct += 0.2 * @ttm.qb_read_factor
+        pct += 0.05 * offensive_play.max_throw_yard
         pct += 0.3 if offensive_play.crossing_pass?
       end
       pct - defensive_play.num_DBs * 0.05 + (defensive_play.blitz? ? 0.5 : 0.0)
