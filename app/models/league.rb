@@ -81,6 +81,12 @@ class League < TeamGroup
     end
   end
 
+  def postpone_next_schedule
+    return unless next_schedule
+
+    next_schedule.postpone
+  end
+
   def next_week
     schedules.includes(:game).find_all { |schedule| schedule.game.final? }.pluck(:week).max + 1
   end
