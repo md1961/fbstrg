@@ -25,6 +25,15 @@ class Schedule < ApplicationRecord
     league.schedules.find_by(week: week, number: number + 1)
   end
 
+  def postpone
+    return unless next_in_same_week
+
+    self.class.transaction do
+      next_in_same_week.update!(number: number    )
+      self             .update!(number: number + 1)
+    end
+  end
+
   def <=>(other)
     return nil unless other
     [week, number] <=> [other.week, other.number]
