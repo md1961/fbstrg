@@ -19,6 +19,12 @@ class Schedule < ApplicationRecord
     group
   end
 
+  def next_in_same_week
+    return nil unless league
+
+    league.schedules.find_by(week: week, number: number + 1)
+  end
+
   def <=>(other)
     return nil unless other
     [week, number] <=> [other.week, other.number]
