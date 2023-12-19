@@ -6,7 +6,7 @@ module OffDefChartsHelper
     classes = []
     if @type != 'result'
       classes << 'numeric'
-      value = value.zero? ? '-' : "%5.1f" % value
+      value = value.zero? ? '-' : "%5.2f" % value
     else
       value = value.sub('..', ' ~ ').sub('ob', ' *')
       classes << 'centered' << \
