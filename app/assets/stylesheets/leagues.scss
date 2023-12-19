@@ -1,7 +1,19 @@
 .leagues_show {
 
-  .page_title span {
-    margin-left: 30px;
+  .page_title {
+    display: flex;
+
+    span {
+      margin-left: 30px;
+    }
+
+    div.actions {
+      margin-left: 30px;
+
+      a {
+        margin-left: 10px;
+      }
+    }
   }
 
   table {

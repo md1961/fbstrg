@@ -6,6 +6,13 @@
     <% prev_league, next_league = @league.prev_league, @league.next_league -%>
     <span><%= link_to_if prev_league, '<', prev_league %></span>
     <span><%= link_to_if next_league, '>', next_league %></span>
+
+    <div class="actions">
+      <%= link_to 'Team Traits', teams_path, target: '_blank' %>
+      <%= link_to 'Play Sets', play_sets_path, target: '_blank' %>
+      <%= link_to 'Off/Def Chart', off_def_charts_path, target: '_blank' %>
+      <%= link_to 'Miscellaneous', miscs_path, target: '_blank' %>
+    </div>
   </div>
 
   <% if !@league.direct_teams.empty? -%>
