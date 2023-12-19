@@ -1,7 +1,7 @@
 class TeamRecord
   include Comparable
 
-  attr_reader :team, :conference
+  attr_reader :team, :conference, :division
   delegate :won, :lost, :tied, :pf, :pa, :games, :pct, to: :@league
   attr_accessor :rank, :remarks
 
@@ -9,6 +9,7 @@ class TeamRecord
     @team = team
     @league     = Record.new
     @conference = Record.new
+    @division   = Record.new
     @rank = 1
     @remarks = []
   end
@@ -20,6 +21,7 @@ class TeamRecord
   def update_by(game)
     @league    .update_by(game, @team)
     @conference.update_by(game, @team) if game.within_conference?
+    @division  .update_by(game, @team) if game.within_division?
   end
 
   def remark_display
