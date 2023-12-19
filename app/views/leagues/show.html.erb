@@ -30,19 +30,15 @@
       </div>
     <% end -%>
   <% else -%>
-    <div style="display: flex;">
-      <% @league.conferences.each do |conference| -%>
-        <div style="margin-right: 40px;">
-          <% conference.divisions.each do |division| -%>
-            <div class="team_schedules">
-              <% division.standing.teams.each do |team| -%>
-                <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
-              <% end -%>
-            </div>
+    <% @league.conferences.each do |conference| -%>
+      <% conference.divisions.each do |division| -%>
+        <div class="team_schedules">
+          <% division.standing.teams.each do |team| -%>
+            <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
           <% end -%>
         </div>
       <% end -%>
-    </div>
+    <% end -%>
   <% end -%>
 
   <div class="standing">
