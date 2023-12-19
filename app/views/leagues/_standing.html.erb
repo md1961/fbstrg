@@ -9,6 +9,9 @@
     <th>PF</th>
     <th>PA</th>
     <th>Conference</th>
+    <% unless @league.divisions.empty? -%>
+      <th>Division</th>
+    <% end -%>
     <th class="rank" hidden>
   </thead>
   <tbody>
@@ -23,6 +26,9 @@
         <td class="points numeric"><%= team_record.pf    %></td>
         <td class="points numeric"><%= team_record.pa    %></td>
         <td class="centered"><%= team_record.conference %></td>
+        <% unless @league.divisions.empty? -%>
+          <td class="centered"><%= team_record.division %></td>
+        <% end -%>
         <td class="rank" hidden><%= team_record.remark_display %></td>
       </tr>
     <% end -%>
