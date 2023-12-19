@@ -604,9 +604,12 @@ class Play < ApplicationRecord
     end
 
     def pct_breakaway(game)
-      pct = pct_breakaway_base(game.offensive_play, game.defensive_play)
+      offensive_play = game.offensive_play
+      pct = pct_breakaway_base(offensive_play, game.defensive_play)
 
-      if on_ground?
+      if offensive_play.quarterback_keep?
+        [pct, 0.01].max
+      elsif on_ground?
         pct_add = @ttm.run_breakaway_factor * 0.1
         [pct + pct_add, 0.1].max
       elsif complete?
@@ -630,7 +633,9 @@ class Play < ApplicationRecord
       end
 
       pct = 0.5
-      if offensive_play.screen_pass?
+      if offensive_play.quarterback_keep?
+        pct = [0.01, 0.01 * @ttm.qb_mobility].max
+      elsif offensive_play.screen_pass?
         pct += 1.0
       elsif !offensive_play.run?
         pct += 0.2 * @ttm.qb_read_factor
