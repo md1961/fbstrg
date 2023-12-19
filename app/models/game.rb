@@ -106,6 +106,10 @@ class Game < ApplicationRecord
     home_team.division && home_team.division == visitors.division
   end
 
+  def overtime?
+    quarter >= 5
+  end
+
   def opponent_for(team)
     return nil unless for?(team)
     team == home_team ? visitors : home_team
