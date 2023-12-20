@@ -196,7 +196,10 @@ class StrategyTool
     quarter == 2 && (
          (down == 4 && !tries_fourth_down_gamble?) \
       || (time_left <= 60 * 2 && ball_on <= 10 && down >= 2) \
-      || (time_left <= 60 * 2 && ball_on <= 20 && down >= 3)
+      || (time_left <= 60 * 2 && ball_on <= 20 && down >= 3) \
+      || !needs_offense_timeout? && (
+           (time_left <= 60 * 2 && ball_on >= 80)
+         )
     )
   end
 
