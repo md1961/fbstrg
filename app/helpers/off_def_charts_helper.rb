@@ -11,7 +11,7 @@ module OffDefChartsHelper
       value = value.sub('..', ' ~ ').sub('ob', ' *')
       classes << 'centered' << \
         if value == 'incmp'
-          value = nil
+          value = 'incomplete'
           'incomplete'
         elsif value.starts_with?('fmb')
           'fumble'
