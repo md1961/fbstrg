@@ -24,6 +24,10 @@ class TeamTraitManager
     @offense_trait.pass_breakaway - @defense_trait.pass_tackling - home_defense_factor
   end
 
+  def qb_mobility_factor
+    @offense_trait.qb_mobility - @defense_trait.run_tackling - home_defense_factor
+  end
+
   def return_breakaway_factor
     @defense_trait.return_breakaway - @offense_trait.return_coverage
   end

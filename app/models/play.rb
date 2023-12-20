@@ -608,7 +608,7 @@ class Play < ApplicationRecord
       pct = pct_breakaway_base(offensive_play, game.defensive_play)
 
       if offensive_play.quarterback_keep?
-        [pct + 0.01 * @ttm.qb_mobility, 0.01].max
+        [pct + 0.01 * @ttm.qb_mobility_factor, 0.01].max
       elsif on_ground?
         pct_add = @ttm.run_breakaway_factor * 0.1
         [pct + pct_add, 0.1].max
