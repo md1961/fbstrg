@@ -215,9 +215,7 @@ class StrategyTool
   end
 
   def kneel_down_to_finish_game?
-    num_offense_to_use_up_time = 5 - down - (clock_stopped ? 1 : 0)
-    num_defense_to_stop_time = timeout_left(false) + (time_left > 120 ? 1 : 0)
-    can_finish = time_left < 35 * (num_offense_to_use_up_time - num_defense_to_stop_time)
+    can_finish = time_left < 40 * (num_offense_to_use_up_time - num_defense_to_stop_time)
     quarter == 4 && (
          (score_diff >  0 && ball_on >  2 && can_finish) \
       || (score_diff == 0 && ball_on < 40 && can_finish)
@@ -226,7 +224,7 @@ class StrategyTool
 
   def kneel_down_to_finish_half?
     quarter == 2 && ball_on > 2 \
-      && time_left <= 30 * (5 - down - (clock_stopped ? 1 : 0) - timeout_left(false)) && (
+      && time_left <= 40 * (num_offense_to_use_up_time - num_defense_to_stop_time) && (
            (ball_on < 10) \
         || (score_diff >= 0 && ball_on <= 20)
     )
@@ -276,5 +274,13 @@ class StrategyTool
 
     def seconds_needed_to_get_ball_back
       50 * 4 - 35 * timeout_left
+    end
+
+    def num_offense_to_use_up_time
+      5 - down - (clock_stopped ? 1 : 0)
+    end
+
+    def num_defense_to_stop_time
+      timeout_left(false) + (time_left > 120 ? 1 : 0)
     end
 end
