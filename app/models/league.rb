@@ -53,6 +53,10 @@ class League < TeamGroup
     h_team_stats.values
   end
 
+  def current_week
+    next_schedule&.week
+  end
+
   def next_schedule
     schedules.detect { |schedule| !schedule.game.final? }.tap do |schedule|
 
