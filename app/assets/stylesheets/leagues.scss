@@ -24,11 +24,11 @@
     font-weight: normal;
   }
 
-  .team_schedules, .playoff_schedules {
+  .team_schedules, .schedules_by_week, .playoff_schedules {
     display: flex;
     flex-wrap: wrap;
 
-    table.team_schedule {
+    table.team_schedule, table.schedules_by_week {
       margin-right: 15px;
 
       td.result {
@@ -41,6 +41,12 @@
 
       td.overtime_mark {
         font-size: x-small;
+      }
+    }
+
+    table.schedules_by_week {
+      td {
+        padding-left: 5px;
       }
     }
 

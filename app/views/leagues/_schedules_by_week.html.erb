@@ -1,0 +1,26 @@
+<table class="schedules_by_week">
+  <caption><%= "Week #{week}" %></caption>
+
+  <% @schedules_by_week[week].each do |schedule| -%>
+    <% game = schedule.game -%>
+
+    <tr>
+
+      <%# TODO: Extract into partial %>
+      <td class="numeric <%= schedule && schedule == next_schedule ? 'next_game' : '' %>">
+        <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
+      </td>
+      <td><%= game || '(bye)' %></td>
+      <% if game&.final? -%>
+        <% _result, score_own, score_opp = game.result_and_scores_for(game.visitors) -%>
+        <td class="numeric"><%= score_own %></td>
+        <td>-</td>
+        <td class="numeric"><%= score_opp %></td>
+        <% if game&.overtime? %>
+          <td class="overtime_mark">OT</td>
+        <% end -%>
+      <% end -%>
+
+    </tr>
+  <% end -%>
+</table>

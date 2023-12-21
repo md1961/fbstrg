@@ -3,6 +3,13 @@
 
   <div class="page_title">
     <%= @league %>
+
+    <span id="toggle_schedule_display">
+      <% next_value = @displays_current_week ? 'by_team' : 'current_week'
+         label = next_value.camelize -%>
+      <%= link_to label, league_path(@league, schedule_display: next_value) %>
+    </span>
+
     <% prev_league, next_league = @league.prev_league, @league.next_league -%>
     <span><%= link_to_if prev_league, '<', prev_league %></span>
     <span><%= link_to_if next_league, '>', next_league %></span>
@@ -15,28 +22,35 @@
     </div>
   </div>
 
-  <% if !@league.direct_teams.empty? -%>
-    <div class="team_schedules">
-      <% @league.standing.teams.each do |team| -%>
-        <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
-      <% end -%>
+  <% if @displays_current_week && @league.current_week -%>
+    <div class="schedules_by_week">
+      <%= render partial: 'schedules_by_week',
+                 locals: {week: @league.current_week, next_schedule: next_schedule} %>
     </div>
-  <% elsif @league.divisions.empty? -%>
-    <% @league.conferences.each do |conference| -%>
+  <% else -%>
+    <% if !@league.direct_teams.empty? -%>
       <div class="team_schedules">
-        <% conference.standing.teams.each do |team| -%>
+        <% @league.standing.teams.each do |team| -%>
           <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
         <% end -%>
       </div>
-    <% end -%>
-  <% else -%>
-    <% @league.conferences.each do |conference| -%>
-      <% conference.divisions.each do |division| -%>
+    <% elsif @league.divisions.empty? -%>
+      <% @league.conferences.each do |conference| -%>
         <div class="team_schedules">
-          <% division.standing.teams.each do |team| -%>
+          <% conference.standing.teams.each do |team| -%>
             <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
           <% end -%>
         </div>
+      <% end -%>
+    <% else -%>
+      <% @league.conferences.each do |conference| -%>
+        <% conference.divisions.each do |division| -%>
+          <div class="team_schedules">
+            <% division.standing.teams.each do |team| -%>
+              <%= render partial: 'team_schedule', locals: {team: team, next_schedule: next_schedule} %>
+            <% end -%>
+          </div>
+        <% end -%>
       <% end -%>
     <% end -%>
   <% end -%>
