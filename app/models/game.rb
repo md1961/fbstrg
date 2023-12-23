@@ -172,8 +172,14 @@ class Game < ApplicationRecord
                    OffensivePlay.field_goal.number
                  when 'XP'
                    OffensivePlay.extra_point.number
+                 when 'TWO'
+                   OffensivePlay.two_point_conversion.number
+                 when 'SPK'
+                   OffensivePlay.spike_ball.number
                  when 'LET'
                    OffensivePlay.let_clock_run.number
+                 when 'KN', 'KNE', 'KNEE', 'KNEEL'
+                   OffensivePlay.kneel_down.number
                  else
                    play_input
                  end
