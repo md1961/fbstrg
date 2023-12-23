@@ -211,6 +211,7 @@ class Game < ApplicationRecord
       @offensive_play_set = offensive_strategy.play_set
     end
     self.status = :playing if @offensive_play
+    self.two_point_try = true if @offensive_play&.two_point_conversion?
     save!
     @offensive_play
   end
