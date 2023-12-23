@@ -16,9 +16,10 @@
   </thead>
   <tbody>
     <% standing.each do |team_record| -%>
+      <% team = team_record.team -%>
       <tr>
         <td class="rank" hidden><%= team_record.rank %></td>
-        <td><%= team_record.team %></td>
+        <td class="team <%= team.conference %>"><%= team %></td>
         <td class="games  numeric"><%= team_record.games %></td>
         <td class="games  numeric"><%= team_record.won   %></td>
         <td class="games  numeric"><%= team_record.lost  %></td>

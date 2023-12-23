@@ -91,6 +91,17 @@
 
   table.standing {
 
+    td.team {
+
+      &.AFC {
+        width: 70px;
+      }
+
+      &.NFC {
+        width: 84px;
+      }
+    }
+
     td.games {
       width: 20px;
     }
