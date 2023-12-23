@@ -41,7 +41,7 @@ class OffensiveStrategy < ApplicationRecord
       @strategy_tool.tries_two_point_conversion? ? OffensivePlay.two_point_conversion : OffensivePlay.extra_point
     elsif game.kickoff_after_safety?
       OffensivePlay.kickoff_after_safety
-    elsif @strategy_tool.needs_defense_timeout?
+    elsif @strategy_tool.needs_defense_timeout? && !game.defense_human?
       [nil, 'TD']
     elsif @strategy_tool.let_clock_run_to_finish_quarter?
       OffensivePlay.let_clock_run
