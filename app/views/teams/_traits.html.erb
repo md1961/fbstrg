@@ -39,15 +39,15 @@
              team_trait_last = team.team_in_last_year&.team_trait -%>
           <% if shows_last_year -%>
             <td class="numeric last <%= td_class %>">
-              <%= value_last = team_trait_display(team_trait_last, trait_name) %>
+              <%= value_last_display = team_trait_display(team_trait_last, trait_name) %>
             </td>
           <% end -%>
           <td class="numeric <%= td_class %>">
-          <%= team_trait_display(team_trait, trait_name, value_last) %>
-            <span
-                class="actions <%= "team_#{team.id}" %>"
-                <%= team_trait.id == flash[:team_trait_id] ? '' : 'hidden' %>
-                >
+            <% value_last = value_last_display&.gsub(/<[^>]*>/, '') -%>
+            <%= team_trait_display(team_trait, trait_name, value_last) %>
+            <span class="actions <%= "team_#{team.id}" %>"
+                  <%= team_trait.id == flash[:team_trait_id] ? '' : 'hidden' %>
+                  >
               <%= link_to '－', decrement_team_trait_path(team_trait, name: trait_name) %>
               <%= link_to '＋', increment_team_trait_path(team_trait, name: trait_name) %>
             </span>

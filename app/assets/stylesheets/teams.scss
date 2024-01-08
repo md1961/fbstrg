@@ -1,4 +1,4 @@
-.teams_index {
+table.team_traits {
 
   th.toggle_actions {
     cursor: pointer;
@@ -12,13 +12,21 @@
       padding-left: 8px;
     }
 
-    span.increased {
+    span.positive {
+      color: blue;
+    }
+
+    span.negative {
       color: red;
+    }
+
+    &:has(.increased) {
+      background-color: cyan;
       font-weight: bold;
     }
 
-    span.decreased {
-      color: blue;
+    &:has(.decreased) {
+      background-color: pink;
       font-weight: bold;
     }
   }
