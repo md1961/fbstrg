@@ -1,3 +1,8 @@
 <div class="teams_index">
-  <%= render partial: 'traits', locals: {teams: @teams, shows_last_year: true} %>
+  <div class="actions">
+    <% label = "#{@shows_last_year ? 'Hide' : 'Show'} Last Year Traits" -%>
+    <%= link_to label, teams_path(shows_last_year: !@shows_last_year) %>
+  </div>
+
+  <%= render partial: 'traits', locals: {teams: @teams, shows_last_year: @shows_last_year} %>
 </div>
