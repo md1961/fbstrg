@@ -4,12 +4,20 @@ Rails.application.routes.draw do
   root 'leagues#index'
 
   resources :teams, only: :index
+
   resources :games, only: %i[index show update] do
     collection do
       get :replay
     end
   end
+
   resources :leagues, only: %i[index show]
+
+  resources :schedules, only: %i[] do
+    member do
+      patch :postpone
+    end
+  end
 
   resources :team_traits, only: [] do
     member do
