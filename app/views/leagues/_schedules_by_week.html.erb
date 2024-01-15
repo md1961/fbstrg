@@ -7,7 +7,7 @@
     <tr>
 
       <%# TODO: Extract into partial %>
-      <td class="numeric <%= schedule && schedule == next_schedule ? 'next_game' : '' %>">
+      <td class="numeric <%= schedule == next_schedule ? 'next_game' : '' %>">
         <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
       </td>
       <td><%= game || '(bye)' %></td>
@@ -19,6 +19,10 @@
         <% if game&.overtime? %>
           <td class="overtime_mark">OT</td>
         <% end -%>
+      <% elsif schedule == next_schedule && !game.ongoing? -%>
+        <td colspan="4">
+        <td><%= link_to 'Postpone', postpone_schedule_path(schedule, league_id: @league),
+                method: :patch, id: 'link_to_postpone_schedule' %></td>
       <% end -%>
 
     </tr>
