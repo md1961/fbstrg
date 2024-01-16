@@ -28,6 +28,10 @@ class OffensivePlay < ApplicationRecord
     number <= 8
   end
 
+  def pass?
+    normal? && !run?
+  end
+
   def normal?
     number < 100
   end
