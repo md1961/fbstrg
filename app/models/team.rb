@@ -40,6 +40,8 @@ class Team < ApplicationRecord
   end
 
   def team_in_last_year
+    return nil unless year
+
     self.class.where(abbr: abbr).detect { |team| team.league&.year == year - 1}
   end
 
