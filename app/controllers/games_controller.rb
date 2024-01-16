@@ -11,6 +11,7 @@ class GamesController < ApplicationController
     if params[:two_point_try] == 'true'
       session[:offensive_play_id] = nil
       @game.two_point_try = true
+      @game.ball_on = 98
       @game.huddle!
     else
       offensive_play_id = session[:offensive_play_id]
@@ -24,6 +25,7 @@ class GamesController < ApplicationController
   def update
     @game.no_huddle = (params[:no_huddle] == 'true') || session[:no_huddle]
     @game.two_point_try = (params[:two_point_try] == 'true') || session[:two_point_try]
+    @game.ball_on = 98 if @game.two_point_try
 
     @game_snapshot_prev = nil
     if params[:play] == 'to_final_minutes'

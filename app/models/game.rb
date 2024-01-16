@@ -217,7 +217,10 @@ class Game < ApplicationRecord
       @offensive_play_set = offensive_strategy.play_set
     end
     self.status = :playing if @offensive_play
-    self.two_point_try = true if @offensive_play&.two_point_conversion?
+    if @offensive_play&.two_point_conversion?
+      self.two_point_try = true
+      self.ball_on = 98
+    end
     save!
     @offensive_play
   end
@@ -347,6 +350,7 @@ class Game < ApplicationRecord
     self.status = :huddle
     if @result.two_point_try?
       @two_point_try = true
+      self.ball_on = 98
       return
     end
 
@@ -493,8 +497,8 @@ class Game < ApplicationRecord
     def touchdown
       score(6)
       firstdown
-      self.ball_on = 98
       self.next_play = :extra_point
+      self.ball_on = 85
       @result.scoring = :touchdown
     end
 
