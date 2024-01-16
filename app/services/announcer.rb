@@ -14,6 +14,7 @@ module Announcer
     offensive_play = game.offensive_play
     announcement = Views::Announcement.new
     return announcement unless offensive_play
+
     if offensive_play.kneel_down?
       announcement.add("Kneel down", 2000)
       return announcement
@@ -21,6 +22,7 @@ module Announcer
       announcement.add("Spike the ball", 2000)
       return announcement
     end
+
     if offensive_play.normal? || offensive_play.hail_mary? || (offensive_play.punt? && !play.punt_blocked?)
       time = offensive_play.punt? ? 2000 : 1000
       announcement.add("Snap", time)
@@ -32,6 +34,7 @@ module Announcer
       elsif offensive_play.razzle_dazzle?
         announcement.add("Pitch back to QB", 2000)
       end
+      announcement.add("BLITZ", 1000) if (offensive_play.pass? || offensive_play.draw?) && game&.defensive_play&.blitz?
     elsif offensive_play.onside_kickoff?
       announcement.add("Onside kick", 2500)
       rec_by = play.fumble_rec_by_own? ? 'KICKING' : 'receiving'
