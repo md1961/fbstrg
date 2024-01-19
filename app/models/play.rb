@@ -563,7 +563,7 @@ class Play < ApplicationRecord
       plus = 0.0
       plus += 4.0 - @ttm.qb_read_factor * 0.4 if game.no_huddle
       plus += 4.0 if game.offensive_play.confusing?
-      plus -= @ttm.pass_protect_factor
+      plus -= @ttm.pass_protect_factor * 0.5
       [self.class.pct_sack_base(game.offensive_play, game.defensive_play) + plus, 0.1].max
     end
 
