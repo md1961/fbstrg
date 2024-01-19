@@ -49,9 +49,9 @@ class TeamTraitManager
   end
 
   def pass_interception_factor
-    # -10 .. 10 => 0.0 .. 2.0
+    # -10 .. 10 => 1.5 .. 0.5
     f = pass_offense_factor - @defense_trait.pass_coverage - home_defense_factor
-    [f * -0.1 + 1.0, 0.1].max
+    [f * -0.05 + 1.0, 1.5].min
   end
 
   def qb_read_factor
