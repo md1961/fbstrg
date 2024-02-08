@@ -22,6 +22,14 @@ class FieldVision
 
   module Helper
 
+    def yard_in_px(yard)
+      yard * PXS_PER_YARD
+    end
+
+    def yard_to_coord(yard)
+      PADDING + yard_in_px(10 + yard)
+    end
+
     def to_html_element(name, *values, **attrs)
       attr_enum = attrs.reject { |_, v|
         v.blank?
@@ -123,10 +131,6 @@ class FieldVision
 
     private
 
-      def yard_in_px(yard)
-        yard * PXS_PER_YARD
-      end
-
       def bottom
         @top + @height
       end
@@ -141,10 +145,6 @@ class FieldVision
 
       def y_ball_marker
         y_hash_mark - BALL_MARKER_HEIGHT / 2
-      end
-
-      def yard_to_coord(yard)
-        @left + yard_in_px(10 + yard)
       end
 
       def boundary
