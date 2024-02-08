@@ -7,20 +7,6 @@ class FieldVision
   PADDING = 10
   PADDING_TOP = 40
 
-  def self.to_html_element(name, *values, **attrs)
-    attr_enum = attrs.reject { |_, v|
-      v.blank?
-    }.map { |k, v|
-      %Q!#{k}="#{v}"!
-    }.join(' ')
-
-    [
-      "<#{name} #{attr_enum}>",
-      values.empty? ? nil : values.compact.join("\n"),
-      "</#{name}>"
-    ].compact.join("\n")
-  end
-
   def initialize
     field = Field.new(PADDING_TOP, PADDING)
     @area = Area.new(field)
@@ -34,7 +20,25 @@ class FieldVision
     @area.to_s
   end
 
+  module Helper
+
+    def to_html_element(name, *values, **attrs)
+      attr_enum = attrs.reject { |_, v|
+        v.blank?
+      }.map { |k, v|
+        %Q!#{k}="#{v}"!
+      }.join(' ')
+
+      [
+        "<#{name} #{attr_enum}>",
+        values.empty? ? nil : values.compact.join("\n"),
+        "</#{name}>"
+      ].compact.join("\n")
+    end
+  end
+
   class Area
+    include Helper
 
     def initialize(field)
       @field = field
@@ -45,7 +49,7 @@ class FieldVision
     end
 
     def to_s
-      FieldVision.to_html_element(
+      to_html_element(
         :svg,
         @field,
         x: 0,
@@ -59,6 +63,8 @@ class FieldVision
   end
 
   class Field
+    include Helper
+
     attr_reader :width, :height
 
     FIELD_COLOR = 'green'
@@ -142,7 +148,7 @@ class FieldVision
       end
 
       def boundary
-        FieldVision.to_html_element(
+        to_html_element(
           :rect,
           x: @left,
           y: @top,
@@ -155,7 +161,7 @@ class FieldVision
       end
 
       def yard_line_at(yard)
-        FieldVision.to_html_element(
+        to_html_element(
           :line,
           x1: yard_to_coord(yard),
           x2: yard_to_coord(yard),
@@ -172,7 +178,7 @@ class FieldVision
           [y_hash_mark, y_hash_mark + MARK_LENGTH],
           [bottom, bottom - MARK_LENGTH]
         ].map { |y1, y2|
-          FieldVision.to_html_element(
+          to_html_element(
             :line,
             x1: yard_to_coord(yard),
             x2: yard_to_coord(yard),
@@ -186,7 +192,7 @@ class FieldVision
 
       def yardage_number_at(yard)
         number = yard <= 50 ? yard : 100 - yard
-        FieldVision.to_html_element(
+        to_html_element(
           :text,
           number.to_s.chars.join(' '),
           x: yard_to_coord(yard),
@@ -216,7 +222,7 @@ class FieldVision
           coord_end_top.first,
           coord_end_top.last + ARROW_HEAD_HEIGHT
         ]
-        FieldVision.to_html_element(
+        to_html_element(
           :polygon,
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
@@ -226,7 +232,7 @@ class FieldVision
       end
 
       def left_end_zone
-        FieldVision.to_html_element(
+        to_html_element(
           :rect,
           x: @left,
           y: @top,
@@ -239,7 +245,7 @@ class FieldVision
       end
 
       def right_end_zone
-        FieldVision.to_html_element(
+        to_html_element(
           :rect,
           x: @left + yard_in_px(110),
           y: @top,
@@ -267,7 +273,7 @@ class FieldVision
           coord_end_top.first,
           coord_end_top.last + BALL_MARKER_HEIGHT
         ]
-        FieldVision.to_html_element(
+        to_html_element(
           :polygon,
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
@@ -304,7 +310,7 @@ class FieldVision
         ]
 
         [
-          FieldVision.to_html_element(
+          to_html_element(
             :line,
             x1: x,
             x2: x,
@@ -313,7 +319,7 @@ class FieldVision
             stroke: YARD_STICK_BASE_COLOR,
             'stroke-width': 1,
           ),
-          FieldVision.to_html_element(
+          to_html_element(
             :polygon,
             points: [coord_bottom, coord_top_left, coord_top_right].map { |x, y|
               [x, y].join(',')
@@ -326,7 +332,7 @@ class FieldVision
 
       def yard_stick_head(cx, cy)
         [
-          FieldVision.to_html_element(
+          to_html_element(
             :circle,
             cx: cx,
             cy: cy,
@@ -335,7 +341,7 @@ class FieldVision
             'stroke-width': 1,
             fill: YARD_STICK_COLOR
           ),
-          FieldVision.to_html_element(
+          to_html_element(
             :circle,
             cx: cx,
             cy: cy,
@@ -349,7 +355,7 @@ class FieldVision
 
       def yard_chain(yard, sign_direction)
         y = @top - YARD_STICK_CHAIN_POSITION
-        FieldVision.to_html_element(
+        to_html_element(
           :line,
           x1: yard_to_coord(yard),
           x2: yard_to_coord(yard + 10 * sign_direction),
@@ -378,7 +384,7 @@ class FieldVision
         x = yard_to_coord(yard)
         y_top = @top - DOWN_MARKER_LENGTH
         [
-          FieldVision.to_html_element(
+          to_html_element(
             :line,
             x1: x,
             x2: x,
@@ -387,7 +393,7 @@ class FieldVision
             stroke: DOWN_MARKER_BASE_COLOR,
             'stroke-width': 1,
           ),
-          FieldVision.to_html_element(
+          to_html_element(
             :rect,
             x: x - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
             y: y_top - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
@@ -397,7 +403,7 @@ class FieldVision
             'stroke-width': LINE_WIDTH,
             fill: DOWN_MARKER_BASE_COLOR
           ),
-          FieldVision.to_html_element(
+          to_html_element(
             :text,
             down,
             x: x,
