@@ -34,6 +34,30 @@ class FieldVision
     @area.to_s
   end
 
+  class Area
+
+    def initialize(field)
+      @field = field
+    end
+
+    def place_ball_marker(game)
+      @field.place_ball_marker(game)
+    end
+
+    def to_s
+      FieldVision.to_html_element(
+        :svg,
+        @field,
+        x: 0,
+        y: 0,
+        width:  @field.width  + PADDING * 2,
+        height: @field.height + PADDING_TOP + PADDING,
+        style: "background-color: gray",
+        id: 'field_vision_area'
+      )
+    end
+  end
+
   class Field
     attr_reader :width, :height
 
@@ -384,29 +408,5 @@ class FieldVision
           )
         ]
       end
-  end
-
-  class Area
-
-    def initialize(field)
-      @field = field
-    end
-
-    def place_ball_marker(game)
-      @field.place_ball_marker(game)
-    end
-
-    def to_s
-      FieldVision.to_html_element(
-        :svg,
-        @field,
-        x: 0,
-        y: 0,
-        width:  @field.width  + PADDING * 2,
-        height: @field.height + PADDING_TOP + PADDING,
-        style: "background-color: gray",
-        id: 'field_vision_area'
-      )
-    end
   end
 end
