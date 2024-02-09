@@ -50,13 +50,23 @@ class FieldVision
     end
 
     def place_ball_marker(game)
-      @field.place_ball_marker(game)
+      home_has_ball = game.home_has_ball
+      yard = game.ball_on
+      yard = 100 - yard unless home_has_ball
+      sign_direction = home_has_ball ? 1 : -1
+      @ball_marker = ball_marker(yard, sign_direction)
+
+      original_yard = game.ball_on - (10 - game.yard_to_go)
+      original_yard = 100 - original_yard unless home_has_ball
+      @yard_sticks = ChainCrew.yard_sticks(original_yard, sign_direction)
+
+      @down_marker = ChainCrew.down_marker(yard, game.down)
     end
 
     def to_s
       to_html_element(
         :svg,
-        @field,
+        @field, @ball_marker, @yard_sticks, @down_marker,
         x: 0,
         y: 0,
         width:  @field.width  + PADDING * 2,
@@ -65,6 +75,39 @@ class FieldVision
         id: 'field_vision_area'
       )
     end
+
+    private
+
+      BALL_MARKER_LENGTH = 10
+      BALL_MARKER_HEIGHT = 6
+      BALL_MARKER_COLOR = 'yellow'
+
+      def ball_marker(yard, sign_direction)
+        coord_point = [
+          yard_to_coord(yard),
+          y_ball_marker
+        ]
+        coord_end_top = [
+          coord_point.first - BALL_MARKER_LENGTH * sign_direction,
+          coord_point.last - BALL_MARKER_HEIGHT / 2
+        ]
+        coord_end_bottom = [
+          coord_end_top.first,
+          coord_end_top.last + BALL_MARKER_HEIGHT
+        ]
+        to_html_element(
+          :polygon,
+          points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
+            [x, y].join(',')
+          }.join(' '),
+          fill: BALL_MARKER_COLOR,
+          id: 'ball_marker'
+        )
+      end
+
+      def y_ball_marker
+        @field.y_hash_mark - BALL_MARKER_HEIGHT / 2
+      end
   end
 
   class Field
@@ -74,7 +117,6 @@ class FieldVision
 
     FIELD_COLOR = 'green'
     LINE_COLOR  = 'white'
-    BALL_MARKER_COLOR = 'yellow'
     END_ZONE_COLOR = 'skyblue'
     TEAM_NAME_FONT_COLOR = 'black'
 
@@ -91,18 +133,8 @@ class FieldVision
       @height = yard_in_px( 20)
     end
 
-    def place_ball_marker(game)
-      home_has_ball = game.home_has_ball
-      yard = game.ball_on
-      yard = 100 - yard unless home_has_ball
-      sign_direction = home_has_ball ? 1 : -1
-      @ball_marker = ball_marker(yard, sign_direction)
-
-      original_yard = game.ball_on - (10 - game.yard_to_go)
-      original_yard = 100 - original_yard unless home_has_ball
-      @yard_sticks = ChainCrew.yard_sticks(original_yard, sign_direction)
-
-      @down_marker = ChainCrew.down_marker(yard, game.down)
+    def y_hash_mark
+      @top + @height / 3
     end
 
     def to_s
@@ -123,9 +155,6 @@ class FieldVision
         }.compact,
         left_end_zone,
         right_end_zone,
-        @ball_marker,
-        @yard_sticks,
-        @down_marker
       ].flatten.compact.join("\n")
     end
 
@@ -135,16 +164,8 @@ class FieldVision
         @top + @height
       end
 
-      def y_hash_mark
-        @top + @height / 3
-      end
-
       def y_yardage_number
         @top + @height * 2 / 3
-      end
-
-      def y_ball_marker
-        y_hash_mark - BALL_MARKER_HEIGHT / 2
       end
 
       def boundary
@@ -285,32 +306,6 @@ class FieldVision
             fill: TEAM_NAME_FONT_COLOR
           )
         ]
-      end
-
-      BALL_MARKER_LENGTH = 10
-      BALL_MARKER_HEIGHT = 6
-
-      def ball_marker(yard, sign_direction)
-        coord_point = [
-          yard_to_coord(yard),
-          y_ball_marker
-        ]
-        coord_end_top = [
-          coord_point.first - BALL_MARKER_LENGTH * sign_direction,
-          coord_point.last - BALL_MARKER_HEIGHT / 2
-        ]
-        coord_end_bottom = [
-          coord_end_top.first,
-          coord_end_top.last + BALL_MARKER_HEIGHT
-        ]
-        to_html_element(
-          :polygon,
-          points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
-            [x, y].join(',')
-          }.join(' '),
-          fill: BALL_MARKER_COLOR,
-          id: 'ball_marker'
-        )
       end
   end
 
