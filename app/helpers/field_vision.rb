@@ -189,7 +189,7 @@ class FieldVision
     end
 
     def to_s
-      [
+      @to_s ||= [
         boundary,
         0.step(100, 5).map { |yard|
           yard_line_at(yard)
