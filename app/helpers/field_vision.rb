@@ -1,4 +1,7 @@
+require 'singleton'
+
 class FieldVision
+  include Singleton
 
   PXS_PER_YARD = 5
   PADDING = 10
