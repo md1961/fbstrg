@@ -4,9 +4,14 @@ class FieldVision
   PADDING = 10
   PADDING_TOP = 40
 
-  def initialize(game)
-    field = Field.new(game.visitors, game.home_team, PADDING_TOP, PADDING)
+  def initialize
+    field = Field.new(PADDING_TOP, PADDING)
     @area = Area.new(field)
+  end
+
+  def set_teams_from(game)
+    @area.visitors  = game.visitors
+    @area.home_team = game.home_team
   end
 
   def place_ball_marker(game)
@@ -45,6 +50,8 @@ class FieldVision
   class Area
     include Helper
 
+    attr_writer :visitors, :home_team
+
     def initialize(field)
       @field = field
     end
@@ -66,7 +73,7 @@ class FieldVision
     def to_s
       to_html_element(
         :svg,
-        @field, @ball_marker, @yard_sticks, @down_marker,
+        @field, texts_in_end_zone, @ball_marker, @yard_sticks, @down_marker,
         x: 0,
         y: 0,
         width:  @field.width  + PADDING * 2,
@@ -77,6 +84,8 @@ class FieldVision
     end
 
     private
+
+      TEAM_NAME_FONT_SIZE = 32
 
       BALL_MARKER_LENGTH = 10
       BALL_MARKER_HEIGHT = 6
@@ -108,6 +117,33 @@ class FieldVision
       def y_ball_marker
         @field.y_hash_mark - BALL_MARKER_HEIGHT / 2
       end
+
+      def texts_in_end_zone
+        x_text_left , y_text_left  = @field.coords_for_left_end_zone_text
+        x_text_right, y_text_right = @field.coords_for_right_end_zone_text
+        [
+          to_html_element(
+            :text,
+            @visitors&.abbr,
+            'font-size': TEAM_NAME_FONT_SIZE,
+            'font-weight': 'bold',
+            transform: "translate(#{x_text_left}, #{y_text_left}) rotate(90)",
+            'text-anchor': 'middle',
+            'alignment-baseline': 'middle',
+            fill: Field::TEAM_NAME_FONT_COLOR
+          ),
+          to_html_element(
+            :text,
+            @home_team&.abbr,
+            'font-size': TEAM_NAME_FONT_SIZE,
+            'font-weight': 'bold',
+            transform: "translate(#{x_text_right}, #{y_text_right}) rotate(270)",
+            'text-anchor': 'middle',
+            'alignment-baseline': 'middle',
+            fill: Field::TEAM_NAME_FONT_COLOR
+          )
+        ]
+      end
   end
 
   class Field
@@ -124,9 +160,7 @@ class FieldVision
     LINE_WIDTH = 2
     MARK_LENGTH = 5
 
-    def initialize(visitors, home_team, top, left)
-      @visitors = visitors
-      @home_team = home_team
+    def initialize(top, left)
       @top = top
       @left = left
       @width  = yard_in_px(120)
@@ -135,6 +169,20 @@ class FieldVision
 
     def y_hash_mark
       @top + @height / 3
+    end
+
+    def coords_for_left_end_zone_text
+      [
+        @left + yard_in_px(5) - 3,
+        @top + @height / 2
+      ]
+    end
+
+    def coords_for_right_end_zone_text
+      [
+        @left + yard_in_px(115) + 3,
+        @top + @height / 2
+      ]
     end
 
     def to_s
@@ -252,60 +300,30 @@ class FieldVision
         )
       end
 
-      TEAM_NAME_FONT_SIZE = 32
-
       def left_end_zone
-        x_text = @left + yard_in_px(5)
-        y_text = @top + @height / 2
-        [
-          to_html_element(
-            :rect,
-            x: @left,
-            y: @top,
-            width:  yard_in_px(10),
-            height: @height,
-            stroke: LINE_COLOR,
-            'stroke-width': LINE_WIDTH,
-            fill: END_ZONE_COLOR
-          ),
-          to_html_element(
-            :text,
-            @visitors.abbr,
-            'font-size': TEAM_NAME_FONT_SIZE,
-            'font-weight': 'bold',
-            transform: "translate(#{x_text - 2}, #{y_text}) rotate(90)",
-            'text-anchor': 'middle',
-            'alignment-baseline': 'middle',
-            fill: TEAM_NAME_FONT_COLOR
-          )
-        ]
+        to_html_element(
+          :rect,
+          x: @left,
+          y: @top,
+          width:  yard_in_px(10),
+          height: @height,
+          stroke: LINE_COLOR,
+          'stroke-width': LINE_WIDTH,
+          fill: END_ZONE_COLOR
+        )
       end
 
       def right_end_zone
-        x_text = @left + yard_in_px(115)
-        y_text = @top + @height / 2
-        [
-          to_html_element(
-            :rect,
-            x: @left + yard_in_px(110),
-            y: @top,
-            width:  yard_in_px(10),
-            height: @height,
-            stroke: LINE_COLOR,
-            'stroke-width': LINE_WIDTH,
+        to_html_element(
+          :rect,
+          x: @left + yard_in_px(110),
+          y: @top,
+          width:  yard_in_px(10),
+          height: @height,
+          stroke: LINE_COLOR,
+          'stroke-width': LINE_WIDTH,
             fill: END_ZONE_COLOR
-          ),
-          to_html_element(
-            :text,
-            @home_team.abbr,
-            'font-size': TEAM_NAME_FONT_SIZE,
-            'font-weight': 'bold',
-            transform: "translate(#{x_text + 2}, #{y_text}) rotate(270)",
-            'text-anchor': 'middle',
-            'alignment-baseline': 'middle',
-            fill: TEAM_NAME_FONT_COLOR
-          )
-        ]
+        )
       end
   end
 
