@@ -60,6 +60,11 @@ class FieldVision
     end
 
     def place_ball_marker(game)
+      unless @visitors == game.visitors
+        @visitors  = game.visitors
+        @home_team = game.home_team
+      end
+
       home_has_ball = game.home_has_ball
       yard = game.ball_on
       yard = 100 - yard unless home_has_ball
