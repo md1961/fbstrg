@@ -383,8 +383,42 @@ class FieldVision
           }.join(' '),
           fill: YARD_STICK_COLOR
         ),
+        yard_stick_body_lines(yard, 2),
         yard_stick_head(x, y_top)
       ]
+    end
+
+    def yard_stick_body_lines(yard, num_lines)
+      x = yard_to_coord(yard)
+      y_coord_bottom = PADDING_TOP - YARD_STICK_CHAIN_POSITION
+      body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
+      body_top_width = YARD_STICK_HEAD_RADIUS * 2
+
+      dy_interval = body_height / (num_lines + 1)
+      y = y_coord_bottom - dy_interval
+      num_lines.times.flat_map { |n|
+        width = body_top_width * (n + 1) / num_lines
+        [
+          to_html_element(
+            :line,
+            x1: x - width / 2,
+            x2: x + width / 2,
+            y1: y,
+            y2: y,
+            stroke: 'black',
+            'stroke-width': 1,
+          ),
+          to_html_element(
+            :line,
+            x1: x - width / 2 + 1,
+            x2: x + width / 2 - 1,
+            y1: y + 1,
+            y2: y + 1,
+            stroke: 'white',
+            'stroke-width': 1,
+          )
+        ].tap { y -= dy_interval - 1 } # 1 is for top line y_coord adjustment.
+      }
     end
 
     def yard_stick_head(cx, cy)
