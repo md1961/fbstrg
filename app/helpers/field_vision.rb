@@ -65,23 +65,16 @@ class FieldVision
         @home_team = game.home_team
       end
 
-      home_has_ball = game.home_has_ball
-      yard = game.ball_on
-      yard = 100 - yard unless home_has_ball
-      sign_direction = home_has_ball ? 1 : -1
-      @ball_marker = ball_marker(yard, sign_direction)
-
-      original_yard = game.ball_on - (10 - game.yard_to_go)
-      original_yard = 100 - original_yard unless home_has_ball
-      @yard_sticks = ChainCrew.yard_sticks(original_yard, sign_direction)
-
-      @down_marker = ChainCrew.down_marker(yard, game.down)
+      @chain_crew = ChainCrew.new(game)
     end
 
     def to_s
       to_html_element(
         :svg,
-        @field, texts_in_end_zone, @ball_marker, @yard_sticks, @down_marker,
+        @field,
+        texts_in_end_zone,
+        @chain_crew.ball_marker(@field.y_hash_mark),
+        @chain_crew,
         x: 0,
         y: 0,
         width:  @field.width  + PADDING * 2,
@@ -94,37 +87,6 @@ class FieldVision
     private
 
       TEAM_NAME_FONT_SIZE = 32
-
-      BALL_MARKER_LENGTH = 10
-      BALL_MARKER_HEIGHT = 6
-      BALL_MARKER_COLOR = 'yellow'
-
-      def ball_marker(yard, sign_direction)
-        coord_point = [
-          yard_to_coord(yard),
-          y_ball_marker
-        ]
-        coord_end_top = [
-          coord_point.first - BALL_MARKER_LENGTH * sign_direction,
-          coord_point.last - BALL_MARKER_HEIGHT / 2
-        ]
-        coord_end_bottom = [
-          coord_end_top.first,
-          coord_end_top.last + BALL_MARKER_HEIGHT
-        ]
-        to_html_element(
-          :polygon,
-          points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
-            [x, y].join(',')
-          }.join(' '),
-          fill: BALL_MARKER_COLOR,
-          id: 'ball_marker'
-        )
-      end
-
-      def y_ball_marker
-        @field.y_hash_mark - BALL_MARKER_HEIGHT / 2
-      end
 
       def texts_in_end_zone
         x_text_left , y_text_left  = @field.coords_for_left_end_zone_text
@@ -335,174 +297,225 @@ class FieldVision
       end
   end
 
-  module ChainCrew
-    extend Helper
+  class ChainCrew
+    include Helper
 
-    module_function
+    def initialize(game)
+      home_has_ball = game.home_has_ball
+      yard = game.ball_on
+      yard = 100 - yard unless home_has_ball
+      sign_direction = home_has_ball ? 1 : -1
+      @f_ball_marker = f_ball_marker(yard, sign_direction)
 
-    YARD_STICK_LENGTH = 30
-    YARD_STICK_HEAD_RADIUS = 4
-    YARD_STICK_HEAD_CLEARANCE = 2
-    YARD_STICK_CHAIN_POSITION = 4
-    YARD_STICK_CHAIN_wIDTH = 1
+      original_yard = game.ball_on - (10 - game.yard_to_go)
+      original_yard = 100 - original_yard unless home_has_ball
+      @yard_sticks = yard_sticks(original_yard, sign_direction)
 
-    YARD_STICK_BASE_COLOR = 'black'
-    YARD_STICK_COLOR = 'chocolate'
-
-    def yard_stick(yard)
-      x = yard_to_coord(yard)
-      y_top = PADDING_TOP - YARD_STICK_LENGTH
-
-      coord_bottom = [
-        x,
-        PADDING_TOP - YARD_STICK_CHAIN_POSITION
-      ]
-      coord_top_left = [
-        x - YARD_STICK_HEAD_RADIUS,
-        y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
-      ]
-      coord_top_right = [
-        x + YARD_STICK_HEAD_RADIUS,
-        y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
-      ]
-
-      [
-        to_html_element(
-          :line,
-          x1: x,
-          x2: x,
-          y1: PADDING_TOP,
-          y2: y_top,
-          stroke: YARD_STICK_BASE_COLOR,
-          'stroke-width': 1,
-        ),
-        to_html_element(
-          :polygon,
-          points: [coord_bottom, coord_top_left, coord_top_right].map { |x, y|
-            [x, y].join(',')
-          }.join(' '),
-          fill: YARD_STICK_COLOR
-        ),
-        yard_stick_body_lines(yard, 2),
-        yard_stick_head(x, y_top)
-      ]
+      @down_marker = down_marker(yard, game.down)
     end
 
-    def yard_stick_body_lines(yard, num_lines)
-      x = yard_to_coord(yard)
-      y_coord_bottom = PADDING_TOP - YARD_STICK_CHAIN_POSITION
-      body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
-      body_top_width = YARD_STICK_HEAD_RADIUS * 2
+    def ball_marker(y_hash_mark)
+      @f_ball_marker.call(y_hash_mark)
+    end
 
-      dy_interval = body_height / (num_lines + 1)
-      y = y_coord_bottom - dy_interval
-      num_lines.times.flat_map { |n|
-        width = body_top_width * (n + 1) / num_lines
+    def to_s
+      [@yard_sticks, @down_marker].flatten.join("\n")
+    end
+
+    private
+
+      BALL_MARKER_LENGTH = 10
+      BALL_MARKER_HEIGHT = 6
+      BALL_MARKER_COLOR = 'yellow'
+
+      def f_ball_marker(yard, sign_direction)
+        ->(y_hash_mark) {
+          coord_point = [
+            yard_to_coord(yard),
+            y_hash_mark - BALL_MARKER_HEIGHT / 2
+          ]
+          coord_end_top = [
+            coord_point.first - BALL_MARKER_LENGTH * sign_direction,
+            coord_point.last - BALL_MARKER_HEIGHT / 2
+          ]
+          coord_end_bottom = [
+            coord_end_top.first,
+            coord_end_top.last + BALL_MARKER_HEIGHT
+          ]
+          to_html_element(
+            :polygon,
+            points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
+              [x, y].join(',')
+            }.join(' '),
+            fill: BALL_MARKER_COLOR,
+            id: 'ball_marker'
+          )
+        }
+      end
+
+      YARD_STICK_LENGTH = 30
+      YARD_STICK_HEAD_RADIUS = 4
+      YARD_STICK_HEAD_CLEARANCE = 2
+      YARD_STICK_CHAIN_POSITION = 4
+      YARD_STICK_CHAIN_wIDTH = 1
+
+      YARD_STICK_BASE_COLOR = 'black'
+      YARD_STICK_COLOR = 'chocolate'
+
+      def yard_stick(yard)
+        x = yard_to_coord(yard)
+        y_top = PADDING_TOP - YARD_STICK_LENGTH
+
+        coord_bottom = [
+          x,
+          PADDING_TOP - YARD_STICK_CHAIN_POSITION
+        ]
+        coord_top_left = [
+          x - YARD_STICK_HEAD_RADIUS,
+          y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
+        ]
+        coord_top_right = [
+          x + YARD_STICK_HEAD_RADIUS,
+          y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
+        ]
+
         [
           to_html_element(
             :line,
-            x1: x - width / 2,
-            x2: x + width / 2,
-            y1: y,
-            y2: y,
-            stroke: 'black',
+            x1: x,
+            x2: x,
+            y1: PADDING_TOP,
+            y2: y_top,
+            stroke: YARD_STICK_BASE_COLOR,
             'stroke-width': 1,
           ),
           to_html_element(
-            :line,
-            x1: x - width / 2 + 1,
-            x2: x + width / 2 - 1,
-            y1: y + 1,
-            y2: y + 1,
-            stroke: 'white',
+            :polygon,
+            points: [coord_bottom, coord_top_left, coord_top_right].map { |x, y|
+              [x, y].join(',')
+            }.join(' '),
+            fill: YARD_STICK_COLOR
+          ),
+          yard_stick_body_lines(yard, 2),
+          yard_stick_head(x, y_top)
+        ]
+      end
+
+      def yard_stick_body_lines(yard, num_lines)
+        x = yard_to_coord(yard)
+        y_coord_bottom = PADDING_TOP - YARD_STICK_CHAIN_POSITION
+        body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
+        body_top_width = YARD_STICK_HEAD_RADIUS * 2
+
+        dy_interval = body_height / (num_lines + 1)
+        y = y_coord_bottom - dy_interval
+        num_lines.times.flat_map { |n|
+          width = body_top_width * (n + 1) / num_lines
+          [
+            to_html_element(
+              :line,
+              x1: x - width / 2,
+              x2: x + width / 2,
+              y1: y,
+              y2: y,
+              stroke: 'black',
+              'stroke-width': 1,
+            ),
+            to_html_element(
+              :line,
+              x1: x - width / 2 + 1,
+              x2: x + width / 2 - 1,
+              y1: y + 1,
+              y2: y + 1,
+              stroke: 'white',
+              'stroke-width': 1,
+            )
+          ].tap { y -= dy_interval - 1 } # 1 is for top line y_coord adjustment.
+        }
+      end
+
+      def yard_stick_head(cx, cy)
+        [
+          to_html_element(
+            :circle,
+            cx: cx,
+            cy: cy,
+            r: YARD_STICK_HEAD_RADIUS,
+            stroke: YARD_STICK_COLOR,
             'stroke-width': 1,
+            fill: YARD_STICK_COLOR
+          ),
+          to_html_element(
+            :circle,
+            cx: cx,
+            cy: cy,
+            r: YARD_STICK_HEAD_RADIUS - 2,
+            stroke: 'black',
+            'stroke-width': 1,
+            fill: 'transparent'
           )
-        ].tap { y -= dy_interval - 1 } # 1 is for top line y_coord adjustment.
-      }
-    end
+        ]
+      end
 
-    def yard_stick_head(cx, cy)
-      [
-        to_html_element(
-          :circle,
-          cx: cx,
-          cy: cy,
-          r: YARD_STICK_HEAD_RADIUS,
-          stroke: YARD_STICK_COLOR,
-          'stroke-width': 1,
-          fill: YARD_STICK_COLOR
-        ),
-        to_html_element(
-          :circle,
-          cx: cx,
-          cy: cy,
-          r: YARD_STICK_HEAD_RADIUS - 2,
-          stroke: 'black',
-          'stroke-width': 1,
-          fill: 'transparent'
-        )
-      ]
-    end
-
-    def yard_chain(yard, sign_direction)
-      y = PADDING_TOP - YARD_STICK_CHAIN_POSITION
-      to_html_element(
-        :line,
-        x1: yard_to_coord(yard),
-        x2: yard_to_coord(yard + 10 * sign_direction),
-        y1: y,
-        y2: y,
-        stroke: YARD_STICK_BASE_COLOR,
-        'stroke-width': YARD_STICK_CHAIN_wIDTH
-      )
-    end
-
-    def yard_sticks(original_yard, sign_direction)
-      [
-        yard_stick(original_yard),
-        yard_stick(original_yard + 10 * sign_direction),
-        yard_chain(original_yard, sign_direction)
-      ]
-    end
-
-    DOWN_MARKER_LENGTH = YARD_STICK_LENGTH
-    DOWN_MARKER_HEAD_SIDE_LENGTH = YARD_STICK_HEAD_RADIUS * 2
-    DOWN_MARKER_BASE_COLOR = YARD_STICK_BASE_COLOR
-    DOWN_MARKER_FONT_COLOR = YARD_STICK_COLOR
-    DOWN_MARKER_FONT_SIZE = 11
-
-    def down_marker(yard, down)
-      x = yard_to_coord(yard)
-      y_top = PADDING_TOP - DOWN_MARKER_LENGTH
-      [
+      def yard_chain(yard, sign_direction)
+        y = PADDING_TOP - YARD_STICK_CHAIN_POSITION
         to_html_element(
           :line,
-          x1: x,
-          x2: x,
-          y1: PADDING_TOP,
-          y2: y_top,
-          stroke: DOWN_MARKER_BASE_COLOR,
-          'stroke-width': 1,
-        ),
-        to_html_element(
-          :rect,
-          x: x - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
-          y: y_top - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
-          width:  DOWN_MARKER_HEAD_SIDE_LENGTH,
-          height: DOWN_MARKER_HEAD_SIDE_LENGTH,
-          stroke: DOWN_MARKER_BASE_COLOR,
-          fill: DOWN_MARKER_BASE_COLOR
-        ),
-        to_html_element(
-          :text,
-          down,
-          x: x,
-          y: y_top + DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
-          'font-size': DOWN_MARKER_FONT_SIZE,
-          'text-anchor': 'middle',
-          fill: DOWN_MARKER_FONT_COLOR
+          x1: yard_to_coord(yard),
+          x2: yard_to_coord(yard + 10 * sign_direction),
+          y1: y,
+          y2: y,
+          stroke: YARD_STICK_BASE_COLOR,
+          'stroke-width': YARD_STICK_CHAIN_wIDTH
         )
-      ]
-    end
+      end
+
+      def yard_sticks(original_yard, sign_direction)
+        [
+          yard_stick(original_yard),
+          yard_stick(original_yard + 10 * sign_direction),
+          yard_chain(original_yard, sign_direction)
+        ]
+      end
+
+      DOWN_MARKER_LENGTH = YARD_STICK_LENGTH
+      DOWN_MARKER_HEAD_SIDE_LENGTH = YARD_STICK_HEAD_RADIUS * 2
+      DOWN_MARKER_BASE_COLOR = YARD_STICK_BASE_COLOR
+      DOWN_MARKER_FONT_COLOR = YARD_STICK_COLOR
+      DOWN_MARKER_FONT_SIZE = 11
+
+      def down_marker(yard, down)
+        x = yard_to_coord(yard)
+        y_top = PADDING_TOP - DOWN_MARKER_LENGTH
+        [
+          to_html_element(
+            :line,
+            x1: x,
+            x2: x,
+            y1: PADDING_TOP,
+            y2: y_top,
+            stroke: DOWN_MARKER_BASE_COLOR,
+            'stroke-width': 1,
+          ),
+          to_html_element(
+            :rect,
+            x: x - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
+            y: y_top - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
+            width:  DOWN_MARKER_HEAD_SIDE_LENGTH,
+            height: DOWN_MARKER_HEAD_SIDE_LENGTH,
+            stroke: DOWN_MARKER_BASE_COLOR,
+            fill: DOWN_MARKER_BASE_COLOR
+          ),
+          to_html_element(
+            :text,
+            down,
+            x: x,
+            y: y_top + DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
+            'font-size': DOWN_MARKER_FONT_SIZE,
+            'text-anchor': 'middle',
+            fill: DOWN_MARKER_FONT_COLOR
+          )
+        ]
+      end
   end
 end
