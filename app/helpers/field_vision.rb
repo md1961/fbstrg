@@ -5,7 +5,7 @@ class FieldVision
 
   PXS_PER_YARD = 5
   PADDING = 10
-  PADDING_TOP = 40
+  PADDING_TOP = 50
 
   def initialize
     field = Field.new(PADDING_TOP, PADDING)
@@ -353,8 +353,8 @@ class FieldVision
         }
       end
 
-      YARD_STICK_LENGTH = 30
-      YARD_STICK_HEAD_RADIUS = 4
+      YARD_STICK_LENGTH = 40
+      YARD_STICK_HEAD_RADIUS = 5
       YARD_STICK_HEAD_CLEARANCE = 2
       YARD_STICK_CHAIN_POSITION = 4
       YARD_STICK_CHAIN_wIDTH = 1
@@ -396,10 +396,12 @@ class FieldVision
             }.join(' '),
             fill: YARD_STICK_COLOR
           ),
-          yard_stick_body_lines(yard, 2),
+          yard_stick_body_lines(yard, 3),
           yard_stick_head(x, y_top)
         ]
       end
+
+      YARD_STICK_BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM = 4
 
       def yard_stick_body_lines(yard, num_lines)
         x = yard_to_coord(yard)
@@ -407,10 +409,12 @@ class FieldVision
         body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
         body_top_width = YARD_STICK_HEAD_RADIUS * 2
 
-        dy_interval = body_height / (num_lines + 1)
-        y = y_coord_bottom - dy_interval
+        offset_from_bottom = YARD_STICK_BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM
+        dy_interval = (body_height - offset_from_bottom) / (num_lines + 1)
+        y = y_coord_bottom - offset_from_bottom - dy_interval
         num_lines.times.flat_map { |n|
-          width = body_top_width * (n + 1) / num_lines
+          width = body_top_width * (n + 1) / num_lines \
+                + body_top_width * offset_from_bottom / body_height
           [
             to_html_element(
               :line,
@@ -430,7 +434,7 @@ class FieldVision
               stroke: 'white',
               'stroke-width': 1,
             )
-          ].tap { y -= dy_interval - 1 } # 1 is for top line y_coord adjustment.
+          ].tap { y -= dy_interval }
         }
       end
 
@@ -482,7 +486,7 @@ class FieldVision
       DOWN_MARKER_HEAD_SIDE_LENGTH = YARD_STICK_HEAD_RADIUS * 2
       DOWN_MARKER_BASE_COLOR = YARD_STICK_BASE_COLOR
       DOWN_MARKER_FONT_COLOR = YARD_STICK_COLOR
-      DOWN_MARKER_FONT_SIZE = 11
+      DOWN_MARKER_FONT_SIZE = 12
 
       def down_marker(yard, down)
         x = yard_to_coord(yard)
@@ -510,7 +514,7 @@ class FieldVision
             :text,
             down,
             x: x,
-            y: y_top + DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
+            y: y_top + DOWN_MARKER_HEAD_SIDE_LENGTH / 2 - 1,
             'font-size': DOWN_MARKER_FONT_SIZE,
             'text-anchor': 'middle',
             fill: DOWN_MARKER_FONT_COLOR
