@@ -66,6 +66,8 @@ class FieldVision
       end
 
       @chain_crew = ChainCrew.new(game)
+      @ball_marker = shows_ball_marker?(game) ? @chain_crew.ball_marker(@field.y_hash_mark) : nil
+      @chain_crew = nil unless shows_chain_crew?(game)
     end
 
     def to_s
@@ -73,7 +75,7 @@ class FieldVision
         :svg,
         @field,
         texts_in_end_zone,
-        @chain_crew.ball_marker(@field.y_hash_mark),
+        @ball_marker,
         @chain_crew,
         x: 0,
         y: 0,
@@ -85,6 +87,14 @@ class FieldVision
     end
 
     private
+
+      def shows_ball_marker?(game)
+        !game.final?
+      end
+
+      def shows_chain_crew?(game)
+        game.scrimmage?
+      end
 
       TEAM_NAME_FONT_SIZE = 32
 
