@@ -9,3 +9,18 @@
     <% end -%>
   </table>
 <% end -%>
+
+<div>
+  <%
+    field_vision = FieldVision.instance
+    #field_vision.set_teams_from(game)
+    field_vision.place_ball_marker(@game)
+  -%>
+  <%= field_vision.to_s.html_safe %>
+
+  <%= form_with url: miscs_path, method: :get do |f| %>
+    <%= f.label :yard %>
+    <%= f.number_field :yard, autofocus: true %>
+    <%= f.submit :go %>
+  <% end -%>
+</div>
