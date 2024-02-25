@@ -107,7 +107,7 @@ class FieldVision
             @visitors&.abbr,
             'font-size': TEAM_NAME_FONT_SIZE,
             'font-weight': 'bold',
-            transform: "translate(#{x_text_left}, #{y_text_left}) rotate(90)",
+            transform: "translate(#{x_text_left}, #{y_text_left}) rotate(270)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
             fill: Field::TEAM_NAME_FONT_COLOR
@@ -117,7 +117,7 @@ class FieldVision
             @home_team&.abbr,
             'font-size': TEAM_NAME_FONT_SIZE,
             'font-weight': 'bold',
-            transform: "translate(#{x_text_right}, #{y_text_right}) rotate(270)",
+            transform: "translate(#{x_text_right}, #{y_text_right}) rotate(90)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
             fill: Field::TEAM_NAME_FONT_COLOR
@@ -133,8 +133,8 @@ class FieldVision
 
     FIELD_COLOR = 'green'
     LINE_COLOR  = 'white'
-    END_ZONE_COLOR = 'skyblue'
-    TEAM_NAME_FONT_COLOR = 'black'
+    END_ZONE_COLOR = 'blue'
+    TEAM_NAME_FONT_COLOR = 'white'
 
     YARDAGE_NUMBER_FONT_SIZE = 10
     LINE_WIDTH = 2
@@ -153,14 +153,14 @@ class FieldVision
 
     def coords_for_left_end_zone_text
       [
-        @left + yard_in_px(5) - 3,
+        @left + yard_in_px(5) + 3,
         @top + @height / 2
       ]
     end
 
     def coords_for_right_end_zone_text
       [
-        @left + yard_in_px(115) + 3,
+        @left + yard_in_px(115) - 3,
         @top + @height / 2
       ]
     end
