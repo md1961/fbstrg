@@ -72,11 +72,15 @@ class GamesController < ApplicationController
         session[:offensive_play_id] = @game.determine_offensive_play(params[:play])&.id
         render :show and return
       elsif params[:play] =~ /\A[a-j]+\z/i && @game.defense_human_assisted?
-        play = DefensivePlay.pick_from(params[:play].upcase)
-        @game.defensive_play = play
-        @game.defensive_play_set = nil
-        session[:defensive_play_id]     = play&.id
-        session[:defensive_play_set_id] = nil
+        begin
+          play = DefensivePlay.pick_from(params[:play].upcase)
+          @game.defensive_play = play
+          @game.defensive_play_set = nil
+          session[:defensive_play_id]     = play&.id
+          session[:defensive_play_set_id] = nil
+        rescue Exceptions::IllegalResultStringError => e
+          @game.error_message = e.message
+        end
         render :show and return
       end
 
