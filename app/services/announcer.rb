@@ -163,8 +163,15 @@ module Announcer
            || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \
            || play.blocked_kick_return?
           start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
-          end_on = play.blocked_kick_return? ? run_from + run_yardage_after \
-                 : play.fumble_rec_by_opponent? ? 100 - game.ball_on : game.ball_on
+          end_on = if play.touchdown?
+                     100
+                   elsif play.blocked_kick_return?
+                     run_from + run_yardage_after
+                   elsif play.fumble_rec_by_opponent?
+                     100 - game.ball_on
+                   else
+                     game.ball_on
+                   end
           long_gain_statements(start_on, end_on).each do |text, time|
             announcement.add(text, time)
           end
