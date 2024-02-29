@@ -183,6 +183,7 @@ class FieldVision
         }.compact,
         left_end_zone,
         right_end_zone,
+        logo_at_midfield
       ].flatten.compact.join("\n")
     end
 
@@ -332,6 +333,24 @@ class FieldVision
           'stroke-width': LINE_WIDTH,
             fill: END_ZONE_COLOR
         )
+      end
+
+      def logo_at_midfield
+        to_html_element(
+          :svg,
+          nfl_logo,
+          x: @left + yard_in_px(58),
+          y: @top + 5,
+          width:  20,
+          height: 20,
+          viewBox: "0 0 192.756 192.756"
+        )
+      end
+
+      def nfl_logo
+        File.open('app/helpers/nfl_logo.svg', 'r') { |f|
+          f.read()
+        } rescue nil
       end
   end
 
