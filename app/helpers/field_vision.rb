@@ -137,7 +137,7 @@ class FieldVision
     TEAM_NAME_FONT_COLOR = 'white'
 
     YARDAGE_NUMBER_FONT_SIZE = 10
-    LINE_WIDTH = 2
+    LINE_WIDTH = 1
     MARK_LENGTH = 5
 
     def initialize(top, left)
@@ -168,11 +168,11 @@ class FieldVision
     def to_s
       @to_s ||= [
         boundary,
-        0.step(100, 5).map { |yard|
-          yard_line_at(yard)
-        },
         0.step(100, 1).map { |yard|
           yard_marks_at(yard)
+        },
+        0.step(100, 5).map { |yard|
+          yard_line_at(yard)
         },
         10.step(90, 10).map { |yard|
           yardage_number_at(yard)
@@ -209,16 +209,44 @@ class FieldVision
         )
       end
 
+      TOUCHBACK_LINE_COLOR = 'chocolate'
+      TOUCHBACK_LINE_OFFSET = 1
+
       def yard_line_at(yard)
-        to_html_element(
-          :line,
-          x1: yard_to_coord(yard),
-          x2: yard_to_coord(yard),
-          y1: @top,
-          y2: bottom,
-          stroke: LINE_COLOR,
-          'stroke-width': LINE_WIDTH,
-        )
+        x = yard_to_coord(yard)
+        [
+          to_html_element(
+            :line,
+            x1: x,
+            x2: x,
+            y1: @top,
+            y2: bottom,
+            stroke: LINE_COLOR,
+            'stroke-width': LINE_WIDTH,
+          )
+        ].tap { |elements|
+          if [20, 50, 80].include?(yard)
+            elements \
+              << to_html_element(
+                :line,
+                x1: x - LINE_WIDTH - TOUCHBACK_LINE_OFFSET,
+                x2: x - LINE_WIDTH - TOUCHBACK_LINE_OFFSET,
+                y1: @top + LINE_WIDTH,
+                y2: bottom - LINE_WIDTH,
+                stroke: TOUCHBACK_LINE_COLOR,
+                'stroke-width': LINE_WIDTH,
+              ) \
+              << to_html_element(
+                :line,
+                x1: x + LINE_WIDTH + TOUCHBACK_LINE_OFFSET,
+                x2: x + LINE_WIDTH + TOUCHBACK_LINE_OFFSET,
+                y1: @top + LINE_WIDTH,
+                y2: bottom - LINE_WIDTH,
+                stroke: TOUCHBACK_LINE_COLOR,
+                'stroke-width': LINE_WIDTH,
+              )
+          end
+        }
       end
 
       def yard_marks_at(yard)
