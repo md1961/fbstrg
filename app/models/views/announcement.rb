@@ -33,12 +33,14 @@ class Announcement
     (@statements.map(&:time).sum / 1000.0).ceil - 1
   end
 
+  MINIMUM_TIME = 200
+
   def to_s(speed: nil)
     speed = 1 if speed.to_i.zero?
     texts = @statements.map(&:text) + ['__END__']
     times = [0] + @statements.map(&:time)
     "[#{texts.zip(times).map { |text, time|
-      %Q!["#{text}",#{time / speed}]!
+      %Q!["#{text}",#{[time, MINIMUM_TIME].max / speed}]!
     }.join(',')}]"
   end
 
