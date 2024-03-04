@@ -28,6 +28,10 @@ $ ->
           $('#judgments_and_plays').show()
           $('div.buttons').show()
           $('input#play').focus()
+        else if m = text.match(/BALL\D*\s+(-?\d+)\s+(\w+)/)
+          transform = "translate(#{m[1]}, 0)"
+          color = m[2]
+          $('#ball_marker').attr('transform', transform).attr('fill', color)
         else
           $('#announce_board').html(text)
         resolve()
