@@ -1,6 +1,7 @@
 module Views
 
 class Announcement
+  include FieldVision::Helper
 
   def initialize
     @statements = []
@@ -19,6 +20,15 @@ class Announcement
   def add_time_to_last(time)
     @statements.last.time += time unless empty?
     self
+  end
+
+  def move_ball_marker(play, game)
+    sign_direction = game.home_has_ball ? 1 : -1
+    sign_direction *= -1 if play.possession_changing?
+    x_move = yard_in_px(play.air_yardage) * sign_direction
+    color = 'cyan'
+
+    add("BALL: #{x_move} #{color}", 0)
   end
 
   def empty?
