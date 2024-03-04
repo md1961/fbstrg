@@ -184,7 +184,7 @@ class FieldVision
     BALL_MARKER_HEIGHT = 6
     BALL_MARKER_COLOR = 'yellow'
 
-    def ball_marker(yard, sign_direction)
+    def ball_marker(yard, sign_direction, **options)
       coord_point = [
         yard_to_coord(yard),
         y_hash_mark - BALL_MARKER_HEIGHT / 2
@@ -199,11 +199,13 @@ class FieldVision
       ]
       to_html_element(
         :polygon,
-        points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
-          [x, y].join(',')
-        }.join(' '),
-        fill: BALL_MARKER_COLOR,
-        id: 'ball_marker'
+        {
+          points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
+            [x, y].join(',')
+          }.join(' '),
+          fill: BALL_MARKER_COLOR,
+          id: 'ball_marker'
+        }.merge(options)
       )
     end
 
