@@ -35,6 +35,25 @@ class FieldVision
       PADDING + yard_in_px(10 + yard)
     end
 
+    def ball_on_in_field_coord(game)
+      game.ball_on.then { |yard|
+        game.home_has_ball ? yard : 100 - yard
+      }
+    end
+
+    def sign_direction_in_field_coord(game)
+      game.home_has_ball ? 1 : -1
+    end
+
+    def original_ball_on_in_field_coord(game)
+      original_yard = game.ball_on - (10 - game.yard_to_go)
+      if game.home_has_ball
+        original_yard
+      else
+        original_yard = 100 - original_yard
+      end
+    end
+
     def to_html_element(name, *values, **attrs)
       attr_enum = attrs.reject { |_, v|
         v.blank?
@@ -358,14 +377,11 @@ class FieldVision
     include Helper
 
     def initialize(game)
-      home_has_ball = game.home_has_ball
-      yard = game.ball_on
-      yard = 100 - yard unless home_has_ball
-      sign_direction = home_has_ball ? 1 : -1
+      yard = ball_on_in_field_coord(game)
+      sign_direction = sign_direction_in_field_coord(game)
       @f_ball_marker = f_ball_marker(yard, sign_direction)
 
-      original_yard = game.ball_on - (10 - game.yard_to_go)
-      original_yard = 100 - original_yard unless home_has_ball
+      original_yard = original_ball_on_in_field_coord(game)
       @yard_sticks = yard_sticks(original_yard, sign_direction)
 
       @down_marker = down_marker(yard, game.down)
