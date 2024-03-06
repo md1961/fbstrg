@@ -121,12 +121,12 @@ module Announcer
         if is_in_zone && time >= 1600
           time_throws_only = time - 800
           announcement.add("Throws", time_throws_only)
-          announcement.move_ball_marker(play, game)
+          announcement.fly_ball_marker(play, game)
           announcement.add("Into zone", time - time_throws_only)
         else
           text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
           announcement.add(text, time / 2)
-          announcement.move_ball_marker(play, game)
+          announcement.fly_ball_marker(play, game)
           announcement.add(text, time / 2)
         end
         if play.complete? && play.air_yardage > 15 && run_yardage_after >= 5 && rand(3).zero?
@@ -137,7 +137,7 @@ module Announcer
         text += ' ' + at_yard_line(run_from) unless is_in_zone
         announcement.add(text, 1000)
       else  # kick_and_return
-        announcement.move_ball_marker(play, game)
+        announcement.fly_ball_marker(play, game)
         if play.no_return?
           announcement.add("Into zone", 1000) if run_from <= 0
         else
