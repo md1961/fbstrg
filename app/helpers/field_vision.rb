@@ -182,7 +182,7 @@ class FieldVision
 
     BALL_MARKER_LENGTH = 10
     BALL_MARKER_HEIGHT = 6
-    BALL_MARKER_COLOR = 'yellow'
+    BALL_MARKER_COLOR = 'cyan'
 
     def ball_marker(yard, sign_direction, **options)
       coord_point = [
@@ -204,7 +204,8 @@ class FieldVision
             [x, y].join(',')
           }.join(' '),
           fill: BALL_MARKER_COLOR,
-          id: 'ball_marker'
+          id: 'ball_marker',
+          class: 'ball_marker'
         }.merge(options)
       )
     end
@@ -227,7 +228,8 @@ class FieldVision
         }.compact,
         left_end_zone,
         right_end_zone,
-        logo_at_midfield
+        logo_at_midfield,
+        ball_markers_for_announcer
       ].flatten.compact.join("\n")
     end
 
@@ -399,6 +401,25 @@ class FieldVision
         File.open('app/helpers/nfl_logo.svg', 'r') { |f|
           f.read()
         } rescue nil
+      end
+
+      def ball_markers_for_announcer
+        %w[home_team visitors].flat_map { |team|
+          -10.step(110, 1).map { |yard|
+            yard_in_field, sign_direction = if team == 'home_team'
+                                              [yard, 1]
+                                            else
+                                              [100 - yard, -1]
+                                            end
+            ball_marker(
+              yard_in_field, sign_direction,
+              id: "ball_marker-#{team.first}#{yard}",
+              class: 'ball_marker',
+              fill: 'cyan',
+              display: 'none'
+            )
+          }
+        }
       end
   end
 
