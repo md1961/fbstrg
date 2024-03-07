@@ -16,6 +16,16 @@ $ ->
   $('span.toggle_strategy_tool_judgments_display').click ->
     $(this).parents('tr').next('tr').toggle()
 
+  showBallMarker = (yard, homeHasBall, color) ->
+    $('#ball_marker').hide()
+    $('.ball_marker.current').removeClass('current').hide()
+    team = if homeHasBall then 'h' else 'v'
+    id = 'ball_marker-' + team + yard
+    $ballMarker = $("##{id}")
+    if color
+      $ballMarker.attr('fill', color)
+    $ballMarker.addClass('current').show()
+
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
