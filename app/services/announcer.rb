@@ -141,6 +141,7 @@ module Announcer
         if play.no_return?
           announcement.add("Into zone", 1000) if run_from <= 0
         else
+          announcement.show_ball_marker(run_from, is_home_team: !home_had_ball_at_start?(game, play))
           announcement.add("From #{at_yard_line(run_from, only_yardage: true)}", 1000)
         end
       end
