@@ -31,6 +31,11 @@ class Announcement
     add("FLY: #{x_move} #{color}", 0)
   end
 
+  def show_ball_marker(yard, is_home_team: true, color: 'cyan', time: 0)
+    return unless yard
+    add("BALL: #{yard} #{is_home_team} #{color}", time)
+  end
+
   def empty?
     @statements.empty?
   end

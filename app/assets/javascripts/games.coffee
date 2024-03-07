@@ -51,6 +51,11 @@ $ ->
           transform = "translate(#{m[1]}, 0)"
           color = m[2]
           $('#ball_marker').attr('transform', transform).attr('fill', color)
+        else if m = text.match(/BALL\D*\s+(\d+)\s+(true|false)\s+(\w+)/)
+          yard = parseInt(m[1])
+          homeHasBall = m[2] == 'true'
+          color = m[3]
+          showBallMarker(yard, homeHasBall, color)
         else
           $('#announce_board').html(text)
         resolve()
