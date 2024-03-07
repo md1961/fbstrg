@@ -270,4 +270,10 @@ module Announcer
         [prefix + at_yard_line(ball_on, only_yardage: true), [time, 750].max]
       }
     end
+
+    def home_had_ball_at_start?(game, play)
+      ( game.home_has_ball && !play.possession_changed?) \
+        || \
+      (!game.home_has_ball &&  play.possession_changed?)
+    end
 end
