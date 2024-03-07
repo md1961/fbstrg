@@ -179,8 +179,18 @@ module Announcer
                    else
                      game.ball_on
                    end
+          home_moving_ball = (
+            game.home_has_ball && !play.fumble_rec_by_opponent?
+          ) || (
+            !game.home_has_ball && play.fumble_rec_by_opponent?
+          )
+          prev_yard = start_on > 50 ? 50 : 0
           long_gain_statements(start_on, end_on).each do |text, time|
+            yard = text.gsub(/\D/, '').to_i
+            yard = 100 - yard if yard < prev_yard
+            announcement.show_ball_marker(yard, is_home_team: home_moving_ball) if yard > 0
             announcement.add(text, time)
+            prev_yard = yard
           end
           is_long_gain = true
         end
