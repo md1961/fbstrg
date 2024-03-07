@@ -84,8 +84,11 @@ module Announcer
       time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
       announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5))
-      in_zone = play.safety? || run_from + play.yardage <= 0
+
+      yard_at = run_from + play.yardage
+      in_zone = play.safety? || yard_at <= 0
       text = "SACKED" + (in_zone ? " IN ZONE" : "")
+      announcement.show_ball_marker(yard_at, is_home_team: home_had_ball_at_start?(game, play))
       if play.fumble?
         announcement.add(text, 500)
         announcement.add("FUMBLE", 2500)
