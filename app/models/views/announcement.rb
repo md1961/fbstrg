@@ -22,13 +22,13 @@ class Announcement
     self
   end
 
-  def fly_ball_marker(play, game)
+  def fly_ball_marker(play, game, time: 0)
     sign_direction = game.home_has_ball ? 1 : -1
     sign_direction *= -1 if play.possession_changed?
     x_move = yard_in_px(play.air_yardage) * sign_direction
     color = 'yellow'
 
-    add("FLY: #{x_move} #{color}", 0)
+    add("FLY: #{x_move} #{color}", time)
   end
 
   def show_ball_marker(yard, is_home_team: true, color: 'cyan', time: 0)
