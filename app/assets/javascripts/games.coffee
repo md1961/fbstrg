@@ -16,6 +16,15 @@ $ ->
   $('span.toggle_strategy_tool_judgments_display').click ->
     $(this).parents('tr').next('tr').toggle()
 
+  # The element is in 'miscs#index' to test function showBallMarker().
+  $('input[name="yard"]').on 'input', ->
+    chLast = $(this).val().slice(-1)
+    if chLast == 'h' || chLast == 'v'
+      yard = parseInt($(this).val())
+      homeHasBall = chLast == 'h'
+      showBallMarker(yard, homeHasBall)
+      $(this).val('')
+
   showBallMarker = (yard, homeHasBall, color) ->
     $('#ball_marker').hide()
     $('.ball_marker.current').removeClass('current').hide()

@@ -19,8 +19,8 @@
   <%= field_vision.to_s.html_safe %>
 
   <%= form_with url: miscs_path, method: :get do |f| %>
-    <%= f.label :yard %>
-    <%= f.number_field :yard, autofocus: true %>
+    <%#= f.label :yard %>
+    <%= f.text_field :yard, autofocus: true %>
     <%= f.submit :go %>
   <% end -%>
 </div>
