@@ -24,7 +24,7 @@ class Announcement
 
   def fly_ball_marker(play, game)
     sign_direction = game.home_has_ball ? 1 : -1
-    sign_direction *= -1 if play.possession_changing?
+    sign_direction *= -1 if play.possession_changed?
     x_move = yard_in_px(play.air_yardage) * sign_direction
     color = 'yellow'
 
