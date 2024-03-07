@@ -195,15 +195,20 @@ module Announcer
           is_long_gain = true
         end
       end
+
+      yard_for_announcement = nil
       text = \
         if play.fumble? && !play.blocked_kick_return?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on, no_side: true)}", 2500)
+          yard_for_announcement = game.ball_on
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
           verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
                                       : play.out_of_bounds? ? "Out of bounds" : "Stopped"
+          yard_for_announcement = game.ball_on
           if play.possession_changing? || play.blocked_kick_return?
             if play.no_return? && run_from <= 0
+              yard_for_announcement = nil
               "Touchback"
             else
               verb = "Ball dead" if play.no_return? && run_from < 10
@@ -218,9 +223,13 @@ module Announcer
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
-          announcement.add("Into zone", 500) if play.touchdown? && !is_in_zone
+          if play.touchdown? && !is_in_zone
+            announcement.show_ball_marker(101, is_home_team: game.home_has_ball)
+            announcement.add("Into zone", 500)
+          end
           play.scoring.upcase
         end
+      announcement.show_ball_marker(yard_for_announcement, is_home_team: game.home_has_ball)
       announcement.add(text, 2000)
     end
     announcement.set_time_to_last(2000)
