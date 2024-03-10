@@ -84,8 +84,11 @@ module Announcer
       time = [play.air_yardage / 10.0 * 1200, 1000].max * rand(1.0 .. 2.0)
       announcement.set_time_to_last(time)
       announcement.add("Under pressure", 1000 * rand(1.0 .. 1.5))
-      in_zone = play.safety? || run_from + play.yardage <= 0
+
+      yard_at = run_from + play.yardage
+      in_zone = play.safety? || yard_at <= 0
       text = "SACKED" + (in_zone ? " IN ZONE" : "")
+      announcement.show_ball_marker(yard_at, is_home_team: home_had_ball_at_start?(game, play))
       if play.fumble?
         announcement.add(text, 500)
         announcement.add("FUMBLE", 2500)
@@ -121,10 +124,13 @@ module Announcer
         if is_in_zone && time >= 1600
           time_throws_only = time - 800
           announcement.add("Throws", time_throws_only)
+          announcement.fly_ball_marker(play, game, time: 750)
           announcement.add("Into zone", time - time_throws_only)
         else
           text = offensive_play.screen_pass? ? "Screen" : "Throws" + where
-          announcement.add(text, time)
+          announcement.add(text, time / 2)
+          announcement.fly_ball_marker(play, game, time: 750)
+          announcement.add(text, time / 2)
         end
         if play.complete? && play.air_yardage > 15 && run_yardage_after >= 5 && rand(3).zero?
           announcement.add_time_to_last(-500)
@@ -133,10 +139,14 @@ module Announcer
         text = play.result.to_s.upcase
         text += ' ' + at_yard_line(run_from) unless is_in_zone
         announcement.add(text, 1000)
-      elsif play.no_return?
-        announcement.add("Into zone", 1000) if run_from <= 0
-      else # kick_and_return?
-        announcement.add("From #{at_yard_line(run_from, only_yardage: true)}", 1000)
+      else  # kick_and_return
+        announcement.fly_ball_marker(play, game, time: 2000)
+        if play.no_return?
+          announcement.add("Into zone", 1000) if run_from <= 0
+        else
+          announcement.show_ball_marker(run_from, is_home_team: !home_had_ball_at_start?(game, play))
+          announcement.add("From #{at_yard_line(run_from, only_yardage: true)}", 1000)
+        end
       end
     end
 
@@ -172,21 +182,36 @@ module Announcer
                    else
                      game.ball_on
                    end
+          home_moving_ball = (
+            game.home_has_ball && !play.fumble_rec_by_opponent?
+          ) || (
+            !game.home_has_ball && play.fumble_rec_by_opponent?
+          )
+          prev_yard = start_on > 50 ? 50 : 0
           long_gain_statements(start_on, end_on).each do |text, time|
+            yard = text.gsub(/\D/, '').to_i
+            yard = 100 - yard if yard < prev_yard
+            announcement.show_ball_marker(yard, is_home_team: home_moving_ball) if yard > 0
             announcement.add(text, time)
+            prev_yard = yard
           end
           is_long_gain = true
         end
       end
+
+      yard_for_announcement = nil
       text = \
         if play.fumble? && !play.blocked_kick_return?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on, no_side: true)}", 2500)
+          yard_for_announcement = game.ball_on
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
           verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
                                       : play.out_of_bounds? ? "Out of bounds" : "Stopped"
+          yard_for_announcement = game.ball_on
           if play.possession_changing? || play.blocked_kick_return?
             if play.no_return? && run_from <= 0
+              yard_for_announcement = nil
               "Touchback"
             else
               verb = "Ball dead" if play.no_return? && run_from < 10
@@ -201,9 +226,13 @@ module Announcer
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
-          announcement.add("Into zone", 500) if play.touchdown? && !is_in_zone
+          if play.touchdown? && !is_in_zone
+            announcement.show_ball_marker(101, is_home_team: game.home_has_ball)
+            announcement.add("Into zone", 500)
+          end
           play.scoring.upcase
         end
+      announcement.show_ball_marker(yard_for_announcement, is_home_team: game.home_has_ball)
       announcement.add(text, 2000)
     end
     announcement.set_time_to_last(2000)
@@ -263,5 +292,11 @@ module Announcer
         time -= 50
         [prefix + at_yard_line(ball_on, only_yardage: true), [time, 750].max]
       }
+    end
+
+    def home_had_ball_at_start?(game, play)
+      ( game.home_has_ball && !play.possession_changed?) \
+        || \
+      (!game.home_has_ball &&  play.possession_changed?)
     end
 end

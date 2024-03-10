@@ -1,6 +1,7 @@
 module Views
 
 class Announcement
+  include FieldVision::Helper
 
   def initialize
     @statements = []
@@ -21,6 +22,20 @@ class Announcement
     self
   end
 
+  def fly_ball_marker(play, game, time: 0)
+    sign_direction = game.home_has_ball ? 1 : -1
+    sign_direction *= -1 if play.possession_changed?
+    x_move = yard_in_px(play.air_yardage) * sign_direction
+    color = 'yellow'
+
+    add("FLY: #{x_move} #{color}", time)
+  end
+
+  def show_ball_marker(yard, is_home_team: true, color: 'cyan', time: 0)
+    return unless yard
+    add("BALL: #{yard} #{is_home_team} #{color}", time)
+  end
+
   def empty?
     @statements.empty?
   end
@@ -33,12 +48,14 @@ class Announcement
     (@statements.map(&:time).sum / 1000.0).ceil - 1
   end
 
+  MINIMUM_TIME = 200
+
   def to_s(speed: nil)
     speed = 1 if speed.to_i.zero?
     texts = @statements.map(&:text) + ['__END__']
     times = [0] + @statements.map(&:time)
     "[#{texts.zip(times).map { |text, time|
-      %Q!["#{text}",#{time / speed}]!
+      %Q!["#{text}",#{[time, MINIMUM_TIME].max / speed}]!
     }.join(',')}]"
   end
 

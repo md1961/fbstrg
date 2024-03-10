@@ -35,6 +35,25 @@ class FieldVision
       PADDING + yard_in_px(10 + yard)
     end
 
+    def ball_on_in_field_coord(game)
+      game.ball_on.then { |yard|
+        game.home_has_ball ? yard : 100 - yard
+      }
+    end
+
+    def sign_direction_in_field_coord(game)
+      game.home_has_ball ? 1 : -1
+    end
+
+    def original_ball_on_in_field_coord(game)
+      original_yard = game.ball_on - (10 - game.yard_to_go)
+      if game.home_has_ball
+        original_yard
+      else
+        original_yard = 100 - original_yard
+      end
+    end
+
     def to_html_element(name, *values, **attrs)
       attr_enum = attrs.reject { |_, v|
         v.blank?
@@ -66,7 +85,7 @@ class FieldVision
       end
 
       @chain_crew = ChainCrew.new(game)
-      @ball_marker = shows_ball_marker?(game) ? @chain_crew.ball_marker(@field.y_hash_mark) : nil
+      @ball_marker = shows_ball_marker?(game) ? @chain_crew.ball_marker_for(@field) : nil
       @chain_crew = nil unless shows_chain_crew?(game)
     end
 
@@ -147,10 +166,6 @@ class FieldVision
       @height = yard_in_px( 20)
     end
 
-    def y_hash_mark
-      @top + @height / 3
-    end
-
     def coords_for_left_end_zone_text
       [
         @left + yard_in_px(5) + 3,
@@ -163,6 +178,36 @@ class FieldVision
         @left + yard_in_px(115) - 3,
         @top + @height / 2
       ]
+    end
+
+    BALL_MARKER_LENGTH = 10
+    BALL_MARKER_HEIGHT = 6
+    BALL_MARKER_COLOR = 'cyan'
+
+    def ball_marker(yard, sign_direction, **options)
+      coord_point = [
+        yard_to_coord(yard),
+        y_hash_mark - BALL_MARKER_HEIGHT / 2
+      ]
+      coord_end_top = [
+        coord_point.first - BALL_MARKER_LENGTH * sign_direction,
+        coord_point.last - BALL_MARKER_HEIGHT / 2
+      ]
+      coord_end_bottom = [
+        coord_end_top.first,
+        coord_end_top.last + BALL_MARKER_HEIGHT
+      ]
+      to_html_element(
+        :polygon,
+        {
+          points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
+            [x, y].join(',')
+          }.join(' '),
+          fill: BALL_MARKER_COLOR,
+          id: 'ball_marker',
+          class: 'ball_marker'
+        }.merge(options)
+      )
     end
 
     def to_s
@@ -183,7 +228,8 @@ class FieldVision
         }.compact,
         left_end_zone,
         right_end_zone,
-        logo_at_midfield
+        logo_at_midfield,
+        ball_markers_for_announcer
       ].flatten.compact.join("\n")
     end
 
@@ -191,6 +237,10 @@ class FieldVision
 
       def bottom
         @top + @height
+      end
+
+      def y_hash_mark
+        @top + @height / 3
       end
 
       def y_yardage_number
@@ -352,27 +402,41 @@ class FieldVision
           f.read()
         } rescue nil
       end
+
+      def ball_markers_for_announcer
+        %w[home_team visitors].flat_map { |team|
+          -10.step(110, 1).map { |yard|
+            yard_in_field, sign_direction = if team == 'home_team'
+                                              [yard, 1]
+                                            else
+                                              [100 - yard, -1]
+                                            end
+            ball_marker(
+              yard_in_field, sign_direction,
+              id: "ball_marker-#{team.first}#{yard}",
+              class: 'ball_marker',
+              fill: 'cyan',
+              display: 'none'
+            )
+          }
+        }
+      end
   end
 
   class ChainCrew
     include Helper
 
     def initialize(game)
-      home_has_ball = game.home_has_ball
-      yard = game.ball_on
-      yard = 100 - yard unless home_has_ball
-      sign_direction = home_has_ball ? 1 : -1
-      @f_ball_marker = f_ball_marker(yard, sign_direction)
+      original_yard = original_ball_on_in_field_coord(game)
+      @sign_direction = sign_direction_in_field_coord(game)
+      @yard_sticks = yard_sticks(original_yard, @sign_direction)
 
-      original_yard = game.ball_on - (10 - game.yard_to_go)
-      original_yard = 100 - original_yard unless home_has_ball
-      @yard_sticks = yard_sticks(original_yard, sign_direction)
-
-      @down_marker = down_marker(yard, game.down)
+      @yard = ball_on_in_field_coord(game)
+      @down_marker = down_marker(@yard, game.down)
     end
 
-    def ball_marker(y_hash_mark)
-      @f_ball_marker.call(y_hash_mark)
+    def ball_marker_for(field)
+      field.ball_marker(@yard, @sign_direction)
     end
 
     def to_s
@@ -380,35 +444,6 @@ class FieldVision
     end
 
     private
-
-      BALL_MARKER_LENGTH = 10
-      BALL_MARKER_HEIGHT = 6
-      BALL_MARKER_COLOR = 'yellow'
-
-      def f_ball_marker(yard, sign_direction)
-        ->(y_hash_mark) {
-          coord_point = [
-            yard_to_coord(yard),
-            y_hash_mark - BALL_MARKER_HEIGHT / 2
-          ]
-          coord_end_top = [
-            coord_point.first - BALL_MARKER_LENGTH * sign_direction,
-            coord_point.last - BALL_MARKER_HEIGHT / 2
-          ]
-          coord_end_bottom = [
-            coord_end_top.first,
-            coord_end_top.last + BALL_MARKER_HEIGHT
-          ]
-          to_html_element(
-            :polygon,
-            points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
-              [x, y].join(',')
-            }.join(' '),
-            fill: BALL_MARKER_COLOR,
-            id: 'ball_marker'
-          )
-        }
-      end
 
       YARD_STICK_LENGTH = 40
       YARD_STICK_HEAD_RADIUS = 5
