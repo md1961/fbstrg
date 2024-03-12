@@ -1,0 +1,12 @@
+default:
+  field_color: 'white'
+  line_color: 'black'
+  end_zone_color: 'white'
+  team_name_font_color: 'white'
+  touchback_line_color: 'lightgray'
+real:
+  field_color: 'green'
+  line_color: 'white'
+  end_zone_color: 'blue'
+  team_name_font_color: 'white'
+  touchback_line_color: 'chocolate'

@@ -7,8 +7,9 @@ class FieldVision
   PADDING = 10
   PADDING_TOP = 50
 
-  def initialize
-    field = Field.new(PADDING_TOP, PADDING)
+  def initialize(real: false)
+    @config = Config.new(real: real)
+    field = Field.new(@config, PADDING_TOP, PADDING)
     @area = Area.new(field)
   end
 
@@ -23,6 +24,34 @@ class FieldVision
 
   def to_s
     @area.to_s
+  end
+
+  class Config
+
+    def initialize(real: false)
+      @real = real
+      @h_config = configure
+    end
+
+    def real?
+      @real
+    end
+
+    def read(keyword)
+      keys = keyword.split('.')
+      @h_config.dig(*keys)
+    end
+
+    private
+
+      def configure
+        h = File.open('config/initializers/field_vision.yml') { |f|
+          YAML.load(f)
+        }
+        @h_config = h['default'].tap do |h_config|
+          h_config.merge!(h['real']) if real?
+        end
+      end
   end
 
   module Helper
@@ -129,7 +158,7 @@ class FieldVision
             transform: "translate(#{x_text_left}, #{y_text_left}) rotate(270)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
-            fill: Field::TEAM_NAME_FONT_COLOR
+            fill: @field.team_name_font_color
           ),
           to_html_element(
             :text,
@@ -139,7 +168,7 @@ class FieldVision
             transform: "translate(#{x_text_right}, #{y_text_right}) rotate(90)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
-            fill: Field::TEAM_NAME_FONT_COLOR
+            fill: @field.team_name_font_color
           )
         ]
       end
@@ -150,20 +179,32 @@ class FieldVision
 
     attr_reader :width, :height
 
-    FIELD_COLOR = 'green'
-    LINE_COLOR  = 'white'
-    END_ZONE_COLOR = 'blue'
-    TEAM_NAME_FONT_COLOR = 'white'
+    %w[
+      field_color
+      line_color
+      end_zone_color
+      team_name_font_color
+      touchback_line_color
+    ].each do |name|
+      define_method name do
+        @config.read(name)
+      end
+    end
 
     YARDAGE_NUMBER_FONT_SIZE = 10
     LINE_WIDTH = 1
-    MARK_LENGTH = 5
+    YARD_MARK_LENGTH = 5
 
-    def initialize(top, left)
+    def initialize(config, top, left)
+      @config = config
       @top = top
       @left = left
       @width  = yard_in_px(120)
-      @height = yard_in_px( 20)
+      @height = yard_in_px(field_height_in_yard)
+    end
+
+    def real?
+      @config.real?
     end
 
     def coords_for_left_end_zone_text
@@ -187,7 +228,7 @@ class FieldVision
     def ball_marker(yard, sign_direction, **options)
       coord_point = [
         yard_to_coord(yard),
-        y_hash_mark - BALL_MARKER_HEIGHT / 2
+        y_ball_marker_point
       ]
       coord_end_top = [
         coord_point.first - BALL_MARKER_LENGTH * sign_direction,
@@ -219,21 +260,20 @@ class FieldVision
         0.step(100, 5).map { |yard|
           yard_line_at(yard)
         },
-        10.step(90, 10).map { |yard|
-          yardage_number_at(yard)
-        },
-        10.step(90, 10).map { |yard|
-          next if yard == 50
-          arrow_head_at(yard)
-        }.compact,
+        real? ? yardage_numbers : nil,
+        real? ? arrow_heads : nil,
         left_end_zone,
         right_end_zone,
-        logo_at_midfield,
+        real? ? logo_at_midfield : nil,
         ball_markers_for_announcer
       ].flatten.compact.join("\n")
     end
 
     private
+
+      def field_height_in_yard
+        real? ? 20 : 5
+      end
 
       def bottom
         @top + @height
@@ -247,6 +287,11 @@ class FieldVision
         @top + @height * 2 / 3
       end
 
+      def y_ball_marker_point
+        real? ? y_hash_mark - BALL_MARKER_HEIGHT / 2 \
+              : @top + @height / 2
+      end
+
       def boundary
         to_html_element(
           :rect,
@@ -254,9 +299,9 @@ class FieldVision
           y: @top,
           width:  @width,
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-          fill: FIELD_COLOR
+          fill: field_color
         )
       end
 
@@ -272,7 +317,7 @@ class FieldVision
             x2: x,
             y1: @top,
             y2: bottom,
-            stroke: LINE_COLOR,
+            stroke: line_color,
             'stroke-width': LINE_WIDTH,
           )
         ].tap { |elements|
@@ -284,7 +329,7 @@ class FieldVision
                 x2: x - LINE_WIDTH - TOUCHBACK_LINE_OFFSET,
                 y1: @top + LINE_WIDTH,
                 y2: bottom - LINE_WIDTH,
-                stroke: TOUCHBACK_LINE_COLOR,
+                stroke: touchback_line_color,
                 'stroke-width': LINE_WIDTH,
               ) \
               << to_html_element(
@@ -293,7 +338,7 @@ class FieldVision
                 x2: x + LINE_WIDTH + TOUCHBACK_LINE_OFFSET,
                 y1: @top + LINE_WIDTH,
                 y2: bottom - LINE_WIDTH,
-                stroke: TOUCHBACK_LINE_COLOR,
+                stroke: touchback_line_color,
                 'stroke-width': LINE_WIDTH,
               )
           end
@@ -302,19 +347,25 @@ class FieldVision
 
       def yard_marks_at(yard)
         [
-          [@top, @top + MARK_LENGTH],
-          [y_hash_mark, y_hash_mark + MARK_LENGTH],
-          [bottom, bottom - MARK_LENGTH]
-        ].map { |y1, y2|
+          real? ? [@top, @top + YARD_MARK_LENGTH] : nil,
+          real? ? [y_hash_mark, y_hash_mark + YARD_MARK_LENGTH] : nil,
+          [bottom, bottom - YARD_MARK_LENGTH]
+        ].compact.map { |y1, y2|
           to_html_element(
             :line,
             x1: yard_to_coord(yard),
             x2: yard_to_coord(yard),
             y1: y1,
             y2: y2,
-            stroke: LINE_COLOR,
+            stroke: line_color,
             'stroke-width': LINE_WIDTH,
           )
+        }
+      end
+
+      def yardage_numbers
+        10.step(90, 10).map { |yard|
+          yardage_number_at(yard)
         }
       end
 
@@ -327,8 +378,15 @@ class FieldVision
           y: y_yardage_number,
           'font-size': YARDAGE_NUMBER_FONT_SIZE,
           'text-anchor': 'middle',
-          fill: LINE_COLOR
+          fill: line_color
         )
+      end
+
+      def arrow_heads
+        10.step(90, 10).map { |yard|
+          next if yard == 50
+          arrow_head_at(yard)
+        }.compact
       end
 
       X_OFFSET_ARROW_HEAD_POINT = 13
@@ -355,7 +413,7 @@ class FieldVision
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
           }.join(' '),
-          fill: LINE_COLOR
+          fill: line_color
         )
       end
 
@@ -366,9 +424,9 @@ class FieldVision
           y: @top,
           width:  yard_in_px(10),
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-          fill: END_ZONE_COLOR
+          fill: end_zone_color
         )
       end
 
@@ -379,9 +437,9 @@ class FieldVision
           y: @top,
           width:  yard_in_px(10),
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-            fill: END_ZONE_COLOR
+            fill: end_zone_color
         )
       end
 
