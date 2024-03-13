@@ -568,31 +568,36 @@ class FieldVision
     class YardStick
       include Helper
 
-      LENGTH = 40
-      HEAD_RADIUS = 5
-      HEAD_CLEARANCE = 2
-      CHAIN_POSITION = 4
-      CHAIN_wIDTH = 1
-
-      BASE_COLOR = 'black'
-      MAIN_COLOR = 'chocolate'
-
-      NUMBER_OF_BODY_LINES = 3
+      %w[
+        length
+        head_radius
+        head_clearance
+        chain_position
+        chain_width
+        base_color
+        main_color
+        number_of_body_lines
+      ].each do |name|
+        define_method name do
+          @config.read(name)
+        end
+      end
 
       def initialize(yard, config)
         @yard = yard
         @config = config
+        @config.dig_and_merge!('yard_stick')
       end
 
       def to_s
         x = yard_to_coord(@yard)
-        y_top = padding_top - LENGTH
+        y_top = padding_top - length
 
         [
           stick(x, y_top),
           head(x, y_top),
           body(x, y_top),
-          body_lines(x, NUMBER_OF_BODY_LINES)
+          body_lines(x, number_of_body_lines)
         ].flatten.join("\n")
       end
 
@@ -605,7 +610,7 @@ class FieldVision
             x2: x,
             y1: padding_top,
             y2: y_top,
-            stroke: BASE_COLOR,
+            stroke: base_color,
             'stroke-width': 1,
           )
         end
@@ -616,16 +621,16 @@ class FieldVision
               :circle,
               cx: cx,
               cy: cy,
-              r: HEAD_RADIUS,
-              stroke: MAIN_COLOR,
+              r: head_radius,
+              stroke: main_color,
               'stroke-width': 1,
-              fill: MAIN_COLOR
+              fill: main_color
             ),
             to_html_element(
               :circle,
               cx: cx,
               cy: cy,
-              r: HEAD_RADIUS - 2,
+              r: head_radius - 2,
               stroke: 'black',
               'stroke-width': 1,
               fill: 'transparent'
@@ -636,15 +641,15 @@ class FieldVision
         def body(x, y_top)
           coord_bottom = [
             x,
-            padding_top - CHAIN_POSITION
+            padding_top - chain_position
           ]
           coord_top_left = [
-            x - HEAD_RADIUS,
-            y_top + HEAD_RADIUS + HEAD_CLEARANCE
+            x - head_radius,
+            y_top + head_radius + head_clearance
           ]
           coord_top_right = [
-            x + HEAD_RADIUS,
-            y_top + HEAD_RADIUS + HEAD_CLEARANCE
+            x + head_radius,
+            y_top + head_radius + head_clearance
           ]
 
           to_html_element(
@@ -652,16 +657,16 @@ class FieldVision
             points: [coord_bottom, coord_top_left, coord_top_right].map { |x, y|
               [x, y].join(',')
             }.join(' '),
-            fill: MAIN_COLOR
+            fill: main_color
           )
         end
 
         BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM = 4
 
         def body_lines(x, num_lines)
-          y_coord_bottom = padding_top - CHAIN_POSITION
-          body_height = LENGTH - HEAD_RADIUS - HEAD_CLEARANCE
-          body_top_width = HEAD_RADIUS * 2
+          y_coord_bottom = padding_top - chain_position
+          body_height = length - head_radius - head_clearance
+          body_top_width = head_radius * 2
 
           offset_from_bottom = BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM
           dy_interval = (body_height - offset_from_bottom) / (num_lines + 1)
@@ -700,18 +705,19 @@ class FieldVision
         @yard = yard
         @sign_direction = sign_direction
         @config = config
+        @config.dig_and_merge!('yard_stick')
       end
 
       def to_s
-        y = padding_top - YardStick::CHAIN_POSITION
+        y = padding_top - @config.read('chain_position')
         to_html_element(
           :line,
           x1: yard_to_coord(@yard),
           x2: yard_to_coord(@yard + 10 * @sign_direction),
           y1: y,
           y2: y,
-          stroke: YardStick::BASE_COLOR,
-          'stroke-width': YardStick::CHAIN_wIDTH
+          stroke: @config.read('base_color'),
+          'stroke-width': @config.read('chain_width')
         )
       end
     end
@@ -719,21 +725,23 @@ class FieldVision
     class DownMarker
       include Helper
 
-      LENGTH = YardStick::LENGTH
-      HEAD_SIDE_LENGTH = YardStick::HEAD_RADIUS * 2
-      BASE_COLOR = YardStick::BASE_COLOR
-      FONT_COLOR = YardStick::MAIN_COLOR
       FONT_SIZE = 12
 
       def initialize(yard, down, config)
         @yard = yard
         @down = down
         @config = config
+        @config.dig_and_merge!('yard_stick')
       end
 
       def to_s
         x = yard_to_coord(@yard)
-        y_top = padding_top - LENGTH
+        length = @config.read('length')
+        y_top = padding_top - length
+        head_side_length = @config.read('head_radius') * 2
+        base_color = @config.read('base_color')
+        font_color = @config.read('main_color')
+
         [
           to_html_element(
             :line,
@@ -741,26 +749,26 @@ class FieldVision
             x2: x,
             y1: padding_top,
             y2: y_top,
-            stroke: BASE_COLOR,
+            stroke: base_color,
             'stroke-width': 1,
           ),
           to_html_element(
             :rect,
-            x: x - HEAD_SIDE_LENGTH / 2,
-            y: y_top - HEAD_SIDE_LENGTH / 2,
-            width:  HEAD_SIDE_LENGTH,
-            height: HEAD_SIDE_LENGTH,
-            stroke: BASE_COLOR,
-            fill: BASE_COLOR
+            x: x - head_side_length / 2,
+            y: y_top - head_side_length / 2,
+            width:  head_side_length,
+            height: head_side_length,
+            stroke: base_color,
+            fill: base_color
           ),
           to_html_element(
             :text,
             @down,
             x: x,
-            y: y_top + HEAD_SIDE_LENGTH / 2 - 1,
+            y: y_top + head_side_length / 2 - 1,
             'font-size': FONT_SIZE,
             'text-anchor': 'middle',
-            fill: FONT_COLOR
+            fill: font_color
           )
         ].join("\n")
       end
