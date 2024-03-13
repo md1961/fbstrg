@@ -37,6 +37,10 @@ class FieldVision
       @real
     end
 
+    def dig_and_merge!(key)
+      @h_config.merge!(@h_config[key])
+    end
+
     def pixels_per_yard
       @pixels_per_yard ||= read('pixels_per_yard')
     end
