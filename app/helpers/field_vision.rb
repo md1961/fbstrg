@@ -4,13 +4,15 @@ class FieldVision
   include Singleton
 
   PXS_PER_YARD = 5
-  PADDING = 10
-  PADDING_TOP = 50
 
-  def initialize(real: false)
-    @config = Config.new(real: real)
-    field = Field.new(@config, PADDING_TOP, PADDING)
+  def initialize
+    config = Config.new(real: false)
+    field = Field.new(config)
     @area = Area.new(field)
+  end
+
+  def real=(real)
+    @area.config = Config.new(real: real)
   end
 
   def set_teams_from(game)
@@ -37,6 +39,22 @@ class FieldVision
       @real
     end
 
+    def padding
+      read('padding')
+    end
+
+    def padding_top
+      read('padding_top')
+    end
+
+    def yard_in_px(yard)
+      yard * PXS_PER_YARD
+    end
+
+    def yard_to_coord(yard)
+      padding + yard_in_px(10 + yard)
+    end
+
     def read(keyword)
       keys = keyword.split('.')
       @h_config.dig(*keys)
@@ -55,14 +73,6 @@ class FieldVision
   end
 
   module Helper
-
-    def yard_in_px(yard)
-      yard * PXS_PER_YARD
-    end
-
-    def yard_to_coord(yard)
-      PADDING + yard_in_px(10 + yard)
-    end
 
     def ball_on_in_field_coord(game)
       game.ball_on.then { |yard|
@@ -105,6 +115,12 @@ class FieldVision
 
     def initialize(field)
       @field = field
+      @config = field.config
+    end
+
+    def config=(config)
+      @config = config
+      @field.config = config
     end
 
     def place_ball_marker(game)
@@ -113,7 +129,7 @@ class FieldVision
         @home_team = game.home_team
       end
 
-      @chain_crew = ChainCrew.new(game)
+      @chain_crew = ChainCrew.new(game, @config)
       @ball_marker = shows_ball_marker?(game) ? @chain_crew.ball_marker_for(@field) : nil
       @chain_crew = nil unless shows_chain_crew?(game)
     end
@@ -127,8 +143,8 @@ class FieldVision
         @chain_crew,
         x: 0,
         y: 0,
-        width:  @field.width  + PADDING * 2,
-        height: @field.height + PADDING_TOP + PADDING,
+        width:  @field.width  + @config.padding * 2,
+        height: @field.height + @config.padding_top + @config.padding,
         style: "background-color: gray",
         id: 'field_vision_area'
       )
@@ -177,7 +193,7 @@ class FieldVision
   class Field
     include Helper
 
-    attr_reader :width, :height
+    attr_reader :config, :width, :height
 
     %w[
       field_color
@@ -195,12 +211,17 @@ class FieldVision
     LINE_WIDTH = 1
     YARD_MARK_LENGTH = 5
 
-    def initialize(config, top, left)
+    def initialize(config)
+      self.config = config
+    end
+
+    def config=(config)
       @config = config
-      @top = top
-      @left = left
+      @top = @config.padding_top
+      @left = @config.padding
       @width  = yard_in_px(120)
       @height = yard_in_px(field_height_in_yard)
+      redraw
     end
 
     def real?
@@ -270,6 +291,18 @@ class FieldVision
     end
 
     private
+
+      def redraw
+        @to_s = nil
+      end
+
+      def yard_in_px(yard)
+        @config.yard_in_px(yard)
+      end
+
+      def yard_to_coord(yard)
+        @config.yard_to_coord(yard)
+      end
 
       def field_height_in_yard
         real? ? 20 : 5
@@ -484,7 +517,9 @@ class FieldVision
   class ChainCrew
     include Helper
 
-    def initialize(game)
+    def initialize(game, config)
+      @config = config
+
       original_yard = original_ball_on_in_field_coord(game)
       @sign_direction = sign_direction_in_field_coord(game)
       @yard_sticks = yard_sticks(original_yard, @sign_direction)
@@ -512,13 +547,21 @@ class FieldVision
       YARD_STICK_BASE_COLOR = 'black'
       YARD_STICK_COLOR = 'chocolate'
 
+      def padding_top
+        @config.padding_top
+      end
+
+      def yard_to_coord(yard)
+        @config.yard_to_coord(yard)
+      end
+
       def yard_stick(yard)
         x = yard_to_coord(yard)
-        y_top = PADDING_TOP - YARD_STICK_LENGTH
+        y_top = padding_top - YARD_STICK_LENGTH
 
         coord_bottom = [
           x,
-          PADDING_TOP - YARD_STICK_CHAIN_POSITION
+          padding_top - YARD_STICK_CHAIN_POSITION
         ]
         coord_top_left = [
           x - YARD_STICK_HEAD_RADIUS,
@@ -534,7 +577,7 @@ class FieldVision
             :line,
             x1: x,
             x2: x,
-            y1: PADDING_TOP,
+            y1: padding_top,
             y2: y_top,
             stroke: YARD_STICK_BASE_COLOR,
             'stroke-width': 1,
@@ -555,7 +598,7 @@ class FieldVision
 
       def yard_stick_body_lines(yard, num_lines)
         x = yard_to_coord(yard)
-        y_coord_bottom = PADDING_TOP - YARD_STICK_CHAIN_POSITION
+        y_coord_bottom = padding_top - YARD_STICK_CHAIN_POSITION
         body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
         body_top_width = YARD_STICK_HEAD_RADIUS * 2
 
@@ -612,7 +655,7 @@ class FieldVision
       end
 
       def yard_chain(yard, sign_direction)
-        y = PADDING_TOP - YARD_STICK_CHAIN_POSITION
+        y = padding_top - YARD_STICK_CHAIN_POSITION
         to_html_element(
           :line,
           x1: yard_to_coord(yard),
@@ -640,13 +683,13 @@ class FieldVision
 
       def down_marker(yard, down)
         x = yard_to_coord(yard)
-        y_top = PADDING_TOP - DOWN_MARKER_LENGTH
+        y_top = padding_top - DOWN_MARKER_LENGTH
         [
           to_html_element(
             :line,
             x1: x,
             x2: x,
-            y1: PADDING_TOP,
+            y1: padding_top,
             y2: y_top,
             stroke: DOWN_MARKER_BASE_COLOR,
             'stroke-width': 1,
