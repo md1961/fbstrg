@@ -76,6 +76,18 @@ class FieldVision
 
   module Helper
 
+    def padding_top
+      @config.padding_top
+    end
+
+    def yard_in_px(yard)
+      @config.yard_in_px(yard)
+    end
+
+    def yard_to_coord(yard)
+      @config.yard_to_coord(yard)
+    end
+
     def ball_on_in_field_coord(game)
       game.ball_on.then { |yard|
         game.home_has_ball ? yard : 100 - yard
@@ -296,14 +308,6 @@ class FieldVision
 
       def redraw
         @to_s = nil
-      end
-
-      def yard_in_px(yard)
-        @config.yard_in_px(yard)
-      end
-
-      def yard_to_coord(yard)
-        @config.yard_to_coord(yard)
       end
 
       def field_height_in_yard
@@ -590,14 +594,6 @@ class FieldVision
 
       private
 
-        def padding_top
-          @config.padding_top
-        end
-
-        def yard_to_coord(yard)
-          @config.yard_to_coord(yard)
-        end
-
         def stick(x, y_top)
           to_html_element(
             :line,
@@ -714,16 +710,6 @@ class FieldVision
           'stroke-width': YardStick::CHAIN_wIDTH
         )
       end
-
-      private
-
-        def padding_top
-          @config.padding_top
-        end
-
-        def yard_to_coord(yard)
-          @config.yard_to_coord(yard)
-        end
     end
 
     class DownMarker
@@ -774,16 +760,6 @@ class FieldVision
           )
         ].join("\n")
       end
-
-      private
-
-        def padding_top
-          @config.padding_top
-        end
-
-        def yard_to_coord(yard)
-          @config.yard_to_coord(yard)
-        end
     end
   end
 end
