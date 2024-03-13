@@ -3,8 +3,6 @@ require 'singleton'
 class FieldVision
   include Singleton
 
-  PXS_PER_YARD = 5
-
   def initialize
     config = Config.new(real: false)
     field = Field.new(config)
@@ -39,16 +37,20 @@ class FieldVision
       @real
     end
 
+    def pixels_per_yard
+      @pixels_per_yard ||= read('pixels_per_yard')
+    end
+
     def padding
-      read('padding')
+      @padding ||= read('padding')
     end
 
     def padding_top
-      read('padding_top')
+      @padding_top ||= read('padding_top')
     end
 
     def yard_in_px(yard)
-      yard * PXS_PER_YARD
+      yard * pixels_per_yard
     end
 
     def yard_to_coord(yard)

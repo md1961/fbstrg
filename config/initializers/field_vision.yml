@@ -1,4 +1,5 @@
 default:
+  pixels_per_yard: 5
   padding_top: 50
   padding: 0
   field_color: white
