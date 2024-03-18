@@ -1,6 +1,7 @@
 default:
   pixels_per_yard: 5
-  padding_top: 50
+
+  padding_top: 15
   padding: 0
 
   field_color: white
@@ -8,6 +9,26 @@ default:
   end_zone_color: white
   team_name_font_color: white
   touchback_line_color: lightgray
+
+  yard_stick:
+    length: 5
+    head_radius: 2
+    head_clearance: 0
+    chain_position: 1
+    chain_width: 1
+    base_color: black
+    main_color: black
+    number_of_body_lines: 0
+
+real:
+  padding_top: 55
+  padding: 10
+
+  field_color: green
+  line_color: white
+  end_zone_color: blue
+  team_name_font_color: white
+  touchback_line_color: chocolate
 
   yard_stick:
     length: 40
@@ -18,11 +39,3 @@ default:
     base_color: black
     main_color: chocolate
     number_of_body_lines: 3
-
-real:
-  padding: 10
-  field_color: green
-  line_color: white
-  end_zone_color: blue
-  team_name_font_color: white
-  touchback_line_color: chocolate
