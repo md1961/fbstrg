@@ -153,6 +153,8 @@ class FieldVision
     end
 
     def to_s
+      background_color = @config.read('background_color')
+
       to_html_element(
         :svg,
         @field,
@@ -163,7 +165,7 @@ class FieldVision
         y: 0,
         width:  @field.width  + @config.padding * 2,
         height: @field.height + @config.padding_top + @config.padding,
-        style: "background-color: gray",
+        style: "background-color: #{background_color}",
         id: 'field_vision_area'
       )
     end

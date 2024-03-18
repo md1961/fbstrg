@@ -3,6 +3,7 @@ default:
 
   padding_top: 15
   padding: 0
+  background_color: white
 
   field_color: white
   line_color: black
@@ -14,7 +15,7 @@ default:
     length: 5
     head_radius: 2
     head_clearance: 0
-    chain_position: 1
+    chain_position: 3
     chain_width: 1
     base_color: black
     main_color: black
@@ -26,6 +27,7 @@ default:
 real:
   padding_top: 55
   padding: 10
+  background_color: gray
 
   field_color: green
   line_color: white
