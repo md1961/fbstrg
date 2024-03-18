@@ -725,8 +725,6 @@ class FieldVision
     class DownMarker
       include Helper
 
-      FONT_SIZE = 12
-
       def initialize(yard, down, config)
         @yard = yard
         @down = down
@@ -741,6 +739,7 @@ class FieldVision
         head_side_length = @config.read('head_radius') * 2
         base_color = @config.read('base_color')
         font_color = @config.read('main_color')
+        font_size = @config.read('down_marker.font_size')
 
         [
           to_html_element(
@@ -766,7 +765,7 @@ class FieldVision
             @down,
             x: x,
             y: y_top + head_side_length / 2 - 1,
-            'font-size': FONT_SIZE,
+            'font-size': font_size,
             'text-anchor': 'middle',
             fill: font_color
           )

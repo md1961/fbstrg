@@ -20,6 +20,9 @@ default:
     main_color: black
     number_of_body_lines: 0
 
+  down_marker:
+    font_size: 0
+
 real:
   padding_top: 55
   padding: 10
@@ -39,3 +42,6 @@ real:
     base_color: black
     main_color: chocolate
     number_of_body_lines: 3
+
+  down_marker:
+    font_size: 12
