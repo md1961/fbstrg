@@ -158,7 +158,7 @@ class FieldVision
       to_html_element(
         :svg,
         @field,
-        texts_in_end_zone,
+        @config.real? ? texts_in_end_zone : nil,
         @ball_marker,
         @chain_crew,
         x: 0,
