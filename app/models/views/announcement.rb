@@ -5,6 +5,7 @@ class Announcement
 
   def initialize
     @statements = []
+    @config = FieldVision::Config.new
   end
 
   def add(text, time)
