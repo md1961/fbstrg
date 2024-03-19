@@ -3,13 +3,14 @@ require 'singleton'
 class FieldVision
   include Singleton
 
-  PXS_PER_YARD = 5
-  PADDING = 10
-  PADDING_TOP = 50
-
   def initialize
-    field = Field.new(PADDING_TOP, PADDING)
+    config = Config.new(real: false)
+    field = Field.new(config)
     @area = Area.new(field)
+  end
+
+  def real=(real)
+    @area.config = Config.new(real: real)
   end
 
   def set_teams_from(game)
@@ -25,14 +26,70 @@ class FieldVision
     @area.to_s
   end
 
-  module Helper
+  class Config
+
+    def initialize(real: false)
+      @real = real
+      @h_config = configure
+    end
+
+    def real?
+      @real
+    end
+
+    def dig_and_merge!(key)
+      @h_config.merge!(@h_config[key])
+    end
+
+    def pixels_per_yard
+      @pixels_per_yard ||= read('pixels_per_yard')
+    end
+
+    def padding
+      @padding ||= read('padding')
+    end
+
+    def padding_top
+      @padding_top ||= read('padding_top')
+    end
 
     def yard_in_px(yard)
-      yard * PXS_PER_YARD
+      yard * pixels_per_yard
     end
 
     def yard_to_coord(yard)
-      PADDING + yard_in_px(10 + yard)
+      padding + yard_in_px(10 + yard)
+    end
+
+    def read(keyword)
+      keys = keyword.split('.')
+      @h_config.dig(*keys)
+    end
+
+    private
+
+      def configure
+        h = File.open('config/initializers/field_vision.yml') { |f|
+          YAML.load(f)
+        }
+        @h_config = h['default'].tap do |h_config|
+          h_config.merge!(h['real']) if real?
+        end
+      end
+  end
+
+  module Helper
+
+    def padding_top
+      @config.padding_top
+    end
+
+    def yard_in_px(yard)
+      @config.yard_in_px(yard)
+    end
+
+    def yard_to_coord(yard)
+      @config.yard_to_coord(yard)
     end
 
     def ball_on_in_field_coord(game)
@@ -76,6 +133,12 @@ class FieldVision
 
     def initialize(field)
       @field = field
+      @config = field.config
+    end
+
+    def config=(config)
+      @config = config
+      @field.config = config
     end
 
     def place_ball_marker(game)
@@ -84,23 +147,25 @@ class FieldVision
         @home_team = game.home_team
       end
 
-      @chain_crew = ChainCrew.new(game)
+      @chain_crew = ChainCrew.new(game, @config)
       @ball_marker = shows_ball_marker?(game) ? @chain_crew.ball_marker_for(@field) : nil
       @chain_crew = nil unless shows_chain_crew?(game)
     end
 
     def to_s
+      background_color = @config.read('background_color')
+
       to_html_element(
         :svg,
         @field,
-        texts_in_end_zone,
+        @config.real? ? texts_in_end_zone : nil,
         @ball_marker,
         @chain_crew,
         x: 0,
         y: 0,
-        width:  @field.width  + PADDING * 2,
-        height: @field.height + PADDING_TOP + PADDING,
-        style: "background-color: gray",
+        width:  @field.width  + @config.padding * 2,
+        height: @field.height + @config.padding_top + @config.padding,
+        style: "background-color: #{background_color}",
         id: 'field_vision_area'
       )
     end
@@ -129,7 +194,7 @@ class FieldVision
             transform: "translate(#{x_text_left}, #{y_text_left}) rotate(270)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
-            fill: Field::TEAM_NAME_FONT_COLOR
+            fill: @field.team_name_font_color
           ),
           to_html_element(
             :text,
@@ -139,7 +204,7 @@ class FieldVision
             transform: "translate(#{x_text_right}, #{y_text_right}) rotate(90)",
             'text-anchor': 'middle',
             'alignment-baseline': 'middle',
-            fill: Field::TEAM_NAME_FONT_COLOR
+            fill: @field.team_name_font_color
           )
         ]
       end
@@ -148,22 +213,40 @@ class FieldVision
   class Field
     include Helper
 
-    attr_reader :width, :height
+    attr_reader :config, :width, :height
 
-    FIELD_COLOR = 'green'
-    LINE_COLOR  = 'white'
-    END_ZONE_COLOR = 'blue'
-    TEAM_NAME_FONT_COLOR = 'white'
+    %w[
+      field_color
+      line_color
+      end_zone_color
+      team_name_font_color
+      touchback_line_color
+      ball_marker_color
+    ].each do |name|
+      define_method name do
+        @config.read(name)
+      end
+    end
 
     YARDAGE_NUMBER_FONT_SIZE = 10
     LINE_WIDTH = 1
-    MARK_LENGTH = 5
+    YARD_MARK_LENGTH = 5
 
-    def initialize(top, left)
-      @top = top
-      @left = left
+    def initialize(config)
+      self.config = config
+    end
+
+    def config=(config)
+      @config = config
+      @top = @config.padding_top
+      @left = @config.padding
       @width  = yard_in_px(120)
-      @height = yard_in_px( 20)
+      @height = yard_in_px(field_height_in_yard)
+      redraw
+    end
+
+    def real?
+      @config.real?
     end
 
     def coords_for_left_end_zone_text
@@ -182,12 +265,11 @@ class FieldVision
 
     BALL_MARKER_LENGTH = 10
     BALL_MARKER_HEIGHT = 6
-    BALL_MARKER_COLOR = 'cyan'
 
     def ball_marker(yard, sign_direction, **options)
       coord_point = [
         yard_to_coord(yard),
-        y_hash_mark - BALL_MARKER_HEIGHT / 2
+        y_ball_marker_point
       ]
       coord_end_top = [
         coord_point.first - BALL_MARKER_LENGTH * sign_direction,
@@ -203,7 +285,7 @@ class FieldVision
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
           }.join(' '),
-          fill: BALL_MARKER_COLOR,
+          fill: ball_marker_color,
           id: 'ball_marker',
           class: 'ball_marker'
         }.merge(options)
@@ -219,21 +301,24 @@ class FieldVision
         0.step(100, 5).map { |yard|
           yard_line_at(yard)
         },
-        10.step(90, 10).map { |yard|
-          yardage_number_at(yard)
-        },
-        10.step(90, 10).map { |yard|
-          next if yard == 50
-          arrow_head_at(yard)
-        }.compact,
+        real? ? yardage_numbers : nil,
+        real? ? arrow_heads : nil,
         left_end_zone,
         right_end_zone,
-        logo_at_midfield,
+        real? ? logo_at_midfield : nil,
         ball_markers_for_announcer
       ].flatten.compact.join("\n")
     end
 
     private
+
+      def redraw
+        @to_s = nil
+      end
+
+      def field_height_in_yard
+        real? ? 20 : 5
+      end
 
       def bottom
         @top + @height
@@ -247,6 +332,11 @@ class FieldVision
         @top + @height * 2 / 3
       end
 
+      def y_ball_marker_point
+        real? ? y_hash_mark - BALL_MARKER_HEIGHT / 2 \
+              : @top + @height / 2
+      end
+
       def boundary
         to_html_element(
           :rect,
@@ -254,9 +344,9 @@ class FieldVision
           y: @top,
           width:  @width,
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-          fill: FIELD_COLOR
+          fill: field_color
         )
       end
 
@@ -272,7 +362,7 @@ class FieldVision
             x2: x,
             y1: @top,
             y2: bottom,
-            stroke: LINE_COLOR,
+            stroke: line_color,
             'stroke-width': LINE_WIDTH,
           )
         ].tap { |elements|
@@ -284,7 +374,7 @@ class FieldVision
                 x2: x - LINE_WIDTH - TOUCHBACK_LINE_OFFSET,
                 y1: @top + LINE_WIDTH,
                 y2: bottom - LINE_WIDTH,
-                stroke: TOUCHBACK_LINE_COLOR,
+                stroke: touchback_line_color,
                 'stroke-width': LINE_WIDTH,
               ) \
               << to_html_element(
@@ -293,7 +383,7 @@ class FieldVision
                 x2: x + LINE_WIDTH + TOUCHBACK_LINE_OFFSET,
                 y1: @top + LINE_WIDTH,
                 y2: bottom - LINE_WIDTH,
-                stroke: TOUCHBACK_LINE_COLOR,
+                stroke: touchback_line_color,
                 'stroke-width': LINE_WIDTH,
               )
           end
@@ -302,19 +392,25 @@ class FieldVision
 
       def yard_marks_at(yard)
         [
-          [@top, @top + MARK_LENGTH],
-          [y_hash_mark, y_hash_mark + MARK_LENGTH],
-          [bottom, bottom - MARK_LENGTH]
-        ].map { |y1, y2|
+          real? ? [@top, @top + YARD_MARK_LENGTH] : nil,
+          real? ? [y_hash_mark, y_hash_mark + YARD_MARK_LENGTH] : nil,
+          [bottom, bottom - YARD_MARK_LENGTH]
+        ].compact.map { |y1, y2|
           to_html_element(
             :line,
             x1: yard_to_coord(yard),
             x2: yard_to_coord(yard),
             y1: y1,
             y2: y2,
-            stroke: LINE_COLOR,
+            stroke: line_color,
             'stroke-width': LINE_WIDTH,
           )
+        }
+      end
+
+      def yardage_numbers
+        10.step(90, 10).map { |yard|
+          yardage_number_at(yard)
         }
       end
 
@@ -327,8 +423,15 @@ class FieldVision
           y: y_yardage_number,
           'font-size': YARDAGE_NUMBER_FONT_SIZE,
           'text-anchor': 'middle',
-          fill: LINE_COLOR
+          fill: line_color
         )
+      end
+
+      def arrow_heads
+        10.step(90, 10).map { |yard|
+          next if yard == 50
+          arrow_head_at(yard)
+        }.compact
       end
 
       X_OFFSET_ARROW_HEAD_POINT = 13
@@ -355,7 +458,7 @@ class FieldVision
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
           }.join(' '),
-          fill: LINE_COLOR
+          fill: line_color
         )
       end
 
@@ -366,9 +469,9 @@ class FieldVision
           y: @top,
           width:  yard_in_px(10),
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-          fill: END_ZONE_COLOR
+          fill: end_zone_color
         )
       end
 
@@ -379,9 +482,9 @@ class FieldVision
           y: @top,
           width:  yard_in_px(10),
           height: @height,
-          stroke: LINE_COLOR,
+          stroke: line_color,
           'stroke-width': LINE_WIDTH,
-            fill: END_ZONE_COLOR
+            fill: end_zone_color
         )
       end
 
@@ -415,7 +518,6 @@ class FieldVision
               yard_in_field, sign_direction,
               id: "ball_marker-#{team.first}#{yard}",
               class: 'ball_marker',
-              fill: 'cyan',
               display: 'none'
             )
           }
@@ -426,13 +528,13 @@ class FieldVision
   class ChainCrew
     include Helper
 
-    def initialize(game)
-      original_yard = original_ball_on_in_field_coord(game)
-      @sign_direction = sign_direction_in_field_coord(game)
-      @yard_sticks = yard_sticks(original_yard, @sign_direction)
+    def initialize(game, config)
+      @config = config
 
+      @original_yard = original_ball_on_in_field_coord(game)
+      @sign_direction = sign_direction_in_field_coord(game)
       @yard = ball_on_in_field_coord(game)
-      @down_marker = down_marker(@yard, game.down)
+      @down = game.down
     end
 
     def ball_marker_for(field)
@@ -440,178 +542,236 @@ class FieldVision
     end
 
     def to_s
-      [@yard_sticks, @down_marker].flatten.join("\n")
+      [
+        YardStickSet.new(@original_yard, @sign_direction, @config),
+        DownMarker.new(@yard, @down, @config)
+      ].join("\n")
     end
 
-    private
+    class YardStickSet
 
-      YARD_STICK_LENGTH = 40
-      YARD_STICK_HEAD_RADIUS = 5
-      YARD_STICK_HEAD_CLEARANCE = 2
-      YARD_STICK_CHAIN_POSITION = 4
-      YARD_STICK_CHAIN_wIDTH = 1
+      def initialize(original_yard, sign_direction, config)
+        @original_yard = original_yard
+        @sign_direction = sign_direction
+        @config = config
+      end
 
-      YARD_STICK_BASE_COLOR = 'black'
-      YARD_STICK_COLOR = 'chocolate'
+      def to_s
+        [
+          YardStick.new(@original_yard, @config),
+          YardStick.new(@original_yard + 10 * @sign_direction, @config),
+          YardChain.new(@original_yard, @sign_direction, @config)
+        ].join("\n")
+      end
 
-      def yard_stick(yard)
-        x = yard_to_coord(yard)
-        y_top = PADDING_TOP - YARD_STICK_LENGTH
+    end
 
-        coord_bottom = [
-          x,
-          PADDING_TOP - YARD_STICK_CHAIN_POSITION
-        ]
-        coord_top_left = [
-          x - YARD_STICK_HEAD_RADIUS,
-          y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
-        ]
-        coord_top_right = [
-          x + YARD_STICK_HEAD_RADIUS,
-          y_top + YARD_STICK_HEAD_RADIUS + YARD_STICK_HEAD_CLEARANCE
-        ]
+    class YardStick
+      include Helper
+
+      %w[
+        length
+        head_radius
+        head_clearance
+        chain_position
+        chain_width
+        base_color
+        main_color
+        number_of_body_lines
+      ].each do |name|
+        define_method name do
+          @config.read(name)
+        end
+      end
+
+      def initialize(yard, config)
+        @yard = yard
+        @config = config
+        @config.dig_and_merge!('yard_stick')
+      end
+
+      def to_s
+        x = yard_to_coord(@yard)
+        y_top = padding_top - length
 
         [
+          stick(x, y_top),
+          head(x, y_top),
+          body(x, y_top),
+          body_lines(x, number_of_body_lines)
+        ].flatten.join("\n")
+      end
+
+      private
+
+        def stick(x, y_top)
           to_html_element(
             :line,
             x1: x,
             x2: x,
-            y1: PADDING_TOP,
+            y1: padding_top,
             y2: y_top,
-            stroke: YARD_STICK_BASE_COLOR,
+            stroke: base_color,
             'stroke-width': 1,
-          ),
+          )
+        end
+
+        def head(cx, cy)
+          [
+            to_html_element(
+              :circle,
+              cx: cx,
+              cy: cy,
+              r: head_radius,
+              stroke: main_color,
+              'stroke-width': 1,
+              fill: main_color
+            ),
+            to_html_element(
+              :circle,
+              cx: cx,
+              cy: cy,
+              r: head_radius - 2,
+              stroke: 'black',
+              'stroke-width': 1,
+              fill: 'transparent'
+            )
+          ]
+        end
+
+        def body(x, y_top)
+          coord_bottom = [
+            x,
+            padding_top - chain_position
+          ]
+          coord_top_left = [
+            x - head_radius,
+            y_top + head_radius + head_clearance
+          ]
+          coord_top_right = [
+            x + head_radius,
+            y_top + head_radius + head_clearance
+          ]
+
           to_html_element(
             :polygon,
             points: [coord_bottom, coord_top_left, coord_top_right].map { |x, y|
               [x, y].join(',')
             }.join(' '),
-            fill: YARD_STICK_COLOR
-          ),
-          yard_stick_body_lines(yard, 3),
-          yard_stick_head(x, y_top)
-        ]
-      end
-
-      YARD_STICK_BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM = 4
-
-      def yard_stick_body_lines(yard, num_lines)
-        x = yard_to_coord(yard)
-        y_coord_bottom = PADDING_TOP - YARD_STICK_CHAIN_POSITION
-        body_height = YARD_STICK_LENGTH - YARD_STICK_HEAD_RADIUS - YARD_STICK_HEAD_CLEARANCE
-        body_top_width = YARD_STICK_HEAD_RADIUS * 2
-
-        offset_from_bottom = YARD_STICK_BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM
-        dy_interval = (body_height - offset_from_bottom) / (num_lines + 1)
-        y = y_coord_bottom - offset_from_bottom - dy_interval
-        num_lines.times.flat_map { |n|
-          width = body_top_width * (n + 1) / num_lines \
-                + body_top_width * offset_from_bottom / body_height
-          [
-            to_html_element(
-              :line,
-              x1: x - width / 2,
-              x2: x + width / 2,
-              y1: y,
-              y2: y,
-              stroke: 'black',
-              'stroke-width': 1,
-            ),
-            to_html_element(
-              :line,
-              x1: x - width / 2 + 1,
-              x2: x + width / 2 - 1,
-              y1: y + 1,
-              y2: y + 1,
-              stroke: 'white',
-              'stroke-width': 1,
-            )
-          ].tap { y -= dy_interval }
-        }
-      end
-
-      def yard_stick_head(cx, cy)
-        [
-          to_html_element(
-            :circle,
-            cx: cx,
-            cy: cy,
-            r: YARD_STICK_HEAD_RADIUS,
-            stroke: YARD_STICK_COLOR,
-            'stroke-width': 1,
-            fill: YARD_STICK_COLOR
-          ),
-          to_html_element(
-            :circle,
-            cx: cx,
-            cy: cy,
-            r: YARD_STICK_HEAD_RADIUS - 2,
-            stroke: 'black',
-            'stroke-width': 1,
-            fill: 'transparent'
+            fill: main_color
           )
-        ]
+        end
+
+        BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM = 4
+
+        def body_lines(x, num_lines)
+          y_coord_bottom = padding_top - chain_position
+          body_height = length - head_radius - head_clearance
+          body_top_width = head_radius * 2
+
+          offset_from_bottom = BODY_LINE_POSITIONING_OFFSET_FROM_BOTTOM
+          dy_interval = (body_height - offset_from_bottom) / (num_lines + 1)
+          y = y_coord_bottom - offset_from_bottom - dy_interval
+          num_lines.times.flat_map { |n|
+            width = body_top_width * (n + 1) / num_lines \
+                  + body_top_width * offset_from_bottom / body_height
+            [
+              to_html_element(
+                :line,
+                x1: x - width / 2,
+                x2: x + width / 2,
+                y1: y,
+                y2: y,
+                stroke: 'black',
+                'stroke-width': 1,
+              ),
+              to_html_element(
+                :line,
+                x1: x - width / 2 + 1,
+                x2: x + width / 2 - 1,
+                y1: y + 1,
+                y2: y + 1,
+                stroke: 'white',
+                'stroke-width': 1,
+              )
+            ].tap { y -= dy_interval }
+          }
+        end
+    end
+
+    class YardChain
+      include Helper
+
+      def initialize(yard, sign_direction, config)
+        @yard = yard
+        @sign_direction = sign_direction
+        @config = config
+        @config.dig_and_merge!('yard_stick')
       end
 
-      def yard_chain(yard, sign_direction)
-        y = PADDING_TOP - YARD_STICK_CHAIN_POSITION
+      def to_s
+        y = padding_top - @config.read('chain_position')
         to_html_element(
           :line,
-          x1: yard_to_coord(yard),
-          x2: yard_to_coord(yard + 10 * sign_direction),
+          x1: yard_to_coord(@yard),
+          x2: yard_to_coord(@yard + 10 * @sign_direction),
           y1: y,
           y2: y,
-          stroke: YARD_STICK_BASE_COLOR,
-          'stroke-width': YARD_STICK_CHAIN_wIDTH
+          stroke: @config.read('base_color'),
+          'stroke-width': @config.read('chain_width')
         )
       end
+    end
 
-      def yard_sticks(original_yard, sign_direction)
-        [
-          yard_stick(original_yard),
-          yard_stick(original_yard + 10 * sign_direction),
-          yard_chain(original_yard, sign_direction)
-        ]
+    class DownMarker
+      include Helper
+
+      def initialize(yard, down, config)
+        @yard = yard
+        @down = down
+        @config = config
+        @config.dig_and_merge!('yard_stick')
       end
 
-      DOWN_MARKER_LENGTH = YARD_STICK_LENGTH
-      DOWN_MARKER_HEAD_SIDE_LENGTH = YARD_STICK_HEAD_RADIUS * 2
-      DOWN_MARKER_BASE_COLOR = YARD_STICK_BASE_COLOR
-      DOWN_MARKER_FONT_COLOR = YARD_STICK_COLOR
-      DOWN_MARKER_FONT_SIZE = 12
+      def to_s
+        x = yard_to_coord(@yard)
+        length = @config.read('length')
+        y_top = padding_top - length
+        head_side_length = @config.read('head_radius') * 2
+        base_color = @config.read('base_color')
+        font_color = @config.read('main_color')
+        font_size = @config.read('down_marker.font_size')
 
-      def down_marker(yard, down)
-        x = yard_to_coord(yard)
-        y_top = PADDING_TOP - DOWN_MARKER_LENGTH
         [
           to_html_element(
             :line,
             x1: x,
             x2: x,
-            y1: PADDING_TOP,
+            y1: padding_top,
             y2: y_top,
-            stroke: DOWN_MARKER_BASE_COLOR,
+            stroke: base_color,
             'stroke-width': 1,
           ),
           to_html_element(
             :rect,
-            x: x - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
-            y: y_top - DOWN_MARKER_HEAD_SIDE_LENGTH / 2,
-            width:  DOWN_MARKER_HEAD_SIDE_LENGTH,
-            height: DOWN_MARKER_HEAD_SIDE_LENGTH,
-            stroke: DOWN_MARKER_BASE_COLOR,
-            fill: DOWN_MARKER_BASE_COLOR
+            x: x - head_side_length / 2,
+            y: y_top - head_side_length / 2,
+            width:  head_side_length,
+            height: head_side_length,
+            stroke: base_color,
+            fill: base_color
           ),
           to_html_element(
             :text,
-            down,
+            @down,
             x: x,
-            y: y_top + DOWN_MARKER_HEAD_SIDE_LENGTH / 2 - 1,
-            'font-size': DOWN_MARKER_FONT_SIZE,
+            y: y_top + head_side_length / 2 - 1,
+            'font-size': font_size,
             'text-anchor': 'middle',
-            fill: DOWN_MARKER_FONT_COLOR
+            fill: font_color
           )
-        ]
+        ].join("\n")
       end
+    end
   end
 end
