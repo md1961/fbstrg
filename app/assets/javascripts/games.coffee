@@ -55,6 +55,7 @@ $ ->
           yard = parseInt(m[1])
           homeHasBall = m[2] == 'true'
           color = m[3]
+          color = null if color == 'null'
           showBallMarker(yard, homeHasBall, color)
         else
           $('#announce_board').html(text)
