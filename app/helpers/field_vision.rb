@@ -221,6 +221,7 @@ class FieldVision
       end_zone_color
       team_name_font_color
       touchback_line_color
+      ball_marker_color
     ].each do |name|
       define_method name do
         @config.read(name)
@@ -264,7 +265,6 @@ class FieldVision
 
     BALL_MARKER_LENGTH = 10
     BALL_MARKER_HEIGHT = 6
-    BALL_MARKER_COLOR = 'cyan'
 
     def ball_marker(yard, sign_direction, **options)
       coord_point = [
@@ -285,7 +285,7 @@ class FieldVision
           points: [coord_point, coord_end_top, coord_end_bottom].map { |x, y|
             [x, y].join(',')
           }.join(' '),
-          fill: BALL_MARKER_COLOR,
+          fill: ball_marker_color,
           id: 'ball_marker',
           class: 'ball_marker'
         }.merge(options)
@@ -518,7 +518,6 @@ class FieldVision
               yard_in_field, sign_direction,
               id: "ball_marker-#{team.first}#{yard}",
               class: 'ball_marker',
-              fill: 'cyan',
               display: 'none'
             )
           }

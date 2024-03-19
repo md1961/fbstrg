@@ -10,6 +10,7 @@ default:
   end_zone_color: white
   team_name_font_color: white
   touchback_line_color: lightgray
+  ball_marker_color: black
 
   yard_stick:
     length: 5
@@ -34,6 +35,7 @@ real:
   end_zone_color: blue
   team_name_font_color: white
   touchback_line_color: chocolate
+  ball_marker_color: cyan
 
   yard_stick:
     length: 40
