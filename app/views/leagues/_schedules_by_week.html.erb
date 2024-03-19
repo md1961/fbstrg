@@ -12,7 +12,10 @@
       <td class="numeric <%= schedule == next_schedule ? 'next_game' : '' %>">
         <%= link_to_if game&.final?, schedule_index_display(schedule, week), game %>
       </td>
-      <td><%= game || '(bye)' %></td>
+      <% optional_strs = {}
+         optional_strs['h'] = " (#{team_result_display_for(game.home_team)})"
+         optional_strs['v'] = " (#{team_result_display_for(game.visitors )})" -%>
+      <td><%= game ? game.to_s(optional_strs) : '(bye)' %></td>
       <% if game&.final? -%>
         <% _result, score_own, score_opp = game.result_and_scores_for(game.visitors) -%>
         <td class="numeric"><%= score_own %></td>
