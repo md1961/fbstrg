@@ -135,6 +135,10 @@ class Game < ApplicationRecord
     scores_by_quarter_for(home_team: true)
   end
 
+  def teams
+    [home_team, visitors]
+  end
+
   def winner
     return nil unless final?
     return nil if score_home == score_visitors
