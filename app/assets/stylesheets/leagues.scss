@@ -109,6 +109,11 @@
       &.NFC {
         width: 84px;
       }
+
+      &.ongoing {
+        color: red;
+        font-weight: bold;
+      }
     }
 
     td.games {
