@@ -22,6 +22,13 @@ module GamesHelper
     format("%d:%02d", mins, time_left - mins * 60)
   end
 
+  def live_score_display(game)
+    [
+      "#{game.quarter}Q #{time_left_display(game.time_left)}",
+      "#{game.visitors.abbr} #{game.score_visitors} - #{game.home_team.abbr} #{game.score_home}"
+    ].join(' ')
+  end
+
   def ball_on_display(game)
     ball_on = game.ball_on
     if game.end_of_half? || game.final?
