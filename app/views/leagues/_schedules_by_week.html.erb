@@ -16,15 +16,19 @@
          optional_strs['h'] = " (#{team_result_display_for(game.home_team)})"
          optional_strs['v'] = " (#{team_result_display_for(game.visitors )})" -%>
       <td><%= game ? game.to_s(optional_strs) : '(bye)' %></td>
-      <% if game&.final? -%>
-        <% _result, score_own, score_opp = game.result_and_scores_for(game.visitors) -%>
-        <td class="numeric"><%= score_own %></td>
-        <td>-</td>
-        <td class="numeric"><%= score_opp %></td>
-        <% if game&.overtime? %>
+      <% if game&.final? || game&.ongoing? -%>
+        <% ongoing = game.ongoing? ? 'ongoing' : '' -%>
+        <td class="numeric <%= ongoing %>"><%= game.score_visitors %></td>
+        <td class="<%= ongoing %>">-</td>
+        <td class="numeric <%= ongoing %>"><%= game.score_home %></td>
+        <% if game.ongoing? -%>
+          <td class="ongoing">
+            <%= "#{game.quarter}Q #{time_left_display(game.time_left)}" %>
+          </td>
+        <% elsif game.overtime? %>
           <td class="overtime_mark">OT</td>
         <% end -%>
-      <% elsif schedule == next_schedule && schedule != last_schedule && !game.ongoing? -%>
+      <% elsif schedule == next_schedule && schedule != last_schedule -%>
         <td colspan="4">
         <td><%= link_to 'Postpone', postpone_schedule_path(schedule, league_id: @league),
                 method: :patch, id: 'link_to_postpone_schedule' %></td>
