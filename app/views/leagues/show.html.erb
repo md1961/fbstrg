@@ -86,7 +86,7 @@
   <% end -%>
 
   <div class="links">
-    <% if next_schedule -%>
+    <% if next_schedule && !next_schedule.game.ongoing? -%>
       <%= link_to "Next => #{schedule_with_team_result(next_schedule)}", next_schedule.game %>
     <% end -%>
     <%= link_to 'Games', games_path(league_id: @league) %>
