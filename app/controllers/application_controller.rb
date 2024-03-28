@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
     def configure
       if params[:real]
         session[:real] = params[:real] == 'true'
-        @real_changed = true
       end
       @real = session[:real]
 
@@ -26,11 +25,6 @@ class ApplicationController < ActionController::Base
     end
 
   private
-
-    def real_changed?
-      @real_changed
-    end
-    helper_method :real_changed?
 
     def trait_names
       @__trait_names ||= TeamTrait.first.attributes.keys.reject { |name|
