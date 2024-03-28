@@ -114,6 +114,11 @@
         width: 84px;
       }
 
+      &.next_game {
+        color: red;
+        font-weight: bold;
+      }
+
       &.ongoing {
         color: red;
         font-weight: bold;

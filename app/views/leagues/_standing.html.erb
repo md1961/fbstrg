@@ -15,12 +15,14 @@
     <th class="rank" hidden>
   </thead>
   <tbody>
-    <% ongoing_teams = @league.game_ongoing&.teams -%>
+    <% next_teams = @league.next_schedule&.game&.teams
+       ongoing_teams = @league.game_ongoing&.teams -%>
     <% standing.each do |team_record| -%>
       <tr>
         <td class="rank" hidden><%= team_record.rank %></td>
         <% team = team_record.team
            classes = ['team', team.conference]
+           classes << 'next_game' if next_teams&.include?(team)
            classes << 'ongoing' if ongoing_teams&.include?(team) -%>
         <td class="<%= classes.join(' ') %>"><%= team %></td>
         <td class="games  numeric"><%= team_record.games %></td>
