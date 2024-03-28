@@ -242,7 +242,6 @@ class FieldVision
       @left = @config.padding
       @width  = yard_in_px(120)
       @height = yard_in_px(field_height_in_yard)
-      redraw
     end
 
     def real?
@@ -293,7 +292,7 @@ class FieldVision
     end
 
     def to_s
-      @to_s ||= [
+      [
         boundary,
         0.step(100, 1).map { |yard|
           yard_marks_at(yard)
@@ -311,10 +310,6 @@ class FieldVision
     end
 
     private
-
-      def redraw
-        @to_s = nil
-      end
 
       def field_height_in_yard
         real? ? 20 : 5

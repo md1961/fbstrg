@@ -14,6 +14,7 @@
   <%
     field_vision = FieldVision.instance
     #field_vision.set_teams_from(game)
+    field_vision.real = @real
     field_vision.place_ball_marker(@game)
   -%>
   <%= field_vision.to_s.html_safe %>
