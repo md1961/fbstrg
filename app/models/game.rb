@@ -364,10 +364,11 @@ class Game < ApplicationRecord
     else
       yardage_play(@result)
     end
-    @announcement = Announcer.announce(@result, self)
 
-    @result.time_to_take = @announcement.total_time_in_sec
     @result.record(self, game_snapshot)
+
+    @announcement = Announcer.announce(@result, self)
+    @result.time_to_take = @announcement.total_time_in_sec
 
     advance_clock(Clocker.time_to_take(@result, self))
     @two_point_try = false
