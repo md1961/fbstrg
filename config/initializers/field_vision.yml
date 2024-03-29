@@ -33,7 +33,7 @@ real:
   field_color: green
   line_color: white
   end_zone_color: blue
-  team_name_font_color: white
+  team_name_font_color: gray
   touchback_line_color: chocolate
   ball_marker_color: cyan
 
