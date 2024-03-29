@@ -57,7 +57,7 @@
           <div>
             <% label = "announce = #{@no_announce ? 'OFF' : 'ON'}" -%>
             <%= link_to label, game_path(@game, no_announce: !@no_announce),
-                        id: "toggle_announce" %>
+                        id: "toggle_announce", tabindex: -1 %>
           </div>
           <%#= "session[:offensive_play_id] = #{@offensive_play_id_in_session.inspect}" %>
           <%= "@game.two_point_try = #{@game.two_point_try.inspect}" %>
