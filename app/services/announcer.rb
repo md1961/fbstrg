@@ -177,15 +177,15 @@ module Announcer
                      100
                    elsif play.blocked_kick_return?
                      run_from + run_yardage_after
-                   elsif play.fumble_rec_by_opponent?
+                   elsif play.fumble_rec_by_opponent? || play.takeover_on_down?
                      100 - game.ball_on
                    else
                      game.ball_on
                    end
           home_moving_ball = (
-            game.home_has_ball && !play.fumble_rec_by_opponent?
+             game.home_has_ball && (!play.fumble_rec_by_opponent? && !play.takeover_on_down?)
           ) || (
-            !game.home_has_ball && play.fumble_rec_by_opponent?
+            !game.home_has_ball && ( play.fumble_rec_by_opponent? ||  play.takeover_on_down?)
           )
           prev_yard = start_on > 50 ? 50 : 0
           long_gain_statements(start_on, end_on).each do |text, time|
@@ -203,12 +203,12 @@ module Announcer
       text = \
         if play.fumble? && !play.blocked_kick_return?
           announcement.add("FUMBLE #{at_yard_line(game.ball_on, no_side: true)}", 2500)
-          yard_for_announcement = game.ball_on
+          yard_for_announcement = play.takeover_on_down? ? 100 - game.ball_on : game.ball_on
           play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         elsif play.no_scoring?
           verb = (play.no_return? && play.punt_and_return?) ? "Fair catch" \
                                       : play.out_of_bounds? ? "Out of bounds" : "Stopped"
-          yard_for_announcement = game.ball_on
+          yard_for_announcement = play.takeover_on_down? ? 100 - game.ball_on : game.ball_on
           if play.possession_changing? || play.blocked_kick_return?
             if play.no_return? && run_from <= 0
               yard_for_announcement = nil
@@ -232,7 +232,12 @@ module Announcer
           end
           play.scoring.upcase
         end
-      announcement.show_ball_marker(yard_for_announcement, is_home_team: game.home_has_ball)
+      home_finished_play = (
+         game.home_has_ball && !play.takeover_on_down?
+      ) || (
+        !game.home_has_ball &&  play.takeover_on_down?
+      )
+      announcement.show_ball_marker(yard_for_announcement, is_home_team: home_finished_play)
       announcement.add(text, 2000)
     end
     announcement.set_time_to_last(2000)
