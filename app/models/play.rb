@@ -227,8 +227,8 @@ class Play < ApplicationRecord
 
   def possession_changed?
     possession_changing? \
+      || takeover_on_down? \
       || (field_goal_try? && no_scoring?) \
-      || (fourth_down_gambled? && yardage < game_snapshot.yard_to_go) \
       || (kick_blocked? && game_snapshot&.down == 4 && yardage < game_snapshot&.yard_to_go) \
   end
 
@@ -242,6 +242,10 @@ class Play < ApplicationRecord
 
   def fourth_down_gambled?
     game_snapshot&.down == 4 && (on_ground? || pass? || sacked?)
+  end
+
+  def takeover_on_down?
+    fourth_down_gambled? && yardage < game_snapshot.yard_to_go && !intercepted? && !fumble_rec_by_opponent?
   end
 
   def point_scored
