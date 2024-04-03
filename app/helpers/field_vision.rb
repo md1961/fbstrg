@@ -334,7 +334,7 @@ class FieldVision
       end
 
       def boundary
-        if @real
+        if real?
           to_html_element(
             :rect,
             x: @left,
@@ -471,7 +471,7 @@ class FieldVision
       end
 
       def left_end_zone
-        if @real
+        if real?
           to_html_element(
             :rect,
             x: @left,
@@ -496,7 +496,7 @@ class FieldVision
       end
 
       def right_end_zone
-        if @real
+        if real?
           to_html_element(
             :rect,
             x: @left + yard_in_px(110),
