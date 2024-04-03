@@ -333,16 +333,28 @@ class FieldVision
       end
 
       def boundary
-        to_html_element(
-          :rect,
-          x: @left,
-          y: @top,
-          width:  @width,
-          height: @height,
-          stroke: line_color,
-          'stroke-width': LINE_WIDTH,
-          fill: field_color
-        )
+        if @real
+          to_html_element(
+            :rect,
+            x: @left,
+            y: @top,
+            width:  @width,
+            height: @height,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH,
+            fill: field_color
+          )
+        else
+          to_html_element(
+            :line,
+            x1: @left,
+            x2: @left + @width,
+            y1: bottom,
+            y2: bottom,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH
+          )
+        end
       end
 
       TOUCHBACK_LINE_COLOR = 'chocolate'
@@ -458,29 +470,53 @@ class FieldVision
       end
 
       def left_end_zone
-        to_html_element(
-          :rect,
-          x: @left,
-          y: @top,
-          width:  yard_in_px(10),
-          height: @height,
-          stroke: line_color,
-          'stroke-width': LINE_WIDTH,
-          fill: end_zone_color
-        )
+        if @real
+          to_html_element(
+            :rect,
+            x: @left,
+            y: @top,
+            width:  yard_in_px(10),
+            height: @height,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH,
+            fill: end_zone_color
+          )
+        else
+          to_html_element(
+            :line,
+            x1: @left,
+            x2: @left + yard_in_px(10),
+            y1: bottom,
+            y2: bottom,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH,
+          )
+        end
       end
 
       def right_end_zone
-        to_html_element(
-          :rect,
-          x: @left + yard_in_px(110),
-          y: @top,
-          width:  yard_in_px(10),
-          height: @height,
-          stroke: line_color,
-          'stroke-width': LINE_WIDTH,
-            fill: end_zone_color
-        )
+        if @real
+          to_html_element(
+            :rect,
+            x: @left + yard_in_px(110),
+            y: @top,
+            width:  yard_in_px(10),
+            height: @height,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH,
+              fill: end_zone_color
+          )
+        else
+          to_html_element(
+            :line,
+            x1: @left + yard_in_px(110),
+            x2: @left + yard_in_px(120),
+            y1: bottom,
+            y2: bottom,
+            stroke: line_color,
+            'stroke-width': LINE_WIDTH,
+          )
+        end
       end
 
       def logo_at_midfield
