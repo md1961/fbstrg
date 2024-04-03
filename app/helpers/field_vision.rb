@@ -166,7 +166,8 @@ class FieldVision
         width:  @field.width  + @config.padding * 2,
         height: @field.height + @config.padding_top + @config.padding,
         style: "background-color: #{background_color}",
-        id: 'field_vision_area'
+        id: 'field_vision_area',
+        'data-ball_marker_color_on_fly': @config.read('ball_marker_color_on_fly')
       )
     end
 

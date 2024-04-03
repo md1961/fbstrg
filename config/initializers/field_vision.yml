@@ -11,6 +11,7 @@ default:
   team_name_font_color: white
   touchback_line_color: lightgray
   ball_marker_color: black
+  ball_marker_color_on_fly: cyan
 
   yard_stick:
     length: 5
@@ -36,6 +37,7 @@ real:
   team_name_font_color: gray
   touchback_line_color: chocolate
   ball_marker_color: cyan
+  ball_marker_color_on_fly: yellow
 
   yard_stick:
     length: 40
