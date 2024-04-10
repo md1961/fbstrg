@@ -659,9 +659,9 @@ class Play < ApplicationRecord
 
     # TODO: Take offensive_play and defensive_play into account for change_run_yardage_by_team_traits().
     def change_run_yardage_by_team_traits(game)
-      factor = @ttm.run_yardage_factor * 2 + 1  # 1 .. 41
+      factor = [@ttm.run_yardage_factor, 1].max  # 1 .. 20
       self.yardage += MathUtil.pick_from_decreasing_distribution( 1,  5) if rand * 100 < factor
-      self.yardage += MathUtil.pick_from_decreasing_distribution(10, 20) if rand * 100 < factor / 10.0
+      self.yardage += MathUtil.pick_from_decreasing_distribution(10, 20) if rand * 100 < factor / 5.0
     end
 
     def change_pass_by_team_traits(game)

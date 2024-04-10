@@ -33,7 +33,7 @@ class TeamTraitManager
   end
 
   def run_yardage_factor
-    # (1 .. 20) - home_defense_factor
+    # (0 .. 20) - home_defense_factor
     @offense_trait.run_yardage - @defense_trait.run_defense + 10 - home_defense_factor
   end
 
