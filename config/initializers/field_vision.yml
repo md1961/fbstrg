@@ -11,7 +11,7 @@ default:
   team_name_font_color: white
   touchback_line_color: lightgray
   ball_marker_color: black
-  ball_marker_color_on_fly: cyan
+  ball_marker_color_on_fly: dodgerblue
 
   yard_stick:
     length: 5
