@@ -44,6 +44,10 @@ class OffensivePlay < ApplicationRecord
     number <= 16
   end
 
+  def large_loss_run?
+    %w[Sweep Reverse].include?(name)
+  end
+
   # TODO: Do not rely on OffensivePlay#number.
   def hard_to_go_out_of_bounds?
     [1, 2, 3, 4, 7, 8, 9].include?(number)
