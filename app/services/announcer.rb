@@ -172,7 +172,7 @@ module Announcer
            || (play.pass? && !play.intercepted? && run_yardage_after > 5) \
            || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \
            || play.blocked_kick_return?
-          start_on = play.on_ground? ? (run_from + 10) / 10 * 10 : run_from
+          start_on = play.on_ground? ? ((run_from + 5) / 10.0 * 10).to_i : run_from
           end_on = if play.touchdown?
                      100
                    elsif play.blocked_kick_return?
