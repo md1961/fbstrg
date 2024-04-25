@@ -116,9 +116,10 @@ class StrategyTool
            && time_left <= seconds_needed_for_field_goal + seconds_needed_to_get_ball_back) \
        || (score_diff < -3 && ball_on > 50 \
            && time_left <= seconds_needed_for_touchdown + seconds_needed_to_get_ball_back) \
-       || (score_diff < -7 && !zone_conservative? \
+       || (score_diff < -7 && zone_aggresive? \
            && time_left <= (seconds_needed_for_touchdown + seconds_needed_to_get_ball_back) * 2) \
-       || (score_diff < -14 && zone_aggresive?)
+       || (score_diff < -14 && zone_aggresive? \
+           && time_left <= (seconds_needed_for_touchdown + seconds_needed_to_get_ball_back) * 3)
     ) \
     || (ball_on.between?(50, 100 - 35 - rand(5)) && yard_to_go <= 3) \
     || (quarter >= 3 && score_diff <= -12 && ball_on >= 50 && yard_to_go <= 10) \
