@@ -52,7 +52,8 @@ class TeamRecord
     end
 
     def pct
-      -(won + tied * 0.5)
+      return 0.0 if games.zero?
+      -(won * 1.0 + tied * 0.5) / games
     end
 
     def update_by(game, team)
