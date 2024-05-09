@@ -23,7 +23,7 @@
         <td class="numeric <%= ongoing %>"><%= game.score_home %></td>
         <% if game.ongoing? -%>
           <td class="ongoing">
-            <%= "#{game.quarter}Q #{time_left_display(game.time_left)}" %>
+            <%= game_time_display(game) %>
           </td>
         <% elsif game.overtime? %>
           <td class="overtime_mark">OT</td>
