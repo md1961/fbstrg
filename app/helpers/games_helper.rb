@@ -22,6 +22,15 @@ module GamesHelper
     format("%d:%02d", mins, time_left - mins * 60)
   end
 
+  def game_time_display(game)
+    quarter, time_left = game.quarter, game.time_left
+    if quarter == 2 && time_left
+      'Halftime'
+    else
+      "#{quarter}Q #{time_left_display(time_left)}"
+    end
+  end
+
   def live_score_display(game)
     [
       "#{game.quarter}Q #{time_left_display(game.time_left)}",
