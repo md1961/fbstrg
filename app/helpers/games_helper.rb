@@ -33,7 +33,7 @@ module GamesHelper
 
   def live_score_display(game)
     [
-      "#{game.quarter}Q #{time_left_display(game.time_left)}",
+      game_time_display(game),
       "#{game.visitors.abbr} #{game.score_visitors} - #{game.home_team.abbr} #{game.score_home}"
     ].join(' ')
   end
