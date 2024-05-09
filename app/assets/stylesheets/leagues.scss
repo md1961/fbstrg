@@ -31,6 +31,11 @@
     table.team_schedule, table.schedules_by_week {
       margin-right: 15px;
 
+      caption.next_game {
+        color: red;
+        font-weight: bold;
+      }
+
       caption.ongoing {
         color: red;
         font-weight: bold;

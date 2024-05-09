@@ -1,6 +1,14 @@
 <table class="team_schedule">
-  <% ongoing_teams = @league.game_ongoing&.teams -%>
-  <caption class="<%= ongoing_teams&.include?(team) ? 'ongoing' : '' %>">
+  <% next_teams = @league.next_schedule&.game&.teams
+     ongoing_teams = @league.game_ongoing&.teams
+     clazz = if next_teams&.include?(team)
+               'next_game'
+             elsif ongoing_teams&.include?(team)
+               'ongoing'
+             else
+               ''
+             end -%>
+  <caption class="<%= clazz %>">
     <%= "#{team} (#{team_result_display_for(team)})" %>
   </caption>
   <% @schedules_by_week.each do |week, schedules| -%>
