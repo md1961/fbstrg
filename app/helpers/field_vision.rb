@@ -107,8 +107,14 @@ class FieldVision
       if game.home_has_ball
         original_yard
       else
-        original_yard = 100 - original_yard
+        100 - original_yard
       end
+    end
+
+    def drive_start_in_field_coord(game)
+      game.drive_started_from.then { |yard|
+        yard.nil? || game.home_has_ball ? yard : 100 - yard
+      }
     end
 
     def to_html_element(name, *values, **attrs)
@@ -563,6 +569,7 @@ class FieldVision
     def initialize(game, config)
       @config = config
 
+      @drive_start = drive_start_in_field_coord(game)
       @original_yard = original_ball_on_in_field_coord(game)
       @sign_direction = sign_direction_in_field_coord(game)
       @yard = ball_on_in_field_coord(game)
@@ -576,9 +583,19 @@ class FieldVision
     def to_s
       [
         YardStickSet.new(@original_yard, @sign_direction, @config),
-        DownMarker.new(@yard, @down, @config)
-      ].join("\n")
+        DownMarker.new(@yard, @down, @config),
+        drive_start_marker
+      ].compact.join("\n")
     end
+
+    private
+
+      def drive_start_marker
+        return nil unless @drive_start
+        return nil if @drive_start == @original_yard
+
+        DriveStartMarker.new(@drive_start, @config)
+      end
 
     class YardStickSet
 
