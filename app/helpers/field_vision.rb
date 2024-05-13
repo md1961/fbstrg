@@ -805,5 +805,44 @@ class FieldVision
         ].join("\n")
       end
     end
+
+    class DriveStartMarker
+      include Helper
+
+      def initialize(yard, config)
+        @yard = yard
+        @config = config
+        @config.dig_and_merge!('yard_stick')
+      end
+
+      def to_s
+        x = yard_to_coord(@yard)
+        length = @config.read('length')
+        y_top = padding_top - length
+        head_radius = @config.read('head_radius')
+        base_color = @config.read('base_color')
+
+        [
+          to_html_element(
+            :line,
+            x1: x,
+            x2: x,
+            y1: padding_top,
+            y2: y_top,
+            stroke: base_color,
+            'stroke-width': 1,
+          ),
+          to_html_element(
+            :circle,
+            cx: x,
+            cy: y_top,
+            r: head_radius,
+            stroke: base_color,
+            'stroke-width': 1,
+            fill: base_color
+          )
+        ].join("\n")
+      end
+    end
   end
 end
