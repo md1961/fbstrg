@@ -24,4 +24,16 @@ module GameAttributes
   def goal_to_go?
     100 - ball_on <= yard_to_go
   end
+
+  def drive_started_from
+    return nil if kickoff? || kickoff_after_safety?
+
+    next_play = nil
+    plays.order(number: :desc).each do |play|
+      break if play.possession_changed?
+      next_play = play
+    end
+
+    next_play&.game_snapshot&.ball_on
+  end
 end
