@@ -90,7 +90,7 @@ module Announcer
       text = "SACKED" + (in_zone ? " IN ZONE" : "")
       announcement.show_ball_marker(yard_at, is_home_team: home_had_ball_at_start?(game, play))
       if play.fumble?
-        announcement.add(text, 500)
+        announcement.add(text, rand(500 .. 1000))
         announcement.add("FUMBLE", 2500)
         text = play.fumble_rec_by_own? ? "Recovered by own" : "RECOVERED BY OPPONENT"
         announcement.add(text, 2000)
