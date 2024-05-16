@@ -836,7 +836,7 @@ class FieldVision
         x = yard_to_coord(@yard)
         length = @config.read('length')
         y_top = padding_top - length
-        head_radius = @config.read('head_radius')
+        head_radius = @config.read('head_radius') - (@config.real? ? 1 : 0)
         base_color = @config.read('base_color')
 
         [
