@@ -229,8 +229,10 @@ module Announcer
           if play.touchdown? && !is_in_zone
             announcement.show_ball_marker(101, is_home_team: game.home_has_ball)
             announcement.add("Into zone", 500)
+          elsif play.safety?
+            announcement.add("Stopped in zone", 1000)
           end
-          play.scoring.upcase
+          play.scoring.upcase.sub('_', ' ')
         end
       home_finished_play = (
          game.home_has_ball && !play.takeover_on_down?
