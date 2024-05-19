@@ -13,6 +13,10 @@ class FieldVision
     @area.config = Config.new(real: real)
   end
 
+  def size_multiplier=(multiplier)
+    @area.size_multiplier = multiplier
+  end
+
   def set_teams_from(game)
     @area.visitors  = game.visitors
     @area.home_team = game.home_team
@@ -135,11 +139,12 @@ class FieldVision
   class Area
     include Helper
 
-    attr_writer :visitors, :home_team
+    attr_writer :visitors, :home_team, :size_multiplier
 
     def initialize(field)
       @field = field
       @config = field.config
+      @size_multiplier = 1.0
     end
 
     def config=(config)
@@ -167,10 +172,8 @@ class FieldVision
         @config.real? ? texts_in_end_zone : nil,
         @ball_marker,
         @chain_crew,
-        x: 0,
-        y: 0,
-        width:  @field.width  + @config.padding * 2,
-        height: @field.height + @config.padding_top + @config.padding,
+        viewBox: [0, 0, view_width, view_height].join(' '),
+        width: view_width * @size_multiplier,
         style: "background-color: #{background_color}",
         id: 'field_vision_area',
         'data-ball_marker_color_on_fly': @config.read('ball_marker_color_on_fly')
@@ -178,6 +181,14 @@ class FieldVision
     end
 
     private
+
+      def view_width
+        @field.width  + @config.padding * 2
+      end
+
+      def view_height
+        @field.height + @config.padding_top + @config.padding
+      end
 
       def shows_ball_marker?(game)
         !game.final?
