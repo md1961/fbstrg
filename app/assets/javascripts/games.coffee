@@ -50,7 +50,7 @@ $ ->
         else if m = text.match(/FLY\D*\s+(-?\d+)\s+(\w+)/)
           transform = "translate(#{m[1]}, 0)"
           color = m[2]
-          color = $('#field_vision_area').data('ball_marker_color_on_fly') if color == 'null'
+          color = $('#field_vision').data('ball_marker_color_on_fly') if color == 'null'
           $('#ball_marker').attr('transform', transform).attr('fill', color)
         else if m = text.match(/BALL\D*\s+(\d+)\s+(true|false)\s+(\w+)/)
           yard = parseInt(m[1])

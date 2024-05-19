@@ -5,7 +5,7 @@
   <%= render partial: 'score_board', locals: {game: @game_snapshot_prev} %>
 </table>
 
-<div id="field_vision">
+<div class="field_vision">
   <% field_vision = FieldVision.instance
      field_vision.real = @real
      field_vision.place_ball_marker(@game_snapshot_prev || @game) -%>
