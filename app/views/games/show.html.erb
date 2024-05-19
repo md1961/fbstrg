@@ -8,6 +8,7 @@
 <div class="field_vision">
   <% field_vision = FieldVision.instance
      field_vision.real = @real
+     field_vision.size_multiplier = @real && @game.announcement ? 1.5 : 1.0
      field_vision.place_ball_marker(@game_snapshot_prev || @game) -%>
   <%= field_vision.to_s.html_safe %>
 </div>

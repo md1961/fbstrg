@@ -176,6 +176,7 @@ class FieldVision
         width: view_width * @size_multiplier,
         style: "background-color: #{background_color}",
         id: 'field_vision',
+        'data-default_width': view_width,
         'data-ball_marker_color_on_fly': @config.read('ball_marker_color_on_fly')
       )
     end
