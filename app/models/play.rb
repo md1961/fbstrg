@@ -13,7 +13,8 @@ class Play < ApplicationRecord
                  onside_kick: 12, two_point_try: 13}
   enum fumble:  {no_fumble: 0, fumble_rec_by_own: 1, fumble_rec_by_opponent: 2}
   enum penalty: {no_penalty: 0, off_penalty: 1, def_penalty: 2}
-  enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4, two_point: 5}
+  enum scoring: {no_scoring: 0, touchdown: 1, field_goal: 2, safety: 3, extra_point: 4,
+                 two_point: 5, defensive_two_point: 6}
 
   delegate :quarter, to: :game_snapshot
 
@@ -249,7 +250,7 @@ class Play < ApplicationRecord
   end
 
   def point_scored
-    {touchdown: 6, field_goal: 3, safety: 2, extra_point: 1, two_point: 2}[scoring.to_sym]
+    {touchdown: 6, field_goal: 3, safety: 2, extra_point: 1, two_point: 2, defensive_two_point: 2}[scoring.to_sym] || 0
   end
 
   def next_play
