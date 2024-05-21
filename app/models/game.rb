@@ -498,14 +498,6 @@ class Game < ApplicationRecord
       @result.scoring = :touchdown
     end
 
-    def two_point_converted
-      score(2)
-      @two_point_try = false
-      self.ball_on = KICKOFF_YARDLINE
-      self.next_play = :kickoff
-      @result.scoring = :two_point
-    end
-
     def field_goal_good?(play_yardage)
       fg_yardage = 100 - ball_on + 10 + 7
       y_plus50_adjust = [fg_yardage - 50, 0].max * 2
@@ -556,18 +548,20 @@ class Game < ApplicationRecord
 
       self.ball_on += play.yardage unless play.incomplete?
       toggle_possesion if play.possession_changing?
-      if ball_on >= 100
-        play.yardage -= ball_on - 100 unless play.punt_blocked?
-        play.save!
-        if two_point_try
-          two_point_converted
-        else
-          touchdown
+      if two_point_try
+        if ball_on >= 100
+          score(2)
+          @result.scoring = play.possession_changing? ? :defensive_two_point : :two_point
         end
-      elsif two_point_try
+
+        # toggle back possesion
         toggle_possesion if play.possession_changing?
         self.ball_on = KICKOFF_YARDLINE
         self.next_play = :kickoff
+      elsif ball_on >= 100
+        play.yardage -= ball_on - 100 unless play.punt_blocked?
+        play.save!
+        touchdown
       elsif ball_on <= 0
         if play.kick_and_return? || play.intercepted? || play.fumble_rec_by_opponent?
           touchback
