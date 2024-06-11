@@ -228,8 +228,9 @@ module Announcer
             "#{verb}#{at} for #{play.yardage} yard gain"
           end
         else
-          if play.touchdown? && !is_in_zone
-            announcement.show_ball_marker(101, is_home_team: game.home_has_ball)
+          if (play.touchdown? || play.two_point? || play.defensive_two_point?) && !is_in_zone
+            is_home_team = game.home_has_ball && !play.defensive_two_point?
+            announcement.show_ball_marker(101, is_home_team: is_home_team)
             announcement.add("Into zone", 500)
           elsif play.safety?
             announcement.add("Stopped in zone", 1000)
