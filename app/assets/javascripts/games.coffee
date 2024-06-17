@@ -35,15 +35,10 @@ $ ->
       $ballMarker.attr('fill', color)
     $ballMarker.addClass('current').show()
 
-  resizeFieldVision = () ->
-    $fieldVision = $('#field_vision')
-    $fieldVision.attr('width', $fieldVision.data('default_width'))
-
   announce = (text, timeout) ->
     new Promise((resolve, reject) ->
       setTimeout(->
         if text == '__END__'
-          resizeFieldVision()
           $('#announce_board').hide()
           $('#information_board').show()
           $('#score_board_prev').hide()
