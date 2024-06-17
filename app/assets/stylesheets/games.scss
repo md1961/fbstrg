@@ -74,7 +74,7 @@ table#play_by_play {
 
 #judgments_and_plays {
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 div.strategy_tool_judgments {
@@ -147,6 +147,10 @@ div.buttons {
   margin-top: 10px;
 }
 
+div#announce_board {
+  margin-left: 250px;
+}
+
 a#toggle_announce {
   color: black;
   text-decoration: none;
@@ -180,18 +184,16 @@ body.real {
     }
   }
 
-  table#information_board, div#announce_board {
+  table#information_board {
     font-size: large;
   }
 
   div#announce_board {
+    font-size: x-large;
     display: inline-block;
     padding: 2px 5px;
+    margin-left: 350px;
     margin-bottom: 10px;
-  }
-
-  table#information_board td {
-    font-size: large;
   }
 
   div.strategy_tool_judgments {
