@@ -195,7 +195,9 @@ class Game < ApplicationRecord
 
       play = OffensivePlay.find_by(number: play_input.to_i)
       play = OffensivePlay.normal_kickoff if kickoff? && !play&.kickoff?
-      self.error_message = "Illegal offensive play '#{play_input}'" unless play
+      if play.nil? && play_input != 'choose offense'
+        self.error_message = "Illegal offensive play '#{play_input}'"
+      end
       if play&.let_clock_run?
         is_successful = let_clock_run
         if is_successful
