@@ -294,11 +294,12 @@ module Announcer
     end
 
     def long_gain_statements(start_on, end_on)
-      start_on = [(start_on.to_i + 4) / 5 * 5,  5].max
-      end_on   = [(end_on  .to_i - 1) / 5 * 5, 95].min
+      y_start = [(start_on.to_i + 4) / 5 * 5,  5].max
+      y_end   = [(end_on  .to_i - 1) / 5 * 5, 95].min
+      y_start += 5 if y_start == start_on
       time = 1000
-      start_on.step(end_on, 5).map { |ball_on|
-        prefix = start_on == ball_on ? "To the " : ""
+      y_start.step(y_end, 5).map { |ball_on|
+        prefix = y_start == ball_on ? "To the " : ""
         time -= 50
         [prefix + at_yard_line(ball_on, only_yardage: true), [time, 750].max]
       }
