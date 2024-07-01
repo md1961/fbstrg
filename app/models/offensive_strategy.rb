@@ -56,6 +56,8 @@ class OffensiveStrategy < ApplicationRecord
         return [nil, 'TO-0']
       end
       OffensivePlay.field_goal
+    elsif @strategy_tool.spikes_ball?
+      OffensivePlay.spike_ball
     elsif @strategy_tool.tries_hail_mary?
       OffensivePlay.hail_mary
     elsif game.down == 4 && !@strategy_tool.tries_fourth_down_gamble?
