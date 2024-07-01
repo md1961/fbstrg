@@ -52,6 +52,7 @@ module Announcer
     if play.field_goal_try? || play.extra_point_try? || play.kick_blocked?
       time = play.punt_blocked? ? 2000 : 1500
       announcement.add("Snap", time)
+      announcement.hold_ball_marker_for_field_goal(play, game)
       if play.kick_blocked?
         text = play.field_goal_blocked? ? "Kick is" : "Punt"
         announcement.add(text, 500)
