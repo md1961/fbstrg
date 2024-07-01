@@ -187,6 +187,24 @@ class StrategyTool
     offense_running_out_of_time? || needs_to_hurry_before_halftime?
   end
 
+  def spikes_ball?
+    return false if [1, 3].include?(quarter)
+    return false if down == 4
+    return false if quarter == 4 && score_diff > 0
+    return false if clock_stopped
+    return false if timeout_left >= 2
+    return false if time_left > 40
+    return false if ball_on < 50
+
+    quarter == 2 && (
+      down == 1 && yard_to_go <= 10 && (ball_on >= 40 || timeout_left.zero?)
+    ) ||
+    quarter == 4 && (
+         (final_FG_stands? && ball_on >= (100 - 40) && time_left < 10 && timeout_left.zero?) \
+      || (score_diff.between?(4, 8) && down == 1 && yard_to_go <= 10)
+    )
+  end
+
   def needs_defense_timeout?
     return false if clock_stopped || timeout_left(false) <= 0
     return false if [1, 3].include?(quarter) || time_left >= 60 * 4
