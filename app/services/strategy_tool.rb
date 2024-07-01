@@ -96,6 +96,13 @@ class StrategyTool
 
     return true if quarter >= 5 && score_diff < 0
 
+    if ball_on >= 97
+      return true if rand(2).zero?
+      return true if quarter >= 2 && score_diff < -14
+      return true if quarter >= 3 && score_diff < -7
+      return true if quarter == 4 && score_diff < -3
+    end
+
     return false if ball_on < 30 && yard_to_go >= 20 \
                     && !(quarter == 4 && time_left <= 120 && score_diff < 0)
     return false if ball_on < 30 && score_diff < -14
