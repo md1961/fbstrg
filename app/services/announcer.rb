@@ -173,7 +173,7 @@ module Announcer
            || ((play.kick_and_return? || play.intercepted?) && !play.no_return?) \
            || play.blocked_kick_return?
           start_on = play.on_ground? ? ((run_from + 5) / 10.0 * 10).to_i : run_from
-          end_on = if play.touchdown?
+          end_on = if play.touchdown? || play.defensive_two_point?
                      100
                    elsif play.blocked_kick_return?
                      run_from + run_yardage_after
@@ -183,9 +183,11 @@ module Announcer
                      game.ball_on
                    end
           home_moving_ball = (
-             game.home_has_ball && (!play.fumble_rec_by_opponent? && !play.takeover_on_down?)
+             game.home_has_ball \
+             && (!play.fumble_rec_by_opponent? && !play.takeover_on_down? && !play.defensive_two_point?)
           ) || (
-            !game.home_has_ball && ( play.fumble_rec_by_opponent? ||  play.takeover_on_down?)
+            !game.home_has_ball \
+             && ( play.fumble_rec_by_opponent? ||  play.takeover_on_down? ||  play.defensive_two_point?)
           )
           prev_yard = start_on > 50 ? 50 : 0
           long_gain_statements(start_on, end_on).each do |text, time|
