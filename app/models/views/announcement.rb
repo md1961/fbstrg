@@ -32,6 +32,15 @@ class Announcement
     add("FLY: #{x_move} #{color}", time)
   end
 
+  def hold_ball_marker_for_field_goal(play, game, time: 0)
+    sign_direction = game.home_has_ball ? 1 : -1
+    sign_direction *= -1 if play.possession_changed?
+    x_move = yard_in_px(-7) * sign_direction
+    color = 'null'
+
+    add("FLY: #{x_move} #{color}", time)
+  end
+
   def show_ball_marker(yard, is_home_team: true, color: 'null', time: 0)
     return unless yard
     add("BALL: #{yard} #{is_home_team} #{color}", time)
