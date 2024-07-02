@@ -18,7 +18,7 @@ class Kick
     return unless play.field_goal_try? || play.field_goal_blocked? || play.extra_point_try?
     if play.field_goal_try? || play.field_goal_blocked?
       @attempts += 1
-      distance = 100 - play.game_snapshot.ball_on + 10 + 7
+      distance = 100 - play.game_snapshot.ball_on + 10 + Play::YARD_BACK_TO_KICK_FG
       if play.field_goal?
         @distances_made << distance
       else

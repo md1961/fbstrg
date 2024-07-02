@@ -76,7 +76,7 @@ module Announcer
         end
       else
         announcement.add("Kick is up", 1000)
-        time = (100 - run_from + 7 + 10) * 50 - 200
+        time = (100 - run_from + Play::YARD_BACK_TO_KICK_FG + 10) * 50 - 200
         announcement.add("Kick is up, and it is", time)
         result = play.no_scoring? ? 'NO GOOD' : 'GOOD'
         announcement.add("Kick is up, and it is #{result}", 2000)

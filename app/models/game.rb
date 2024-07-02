@@ -506,7 +506,7 @@ class Game < ApplicationRecord
         scoring, point = play.field_goal_try? ? [:field_goal, 3] : [:extra_point, 1]
         score(point)
       elsif play.field_goal_try?
-        self.ball_on = ball_on - 7
+        self.ball_on = ball_on - Play::YARD_BACK_TO_KICK_FG
         toggle_possesion
         self.ball_on = TOUCHBACK_YARDLINE if ball_on < TOUCHBACK_YARDLINE
       else

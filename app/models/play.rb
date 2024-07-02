@@ -20,6 +20,8 @@ class Play < ApplicationRecord
 
   attr_accessor :time_to_take, :after_safety, :is_two_point_try
 
+  YARD_BACK_TO_KICK_FG = 7
+
   def self.parse(str, offensive_play)
     instance = \
       if offensive_play.kneel_down?
@@ -181,7 +183,7 @@ class Play < ApplicationRecord
   end
 
   def field_goal_good?(ball_on)
-    fg_yardage = 100 - ball_on + 10 + 7
+    fg_yardage = 100 - ball_on + 10 + YARD_BACK_TO_KICK_FG
     y_plus50_adjust = [fg_yardage - 50, 0].max * 2
 
     pct_no_good = [100 - ball_on + y_plus50_adjust, 99].min
@@ -315,11 +317,11 @@ class Play < ApplicationRecord
       end
     elsif field_goal_try?
       self.yardage += @ttm.place_kicking_factor * rand(4) if yardage >= 20
-      length = 100 - game.ball_on + 7 + 10
+      length = 100 - game.ball_on + YARD_BACK_TO_KICK_FG + 10
       pct_blocked = MathUtil.linear_interporation([50, 2.0], [20, 1.0], length)
       if rand * 100 < pct_blocked
         self.result = :field_goal_blocked
-        self.air_yardage = -7 - rand(10)
+        self.air_yardage = -YARD_BACK_TO_KICK_FG - rand(10)
         self.yardage = air_yardage
         self.fumble = rand(2).zero? ? :fumble_rec_by_own : :fumble_rec_by_opponent
         if fumble_rec_by_opponent? && rand(5).zero?
@@ -744,7 +746,7 @@ class Play < ApplicationRecord
       elsif sacked?
         "QB sacked #{-yardage} yard loss"
       elsif field_goal_try?
-        "#{100 - game_snapshot.ball_on + 10 + 7} yard" + (no_scoring? ? " field goal NO GOOD" : "")
+        "#{100 - game_snapshot.ball_on + 10 + YARD_BACK_TO_KICK_FG} yard" + (no_scoring? ? " field goal NO GOOD" : "")
       elsif extra_point_try?
         "Extra point is #{extra_point? ? '' : 'no '}good"
       elsif kick_blocked?
