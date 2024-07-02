@@ -72,13 +72,17 @@ class OffensiveStrategy < ApplicationRecord
 
     def choose_on_4th_down(game)
       ball_on = game.ball_on
-      if ball_on < 100 - 45 || (game.quarter == 1 && game.score_diff >=  0 && ball_on < 100 - 40) \
-                            || (game.quarter >= 3 && game.score_diff >  14 && ball_on < 100 - 40)
+      if   ball_on < 100 - 40 \
+        || ball_on < 100 - 35 && (
+             (game.quarter == 1 && game.score_diff >= 0) \
+          || (game.quarter == 2 && game.score_diff >  7) \
+          || (game.quarter >= 3 && game.score_diff > 14)
+        )
         OffensivePlay.normal_punt
       elsif ball_on > 100 - 35
         OffensivePlay.field_goal
       else
-        pct_for_FG = MathUtil.linear_interporation([45, 5], [35, 100], 100 - ball_on)
+        pct_for_FG = MathUtil.linear_interporation([43, 0], [33, 100], 100 - ball_on)
         rand(1 .. 100) > pct_for_FG ? OffensivePlay.normal_punt : OffensivePlay.field_goal
       end
     end
