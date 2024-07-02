@@ -116,7 +116,7 @@ class StrategyTool
     return false if quarter == 3 && score_diff > 14
     return false if quarter <= 3 && yard_to_go > 10
     return false if quarter == 2 && time_left <= seconds_needed_for_field_goal
-    return false if quarter <= 2 && score_diff >= 0 && ball_on < 55 + rand(6)
+    return false if quarter <= 2 && score_diff >= 0 && ball_on < 55 + rand(6) && yard_to_go >= 2
 
     quarter == 4 && (
           (score_diff < 0 \
