@@ -180,6 +180,14 @@ class Play < ApplicationRecord
     }
   end
 
+  def field_goal_good?(ball_on)
+    fg_yardage = 100 - ball_on + 10 + 7
+    y_plus50_adjust = [fg_yardage - 50, 0].max * 2
+
+    pct_no_good = [100 - ball_on + y_plus50_adjust, 99].min
+    yardage >= pct_no_good
+  end
+
   def self.extra_point_try
     field_goal_try.tap { |play|
       play.result = :extra_point_try

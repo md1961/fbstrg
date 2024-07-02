@@ -500,16 +500,9 @@ class Game < ApplicationRecord
       @result.scoring = :touchdown
     end
 
-    def field_goal_good?(play_yardage)
-      fg_yardage = 100 - ball_on + 10 + 7
-      y_plus50_adjust = [fg_yardage - 50, 0].max * 2
-
-      play_yardage >= 100 - ball_on + y_plus50_adjust
-    end
-
     def try_field_goal(play)
       scoring = :no_scoring
-      if field_goal_good?(play.yardage)
+      if play.field_goal_good?(ball_on)
         scoring, point = play.field_goal_try? ? [:field_goal, 3] : [:extra_point, 1]
         score(point)
       elsif play.field_goal_try?
