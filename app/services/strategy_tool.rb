@@ -142,7 +142,7 @@ class StrategyTool
   def kick_FG_now?
     return false if [1, 3].include?(quarter)
     return false if ball_on < 100 - 43
-    time_is_up = time_left <= TIME_LEFT_TO_KICK_FG_NOW * (timeout_left + 1)
+    time_is_up = timeout_left.zero? && time_left <= TIME_LEFT_TO_KICK_FG_NOW
     (quarter == 2 && time_is_up) \
       || (final_FG_stands? && (down == 4 && time_left <= 60 || time_is_up))
   end
