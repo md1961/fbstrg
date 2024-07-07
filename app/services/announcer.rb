@@ -219,7 +219,7 @@ module Announcer
               yard_for_announcement = nil
               "Touchback"
             else
-              verb = "Ball dead" if play.no_return? && run_from < 10
+              verb = "Ball dead" if !play.intercepted? && play.no_return? && run_from < 10
               "#{verb} #{at_yard_line(ball_on)}"
             end
           elsif play.yardage < 0
