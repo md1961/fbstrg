@@ -533,6 +533,9 @@ class Play < ApplicationRecord
     end
 
     def tries_to_go_out_of_bounds?(game)
+      return false if game.quarter != 2 && game.quarter != 4
+      return false if game.quarter == 2 && game.time_left > 60 * 2
+      return false if game.quarter == 4 && game.time_left > 60 * 5
       return false unless on_ground? || complete?
       return false unless game.offense_hurrying?
       return false if out_of_bounds
