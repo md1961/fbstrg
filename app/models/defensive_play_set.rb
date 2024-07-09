@@ -23,6 +23,19 @@ class DefensivePlaySet < ApplicationRecord
     pick_from(defensive_play_set_choices).defensive_play
   end
 
+  def update_weights(h_weight_by_defensive_play)
+    h_weight_by_defensive_play.each do |defensive_play_id, weight|
+      defensive_play = DefensivePlay.find(defensive_play_id)
+      weight = Integer(weight)
+      choice = choice_for(defensive_play)
+      if choice
+        choice.update!(weight: weight) if weight != choice.weight
+      else
+        defensive_play_set_choices.create!(defensive_play: defensive_play, weight: weight)
+      end
+    end
+  end
+
   def to_s
     name
   end

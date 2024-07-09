@@ -66,6 +66,19 @@ class OffensivePlaySet < ApplicationRecord
     pick_from(choices).offensive_play
   end
 
+  def update_weights(h_weight_by_offensive_play)
+    h_weight_by_offensive_play.each do |offensive_play_id, weight|
+      offensive_play = OffensivePlay.find(offensive_play_id)
+      weight = Integer(weight)
+      choice = choice_for(offensive_play)
+      if choice
+        choice.update!(weight: weight) if weight != choice.weight
+      else
+        offensive_play_set_choices.create!(offensive_play: offensive_play, weight: weight)
+      end
+    end
+  end
+
   def to_s
     name
   end
