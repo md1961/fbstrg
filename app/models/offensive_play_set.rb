@@ -54,6 +54,10 @@ class OffensivePlaySet < ApplicationRecord
     end
   end
 
+  def choice_for(offensive_play)
+    offensive_play_set_choices.find_by(offensive_play: offensive_play)
+  end
+
   def choose(game)
     choices = @weight_correctors.inject(offensive_play_set_choices) do |choices, weight_corrector|
       weight_corrector.correct(choices, game)

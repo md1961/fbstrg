@@ -15,6 +15,10 @@ class DefensivePlaySet < ApplicationRecord
     end
   end
 
+  def choice_for(defensive_play)
+    defensive_play_set_choices.find_by(defensive_play: defensive_play)
+  end
+
   def choose
     pick_from(defensive_play_set_choices).defensive_play
   end
