@@ -20,11 +20,15 @@
 
         <% play_sets.each do |play_set| -%>
           <td class="numeric">
-            <%= play_set.choice_for(play)&.weight %>
+            <% weight = play_set.choice_for(play)&.weight -%>
+            <% if play_set == @play_set_for_form -%>
+              <%= number_field_tag :"choice[#{play.id}]", weight || 0 %>
+            <% else -%>
+              <%= weight %>
+            <% end -%>
           </td>
         <% end -%>
       </tr>
     <% end -%>
   </tbody>
 </table>
-
