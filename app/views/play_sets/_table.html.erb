@@ -3,7 +3,14 @@
     <tr class="border_bottom_thick">
       <th colspan="2" class="border_right_thick">
       <% play_sets.each do |play_set| -%>
-        <th><%= link_to play_set, play_sets_path(class: play_set.class, id: play_set) %></th>
+        <th>
+          <% if play_set == @play_set_for_form -%>
+            <%= form.text_field :name, autofocus: true %>
+          <% else -%>
+            <%= link_to play_set, play_sets_path(class: play_set.class, id: play_set),
+                        tabindex: (@play_set_for_form ? -1 : 0) %>
+          <% end -%>
+        </th>
       <% end -%>
     </tr>
   </thead>
