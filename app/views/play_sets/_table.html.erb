@@ -32,3 +32,8 @@
     <% end -%>
   </tbody>
 </table>
+
+<% if @play_set_for_form.class == play_sets.last.class -%>
+  <%= form.submit :Submit %>
+  <%= link_to 'Cancel', play_sets_path %>
+<% end -%>

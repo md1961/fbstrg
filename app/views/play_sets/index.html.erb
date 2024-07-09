@@ -1,19 +1,11 @@
 <div class="play_sets_index">
-  <%= form_with model: @play_set_for_form do |f| %>
-    <%= render partial: 'table', locals: {play_sets: @offensive_play_sets, plays: @offensive_plays} %>
-
-    <% if @play_set_for_form && @play_set_for_form.is_a?(OffensivePlaySet) -%>
-      <%= f.submit :Submit %>
-      <%= link_to 'Cancel', play_sets_path %>
-    <% end -%>
+  <%= form_with model: @play_set_for_form do |form| %>
+    <%= render partial: 'table',
+               locals: {form: form, play_sets: @offensive_play_sets, plays: @offensive_plays} %>
   <% end -%>
 
-  <%= form_with model: @play_set_for_form do |f| %>
-    <%= render partial: 'table', locals: {play_sets: @defensive_play_sets, plays: @defensive_plays} %>
-
-    <% if @play_set_for_form && @play_set_for_form.is_a?(DefensivePlaySet) -%>
-      <%= f.submit :Submit %>
-      <%= link_to 'Cancel', play_sets_path %>
-    <% end -%>
+  <%= form_with model: @play_set_for_form do |form| %>
+    <%= render partial: 'table',
+               locals: {form: form, play_sets: @defensive_play_sets, plays: @defensive_plays} %>
   <% end -%>
 </div>
